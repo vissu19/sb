@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Bee Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            max-width: 800px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .question-container:hover {
+            transform: translateY(-2px);
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .question-id {
+            font-weight: 600;
+            color: #00796b;
+            font-size: 1.1em;
+        }
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .play-button, .pause-button, .stop-button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #00796b;
+            transition: color 0.2s ease;
+        }
+        .play-button:hover, .pause-button:hover, .stop-button:hover {
+            color: #004d40;
+        }
+        .voice-select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #00796b;
+            background: #f0f9f9;
+            color: #333;
+            font-size: 0.9em;
+            max-width: 200px;
+        }
+        .button-row {
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            gap: 10px;
+            align-items: center;
+        }
+        .end-session-wrapper {
+            margin-left: auto;
+        }
+        button {
+            @apply bg-teal-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-teal-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50;
+            min-width: 120px;
+        }
+        button:disabled {
+            @apply bg-gray-400 cursor-not-allowed hover:bg-gray-400 hover:shadow-none;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .result-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #00796b;
+            display: none;
+        }
+        .result-section label {
+            margin-right: 15px;
+            font-size: 0.95em;
+        }
+        .summary-section {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        .summary-section p {
+            margin: 5px 0;
+            font-size: 1.1em;
+            color: #00796b;
+        }
+        progress {
+            width: 100%;
+            max-width: 800px;
+            height: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: #e0e0e0;
+        }
+        progress::-webkit-progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+        progress::-webkit-progress-value {
+            background: #00796b;
+            border-radius: 10px;
+        }
+        @media (max-width: 600px) {
+            .question-container { padding: 15px; }
+            button { padding: 8px 16px; font-size: 0.9em; min-width: 100px; }
+            .button-row { flex-direction: column; gap: 8px; }
+            .button-row button { width: 100%; }
+            .end-session-wrapper { margin-left: 0; order: 1; }
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .voice-select {
+                width: 100%;
+                max-width: none;
+            }
+            .audio-controls {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="question-container" id="question-container"></div>
+    <progress id="progress" value="0" max="86"></progress>
+    <div class="button-row">
+        <button id="show-answer">Show Answer</button>
+        <div class="end-session-wrapper">
+            <button id="end-session" disabled>End Session</button>
+        </div>
+    </div>
+    <div id="result-section" class="result-section">
+        <p>Mark the result:</p>
+        <label><input type="radio" name="result" value="correct"> Correct</label>
+        <label><input type="radio" name="result" value="wrong"> Wrong</label>
+        <label><input type="radio" name="result" value="skipped"> Skipped</label>
+        <p id="result-feedback" style="color: #00796b; font-weight: bold;"></p>
+    </div>
+    <div class="button-row" id="action-buttons" style="display: none;">
+        <button id="next-question" style="display: none;">Next Question</button>
+        <div class="end-session-wrapper">
+            <button id="end-session-action" disabled>End Session</button>
+        </div>
+    </div>
+    <div class="summary-section" id="summary-section"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentIndex = -1;
+            let currentUtterance = null;
+            let isPaused = false;
+            let selectedVoiceIndex = -1;
+            let voices = [];
+            const questions = [
+{ number: 1, topic: "Biology", text: "When these structures are \"cultured,\" they can be in suspension or adherent. Matthias Schleiden and Theodor Schwann developed a theory of these structures which has three tenets. A “cycle” named for these structures includes steps like G2, S, and M. These structures possess an outer “wall” and membrane in plants but only a membrane in animals. For the point, name these building blocks of life which contain organelles.", answer: "cells" },
+{ number: 2, topic: "Chemistry", text: "This word describes a type of crystalline substance that exists in either smectic or nematic phases while in its thermotropic variety. The HPLC-type of chromatography uses a highly pressurized solvent in this state, which is also bypassed by substances that undergo deposition and sublimation. At negative 196 degrees Celsius, nitrogen exists in this state. For the point, name this state of matter formed when substances melt.", answer: "liquid (accept liquid crystal; accept liquid nitrogen)" },
+{ number: 3, topic: "Chemistry", text: "The transfer of these particles is the central mechanism of redox reactions. A Lewis acid is defined by its ability to form a covalent bond with one of these particles. The addition of these particles can lead to the formation of an anion [[AN-eye-on]]. These particles form a namesake \"cloud\" composed of orbitals. For the point, name these subatomic particles with a negative charge.", answer: "electrons" },
+{ number: 4, topic: "Chemistry", text: "Replacing one atom in this compound with deuterium gives its \"heavy\" form. Microwave ovens primarily work by heating this compound in food due to its large dipole moment. The presence of a lone pair on this compound's oxygen atom gives it a bent geometry. This polar compound is known as the \"universal solvent.\" For the point, name this compound composed of one oxygen and two hydrogen atoms.", answer: "water (or H2O)" },
+{ number: 5, topic: "Astronomy", text: "This object can be \"grazed\" by Krachts [[KRAHKTS]] and Marsdens. Prominences and spicules [[SPIK-yools]] arise from this body. Objects on this body follow an 11-year cycle, experience the Dalton minimum, and have lower temperatures than the surrounding surface. The chromosphere lies outside the photosphere of this body. The corona is part of, for the point, what star around which the Earth revolves?", answer: "sun (accept Sol)" },
+{ number: 6, topic: "Physics", text: "Objects that exceed this quantity emit Cherenkov radiation. Velocity divided by this quantity equals relativistic beta, which is found in the denominator of the Lorentz factor. This value is constant in all inertial reference frames according to Einstein's theory of special relativity. For the point, name this quantity symbolized \"c\" which is about 300 million meters per second and represents the maximum speed at which objects can travel.", answer: "speed of light (accept c before mentioned)" },
+{ number: 7, topic: "Biology", text: "For humans, the longest wavelength cone primarily sees this color, and cells named after this color are called erythrocytes. Although they can vary greatly, algal blooms are sometimes called \"tides\" of this color. The first stage of a bruise is usually this color and inflammation can cause skin to turn this color. The iron atom in hemoglobin causes, for the point, mammalian blood cells to take on what namesake color?", answer: "red" },
+{ number: 8, topic: "History of Science", text: "According to legend, this thinker built a robot copy of his daughter Francine after she died of scarlet fever. Along with Snell, this thinker lends his name to the law of refraction. This thinker founded analytic geometry by combining algebra with coordinate planes. This man lends his name to the most common two-dimensional coordinate system. For the point, name this early modern French philosopher and mathematician, who stated \"I think therefore I am.\"", answer: "René Descartes" },
+{ number: 9, topic: "Math", text: "The rank-nullity theorem is used on these objects, and local curvature is described by the \"Hessian\" type of these objects. The equation A v equals lambda v describes the eigenvector and eigenvalue of these objects. Expansion by minors is used to find the determinant of these objects, which can be used to invert them. For the point, name these mathematical objects which are arrays of numbers in rows and columns.", answer: "matrix (or matrices)" },
+{ number: 10, topic: "Biology", text: "In a pathway in this organelle, cyanide can bind to complex IV [[FOUR]] and lead to asphyxia. They’re not chloroplasts, but it is believed that these organelles arose from the endosymbiosis of a prokaryotic cell and aerobic bacteria. People derive these organelles from egg cells, so DNA passed down through them is maternal. For the point, name this organelle in which most of the body’s ATP is generated, leading to its nickname, the “powerhouse of the cell.”", answer: "mitochondria (or mitochondrion)" },
+{ number: 11, topic: "Earth Science", text: "Resacas are types of these features that are formed when water moves from the Colorado River to the Gulf of Mexico. These features can release lethal amounts of carbon dioxide in events known as limnic eruptions. Billabong is the Australian term for one of the oxbow types of these bodies of water. For the point, name these bodies of water that include Okeechobee and Huron.", answer: "Lakes (accept Oxbow Lakes; accept Billabong before mentioned; accept specific lakes; prompt on \"Limnic Eruption\" before mentioned)" },
+{ number: 12, topic: "Computer Science", text: "These constructs are unrolled during compilation, and vectorization obviates the need for these constructs. Retry statements can be used to exit these structures using the break command. For, while, and do are keywords that declare these constructs, which can run infinitely if left unsatisfied. For the point, name these blocks of code that are executed repeatedly until a particular condition is met.", answer: "Loops" },
+{ number: 13, topic: "Biology", text: "In standard procedures, a sterile loop is spread over one of these objects containing solid nutrient agar or another growth medium. Penicillin was discovered by Alexander Fleming from a type of mold growing in one of these objects. Cells can be cultured on, for the point, what shallow dishes named for a German microbiologist?", answer: "Petri dishes (accept plates; accept Petri plate)" },
+{ number: 14, topic: "Earth Science", text: "The alpine form of this biome can be identified by the presence of stunted forests called Krummholz. Short growing seasons affect this biome where the Sami people of Finland reside. Animals native to this biome include the ptarmigan and lemming. For the point, identify this biome characterized by low temperatures and limited tree growth that contains permafrost in its Arctic example.", answer: "Tundra (accept Alpine Tundra; accept Arctic Tundra before mentioned; accept Antarctic Tundra)" },
+{ number: 15, topic: "Biology", text: "In most oocytes, these structures can be seen in their \"lampbrush\" form. In humans, these structures are numbered roughly in order of descending length, and two of them are the \"Sex\" type. Karyotypes are used to arrange and display these structures made of chromatin. Human genetic information is carried by, for the point, what cells that generally have 23 pairs?", answer: "Chromosomes (accept Lampbrush Chromosomes; accept Sex Chromosomes)" },
+{ number: 16, topic: "Physics", text: "The Tupolev Tu-144 is the Soviet analog of a type of aircraft that can accomplish this feat, and that aircraft, the Concorde, was primarily operated by Air France and British Airways for three-hour transatlantic flights to New York. Chuck Yeager flew in an X-1 rocket plane to accomplish, for the point, what feat in which a vehicle travels faster than Mach 1?", answer: "Breaking the Sound Barrier (accept Breaking Mach 1; accept Supersonic; accept Concorde before mentioned)" },
+{ number: 17, topic: "Biology", text: "These structures are numbered based on the thoracic vertebra to which they attach. The lowermost of these structures are known as the floating type, and the false type of these structures are connected via cartilage to the sternum. For the point, identify this set of 12 paired bones that form a namesake cage in the chest.", answer: "Ribs (accept True Ribs; accept False Ribs; accept Floating Ribs)" },
+{ number: 18, topic: "Biology", text: "Two enzymes and three of these compounds synthesize creatine. Residues of one type of these compounds make up about one-third of collagen, and the side chain of that type of these compounds is a single hydrogen atom. These compounds are the precursor to proteins, and 21 of them are known. For the point, identify these compounds of which methionine and lysine are essential types.", answer: "Amino Acids (prompt on partial answers; accept Glycine)" },
+{ number: 19, topic: "Physics", text: "The conservation of this quantity can be derived from Noether’s [[NOY-thurrs]] theorem for systems that possess time invariance. The Lagrangian is the difference between the kinetic and potential types of this quantity. The joule is the SI unit that measures, for the point, what quantity that is needed in order to do work?", answer: "Energy (or Total Energy; accept Kinetic Energy; accept Potential Energy or any other specific type of energy)" },
+{ number: 20, topic: "Math", text: "This odd number is followed by twin primes, and this perfect square is the second in a series of squares whose digits add up to 18. This first reverse divisible number is often the basis for numerical magic tricks because it can be the result of any two three-digit numbers, reversed then subtracted. For the point, what is the product of 3 and 11?", answer: "33" },
+{ number: 21, topic: "Biology", text: "One of these creatures is biologically immortal due to its ability to alternate between its polyp and medusa phases. These creatures possess structures called nematocysts, or stinging cells. The lion's mane species of these creatures is the largest member of the phylum cnidaria [[NYE-dare-ee-uh]]. For the point, name these venomous aquatic animals that include the Portuguese Man O' War.", answer: "Jellyfish (accept Cnidarians before mentioned; accept specific Jellyfish species)" },
+{ number: 22, topic: "Astronomy", text: "A 1999 mission to study the climate of this body was lost due to a miscommunication regarding Imperial and metric units. Extensive soil tests were performed on this body by the Viking landers. The Spirit and Opportunity rovers transmitted extensive data from, for the point, what fourth planet from the sun?", answer: "Mars" },
+{ number: 23, topic: "Biology", text: "These phenomena are the most common disorders treated with split-brain procedures. The febrile type of these phenomena occur in children with high fevers. Muscle spasms and unconsciousness typify a type of this phenomenon known as grand mal. For the point, name these convulsion events, the defining characteristic of epilepsy.", answer: "Seizures (accept specific seizure types like Grand Mal Seizure before mentioned; prompt on \"Convulsions\")" },
+{ number: 24, topic: "Biology", text: "This class of animals vocalizes through the use of a syrinx which can produce especially variable sounds in mynahs and conures. Members of this class of animals have four-chambered hearts and, though warm-blooded, are descended from dinosaurs. For the point, name this general class of vertebrates whose bones are typically hollow to enable flight.", answer: "Birds (or Avians; or Aves; accept Mynah Birds; accept Conure Birds)" },
+{ number: 25, topic: "Chemistry", text: "This element's methyl compounds bio-accumulate in fish and other seafood. Atmospheric pressure can be measured in millimeters of this element, and alloys of this element are commonly known as amalgams. Remaining liquid at room temperature this is, for the point, what transition metal that has largely been replaced by colored alcohol in glass thermometers?", answer: "Mercury (or Hg; accept Mercury Methyl Compounds; accept Millimeters of Mercury)" },
+{ number: 26, topic: "History of Science", text: "This person recorded their best known achievement in the journal 20 Hrs., 40 Min.. This person is the namesake of the scholarship fund awarded by a women's organization known as the Ninety-Nines. This person was last seen traveling from New Guinea with navigator Fred Noonan. For the point, name this female aviator who disappeared in 1937.", answer: "Amelia Mary Earhart" },
+{ number: 27, topic: "Physics", text: "The positive displacement type of these devices continuously trap and move small amounts of fluids. The diaphragm type of these devices alternates fluid motion between two chambers separated by a flexible rubber seal. Pressure is reduced in the vacuum type of these devices, and reciprocal examples of these devices power hand-operated wells. For the point, name these devices used to inflate tires.", answer: "Pump (accept Positive Displacement Pump; accept Diaphragm Pump; accept Vacuum Pump; accept Reciprocating Pump; accept Tire Pump)" },
+{ number: 28, topic: "Astronomy", text: "Instabilities in these objects can become swing-amplified, and these objects may be formed via Lindblad resonances. One type of these objects has a flattened rotation curve and appears in the upper part of the Hubble tuning fork. Spiral, elliptical, and irregular are major types of, for the point, what type of galactic objects exemplified by Andromeda and the Milky Way?", answer: "Galaxy (or Galaxies; accept specific types of Galaxies before mentioned)" },
+{ number: 29, topic: "History of Science", text: "This man’s namesake transformation converts between coordinate systems that differ only by relative motion. This scientist was the first to formalize the concept of inertia, and he is famous for making discoveries that supported Copernicus’s heliocentric theory. For the point, name this Italian polymath who improved the telescope.", answer: "Galileo Galilei (accept either; accept Galilean Invariance; accept Galilean Transformation; accept Galilean Moons)" },
+{ number: 30, topic: "Math", text: "The constellation Sagittarius is identified by this number in the Messier catalogue. This number is the smallest even two-digit number whose digits sum to 10. This number is the atomic number of Nickel, as well as the number of days in two fortnights. For the point, identify this number, the product of 4 times 7.", answer: "28" },
+{ number: 31, topic: "Biology", text: "Serum is a colorless component of this substance. An inability of the body to perform that process within this substance can result in hemophilia. Clotting is a process that takes place in, for the point, what substance within the human body composed of cells and plasma that is classified in types such as O negative?", answer: "Blood (accept Blood Clot; accept Blood Type)" },
+{ number: 32, topic: "Biology", text: "Neurobiological models of these phenomena include the activation-synthesis, and control is maintained in the lucid type of these phenomena. Sigmund Freud divided these occurrences into manifest and latent content in a book titled for their interpretation. Associated with REM sleep, these are, for the point, what nighttime occurrences, terrifying varieties of which are called nightmares?", answer: "Dreams (accept Nightmares before read)" },
+{ number: 33, topic: "Astronomy", text: "The Cassini-Huygens [[HOY-genz]] space-research mission discovered many of its physical features, including the String of Pearls and Great White Spot. The second-largest moon of this planet is called Rhea, and other moons of this planet include Enceladus. Titan is the largest moon of, for the point, what sixth planet from the Sun, located between Jupiter and Uranus?", answer: "Saturn" },
+{ number: 34, topic: "Chemistry", text: "The shell model of this structure predicts islands of stability in isotopes with large magic numbers that have a higher average binding energy. A famous experiment discovered this structure by firing alpha particles at a sheet of gold foil. For the point, name this structure at the center of the atom.", answer: "Atomic Nucleus (or Atomic Nuclei)" },
+{ number: 35, topic: "Computer Science", text: "One of these products invented by Alexey Pajitnov is sometimes used to disrupt visual memory. Congressional hearings concerning these objects questioned whether they cause children to engage in violence, and these products are given ratings based on their content by the ESRB. For the point, name these entertainment products produced by companies such as EA and Nintendo.", answer: "Video Games (prompt on \"Games\")" },
+{ number: 36, topic: "Physics", text: "Archimedes explained this natural phenomenon using the center of mass of a triangle. Vitruvius explained this naturally occurring phenomenon by publishing De Architectura, and Galileo Galilei apocryphally demonstrated this natural phenomenon by dropping two balls from the same height. For the point, name this natural force that explains why objects fall.", answer: "Gravity (or Gravitation; or G)" },
+{ number: 37, topic: "Earth Science", text: "German shelters called schneekragens [[SHNEEK-rah-gins]] guard against these phenomena by offering safe corridors. Terrain, weather, and packing of a certain material are part of a three-part model of this phenomenon that can occur in slab and powder types. Loud noises and other disturbances can trigger, for the point, what destructive natural phenomenon also called a snow slide?", answer: "Avalanches (accept Slab Avalanche; accept Powder Snow Avalanche; accept Snow Slide before mentioned)" },
+{ number: 38, topic: "Biology", text: "A condition affecting this organ is named for physician Norman Barrett. Another condition of this organ can be prevented with H2 receptor or proton pump inhibitors and by avoiding spicy foods. Stomach acid enters this organ in acid reflux and GERD [[GURD]]. For the point, identify this tubular organ that transports food from the mouth to the stomach.", answer: "Esophagus" },
+{ number: 39, topic: "Earth Science", text: "The boundary between part of this region and its upper neighbor is sometimes named for Keith Bullen or Inge Lehmann. Analysis of seismic waves and the magnetic field have determined the outer portion of this layer is likely a solid ball composed of a nickel-iron alloy. For the point, identify this innermost geologic layer of Earth.", answer: "Earth's Core (accept Inner Core; accept Outer Core)" },
+{ number: 40, topic: "Biology", text: "One of these animals orbited the Earth aboard Sputnik 2, becoming the first animal in space. These animals were the subject of an experiment in which they developed an association between meat powder and a ringing bell that resulted in their salivation. Ivan Pavlov studied, for the point, what domestic animals that belong to the canine family?", answer: "Dogs (accept Canines or Canids before mentioned; accept Laika; accept Pavlov's Dogs)" },
+{ number: 41, topic: "Biology", text: "This substance is the primary prolactin inhibitory factor, and this substance is broken down by monoamine oxidase. Most production of this substance occurs in the substantia nigra, and this neurotransmitter is under-produced in Parkinson’s disease. For the point, name this neurotransmitter that is central to the brain’s pleasure and reward systems.", answer: "Dopamine" },
+{ number: 42, topic: "Miscellaneous", text: "One of these structures was subject to a stress test at its opening by a team of elephants led by P.T. Barnum. A poorly designed one of these structures nicknamed Galloping Gertie collapsed due to failure caused by resonance. Cantilever and suspension, are types of, for the point, what structures that Roman engineers designed to span the Danube and Tiber Rivers?", answer: "Bridges (accept Cantilevered Bridges; accept Suspension Bridges)" },
+{ number: 43, topic: "Astronomy", text: "This planet’s orbit marks the outer limit of the asteroid belt. An Italian scientist discovered four moons of this planet in the 17th century, including Ganymede and Europa. Galileo built a telescope to observe this planet, which is known for its Great Red Spot. For the point, name this fifth planet from the sun, the largest in the solar system.", answer: "Jupiter" },
+{ number: 44, topic: "Earth Science", text: "The cirque and valley-head are types of these formations. Ridges protruding from these formations are called nunataks, and the thermal state of these formations makes them either temperate or polar. These formations move via basal sliding, and their leftover deposits are called eskers. For the point, identify these slow-moving formations of ice.", answer: "Glaciers" },
+{ number: 45, topic: "Earth Science", text: "A form of this process on the planet Venus resulted in an atmosphere of 96% carbon dioxide. The opposite of this process has been observed on Titan, where the moon’s surface temperature is reduced by 9 degrees Kelvin. For the point, name this effect by which atmospheric radiation warms the surface of the planet by trapping the sun's heat.", answer: "Greenhouse Effect" },
+{ number: 46, topic: "Biology", text: "An experiment on these subjects utilized a checkered carpet, a transparent glass table, and a ramp. That Visual Cliff experiment was conducted on these subjects, and another researcher hid toys from these subjects using a blanket to demonstrate their lack of object permanence. For the point, name these young humans used as research subjects by developmental psychologists.", answer: "Babies (or Infants; prompt on \"Children\" or similar answers)" },
+{ number: 47, topic: "Physics", text: "This quantity is the time integral of the impulse, and Coulomb’s law states that one type of this quantity between two objects is inversely proportional to their distance squared. This vector quantity is equal to mass times acceleration, according to Newton’s second law of motion. For the point, name this vector quantity, examples of which include pushes and pulls.", answer: "Force (or F; accept Gravity or Gravitational force; accept Electrostatic force; prompt on “electric”)" },
+{ number: 48, topic: "History of Science", text: "An object known as SN 1604 is named after this man, who described it in his De Stella Nova. Astronomiae Pars Optica is a work by this scientist who wrote an essay to Ferdinand II in which he proposed a force-based theory of lunar motion. For the point, name this polymath who published three laws of planetary motion.", answer: "Johannes Kepler" }
+];
+            let shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+            let answersShown = new Set();
+            const topicStats = {};
+            questions.forEach(q => {
+                topicStats[q.topic] = { presented: 0, correct: 0, wrong: 0, skipped: 0 };
+            });
+            const progressBar = document.getElementById("progress");
+            progressBar.max = shuffledQuestions.length;
+
+            // Define sets based on the structure (4 sets: indices 0-11 Set1, 12-23 Set2, 24-35 Set3, 36-47 Set4)
+            const setBoundaries = [0, 12, 24, 36, 48];
+            function getSetNumber(index) {
+                for (let i = 0; i < setBoundaries.length - 1; i++) {
+                    if (index >= setBoundaries[i] && index < setBoundaries[i + 1]) {
+                        return i + 1;
+                    }
+                }
+                return 1; // Fallback
+            }
+
+            // Voice selection setup
+            function populateVoiceDropdown() {
+                voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+                const voiceSelect = document.getElementById('voice-select');
+                if (!voiceSelect) return;
+                voiceSelect.innerHTML = '<option value="-1">Select Voice</option>';
+                if (voices.length === 0) {
+                    voiceSelect.innerHTML = '<option value="-1">No voices available</option>';
+                } else {
+                    voices.forEach((voice, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        voiceSelect.appendChild(option);
+                    });
+                    voiceSelect.value = selectedVoiceIndex >= 0 && selectedVoiceIndex < voices.length ? selectedVoiceIndex : -1;
+                }
+            }
+            if (window.speechSynthesis) {
+                window.speechSynthesis.onvoiceschanged = populateVoiceDropdown;
+                populateVoiceDropdown();
+            }
+
+            function displayQuestion() {
+                if (currentIndex >= 0) {
+                    document.getElementById("show-answer").style.display = "inline-block";
+                }
+                if (currentIndex >= shuffledQuestions.length - 1) {
+                    document.getElementById("next-question").style.display = "none";
+                    return;
+                }
+                currentIndex++;
+                const question = shuffledQuestions[currentIndex];
+                const setNumber = getSetNumber(currentIndex);
+                const questionId = `Set ${setNumber}, Question ${question.number}`;
+                // Reset speech state
+                if (currentUtterance && window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    currentUtterance = null;
+                    isPaused = false;
+                }
+                document.getElementById("question-container").innerHTML = `
+                    <div class="question-header">
+                        <div class="question-id">${questionId}</div>
+                        <div class="audio-controls">
+                            <button class="play-button" id="play-question" title="Play Question Audio">▶️</button>
+                            <button class="pause-button" id="pause-question" title="Pause Audio">⏸️</button>
+                            <button class="stop-button" id="stop-question" title="Stop Audio">⏹️</button>
+                            <select class="voice-select" id="voice-select"></select>
+                        </div>
+                    </div>
+                    <p class="text-lg">${question.text}</p>
+                `;
+                // Re-populate voice dropdown
+                populateVoiceDropdown();
+                document.getElementById("show-answer").style.display = "inline-block";
+                document.getElementById("next-question").style.display = "none";
+                document.getElementById("end-session-action").disabled = true;
+                topicStats[question.topic].presented++;
+                progressBar.value = currentIndex + 1;
+
+                // Add event listeners for audio controls
+                const playButton = document.getElementById("play-question");
+                const pauseButton = document.getElementById("pause-question");
+                const stopButton = document.getElementById("stop-question");
+                const voiceSelect = document.getElementById("voice-select");
+
+                if (playButton && window.speechSynthesis) {
+                    playButton.addEventListener("click", () => {
+                        if (currentUtterance && window.speechSynthesis.speaking && !isPaused) {
+                            window.speechSynthesis.cancel();
+                        }
+                        currentUtterance = new SpeechSynthesisUtterance(question.text);
+                        currentUtterance.lang = 'en-US';
+                        currentUtterance.rate = 0.9;
+                        if (voices.length > 0 && selectedVoiceIndex >= 0 && selectedVoiceIndex < voices.length) {
+                            currentUtterance.voice = voices[selectedVoiceIndex];
+                        }
+                        window.speechSynthesis.speak(currentUtterance);
+                        isPaused = false;
+                        pauseButton.title = "Pause Audio";
+                        pauseButton.innerHTML = "⏸️";
+                    });
+                }
+
+                if (pauseButton && window.speechSynthesis) {
+                    pauseButton.addEventListener("click", () => {
+                        if (!currentUtterance) return;
+                        if (isPaused) {
+                            window.speechSynthesis.resume();
+                            isPaused = false;
+                            pauseButton.title = "Pause Audio";
+                            pauseButton.innerHTML = "⏸️";
+                        } else if (window.speechSynthesis.speaking) {
+                            window.speechSynthesis.pause();
+                            isPaused = true;
+                            pauseButton.title = "Resume Audio";
+                            pauseButton.innerHTML = "▶️";
+                        }
+                    });
+                }
+
+                if (stopButton && window.speechSynthesis) {
+                    stopButton.addEventListener("click", () => {
+                        if (currentUtterance) {
+                            window.speechSynthesis.cancel();
+                            currentUtterance = null;
+                            isPaused = false;
+                            pauseButton.title = "Pause Audio";
+                            pauseButton.innerHTML = "⏸️";
+                        }
+                    });
+                }
+
+                if (voiceSelect) {
+                    voiceSelect.addEventListener("change", (e) => {
+                        selectedVoiceIndex = parseInt(e.target.value);
+                    });
+                }
+            }
+
+            function showAnswer() {
+                console.log("Show Answer clicked");
+                const container = document.getElementById("question-container");
+                if (!container) {
+                    console.error("Question container not found");
+                    return;
+                }
+                const question = shuffledQuestions[currentIndex];
+                container.innerHTML += `<p class="text-green-700 font-bold mt-2">Answer: ${question.answer}</p>`;
+                document.getElementById("show-answer").style.display = "none";
+                document.getElementById("result-section").style.display = "block";
+                // Stop speech when showing answer
+                if (currentUtterance && window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    currentUtterance = null;
+                    isPaused = false;
+                    const pauseButton = document.getElementById("pause-question");
+                    if (pauseButton) {
+                        pauseButton.title = "Pause Audio";
+                        pauseButton.innerHTML = "⏸️";
+                    }
+                }
+            }
+
+
+        function updateResult() {
+            const result = document.querySelector('input[name="result"]:checked');
+            if (!result) {
+                document.getElementById("next-question").style.display = "none";
+                document.getElementById("end-session-action").disabled = true;
+                return;
+            }
+            const resultValue = result.value;
+            const question = shuffledQuestions[currentIndex];
+            if (resultValue === "correct") {
+                topicStats[question.topic].correct++;
+                document.getElementById("result-feedback").textContent = "Marked as Correct!";
+            } else if (resultValue === "wrong") {
+                topicStats[question.topic].wrong++;
+                document.getElementById("result-feedback").textContent = "Marked as Wrong!";
+            } else if (resultValue === "skipped") {
+                topicStats[question.topic].skipped++;
+                document.getElementById("result-feedback").textContent = "Marked as Skipped!";
+            }
+            document.getElementById("action-buttons").style.display = "flex";
+            document.getElementById("next-question").style.display = "inline-block";
+            document.getElementById("end-session-action").disabled = false;
+            document.getElementById("end-session").style.display = "none"; // Hide initial End Session
+        }
+
+        function showSummary() {
+            let summaryContent = `<h2 class="text-xl font-bold text-teal-700">Session Summary</h2>`;
+            for (let topic in topicStats) {
+                summaryContent += `<p>Topic: ${topic}</p><p>Presented: ${topicStats[topic].presented}</p><p>Correct: ${topicStats[topic].correct}</p><p>Wrong: ${topicStats[topic].wrong}</p><p>Skipped: ${topicStats[topic].skipped}</p><hr class="my-4">`;
+            }
+            document.getElementById("summary-section").innerHTML = summaryContent;
+            document.getElementById("question-container").style.display = "none";
+            document.getElementById("result-section").style.display = "none";
+            document.getElementById("action-buttons").style.display = "none";
+            document.getElementById("summary-section").style.display = "block";
+        }
+
+        document.getElementById("show-answer").addEventListener("click", showAnswer);
+        document.querySelectorAll('input[name="result"]').forEach(radio => {
+            radio.addEventListener("change", updateResult);
+        });
+
+        document.getElementById("next-question").addEventListener("click", () => {
+            console.log("Next Question clicked");
+            document.getElementById("result-feedback").textContent = "";
+            document.getElementById("result-section").style.display = "none";
+            document.querySelector('input[name="result"]:checked').checked = false;
+            document.getElementById("next-question").style.display = "none";
+            document.getElementById("end-session-action").disabled = true;
+            document.getElementById("action-buttons").style.display = "none";
+            document.getElementById("show-answer").style.display = "inline-block";
+            document.getElementById("end-session").style.display = "inline-block";
+            document.getElementById("question-container").style.display = "block";
+            document.getElementById("summary-section").style.display = "none";
+            displayQuestion();
+        });
+
+        document.getElementById("end-session").addEventListener("click", () => {
+            console.log("End Session clicked (initial)");
+            alert("Please mark a result to end the session.");
+        });
+
+        document.getElementById("end-session-action").addEventListener("click", () => {
+            console.log("End Session clicked (action)");
+            showSummary();
+        });
+
+        // Start with the first question
+        displayQuestion();
+    });
+</script>
+</body>
+</html>

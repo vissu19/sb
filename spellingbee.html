@@ -542,7 +542,7 @@ function populateVoices(){
     const sel = document.getElementById('voice-select');
     sel.innerHTML = '';
     voices.forEach((v,i)=>{
-        if (v.lang.includes('en')) {
+        if (v.lang.includes('en-US')) {
             const opt = document.createElement('option');
             opt.value = i;
             opt.textContent = `${v.name} (${v.lang})`;

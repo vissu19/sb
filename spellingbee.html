@@ -610,6 +610,8 @@ function nextWord(){
     document.getElementById('more-practice').checked = false;
     presented++;
 
+    document.getElementById('word-info').style.display="none";
+
     showWordInfo();
     setTimeout(()=>speak(practiceWords[curIdx].w), 300);
 }
@@ -639,6 +641,7 @@ function checkSpelling(){
         resDiv.innerHTML = `Incorrect! The correct spelling is: <strong>${data.w}</strong>`;
     }
     document.getElementById('next-button').disabled = false;
+    document.getElementById('word-info').style.display="block";
 }
 
 /* --------------------------------------------------------------

@@ -542,11 +542,13 @@ function populateVoices(){
     const sel = document.getElementById('voice-select');
     sel.innerHTML = '';
     voices.forEach((v,i)=>{
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = `${v.name} (${v.lang})`;
-        if(v.lang.includes('en')) opt.selected = true;
-        sel.appendChild(opt);
+        if (v.lang.includes('en')) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${v.name} (${v.lang})`;
+            if(v.lang.includes('en')) opt.selected = true;
+            sel.appendChild(opt);
+        }
     });
     selVoice = sel.selectedIndex;
     sel.addEventListener('change',e=>selVoice=e.target.value);

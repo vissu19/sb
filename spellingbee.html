@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spelling Bee Practice – Fixed & Final</title>
+<style>
+    body{font-family:Arial,sans-serif;text-align:center;margin:20px}
+    .screen{max-width:680px;margin:0 auto}
+    button{margin:6px;padding:10px 18px;font-size:16px}
+    #play-word-btn, #play-meaning-btn{font-size:22px}
+    #input-word{font-size:18px;padding:10px;width:300px}
+    #result{font-size:20px;margin:15px;font-weight:bold}
+    #voice-select{margin:10px;padding:5px}
+    .options{margin:15px 0}
+    #word-info{margin:15px 0;font-size:17px;line-height:1.6}
+    #word-info strong{font-size:1.2em}
+    .btn-group button{margin:4px}
+    select{font-size:16px;padding:8px}
+</style>
+</head>
+<body>
+
+<div id="start-screen" class="screen">
+    <h1>Spelling Bee Practice</h1>
+    <div class="options">
+        <label><strong>Select Level:</strong></label><br>
+        <select id="level-select">
+            <option value="one">One Bee</option>
+            <option value="two">Two Bee</option>
+            <option value="three">Three Bee</option>
+        </select>
+        <br><br>
+        <label><input type="checkbox" id="shuffle-option" checked> Shuffle words</label>
+    </div>
+    <button id="start-button">Start Session</button>
+</div>
+
+<div id="practice-screen" class="screen" style="display:none">
+    <h1>Practice Spelling</h1>
+    <select id="voice-select"></select>
+
+    <div class="btn-group">
+        <button id="play-word-btn">Play Word</button>
+        <button id="play-meaning-btn">Read Meaning & Sentence</button>
+    </div>
+
+    <div id="word-info" style="display:none"></div>
+
+    <input type="text" id="input-word" placeholder="Type the spelling here">
+    <button id="submit-button">Submit</button>
+
+    <div id="result"></div>
+
+    <label><input type="checkbox" id="more-practice"> Need more practice</label>
+    <br>
+    <button id="next-button" disabled>Next Word</button>
+    <button id="end-button">End Session</button>
+</div>
+
+<div id="result-screen" class="screen" style="display:none">
+    <h1>Session Results</h1>
+    <p id="stats"></p>
+    <h2>Words for More Practice:</h2>
+    <ul id="more-practice-list"></ul>
+    <button id="new-session-button">Start a new session</button>
+</div>
+
+<script>
+/* --------------------------------------------------------------
+   FULL 2025–2026 SCRIPPS WORD LIST (from your images)
+   -------------------------------------------------------------- */
+const wordLists = {
+    one: [
+        {w:"tag",def:"a small label or marker",sent:"She put a price tag on the shirt."},
+        {w:"send",def:"to cause to go",sent:"Please send me the report."},
+        {w:"deck",def:"a flat surface for outdoor use",sent:"We ate dinner on the deck."},
+        {w:"stuck",def:"unable to move",sent:"The car got stuck in the mud."},
+        {w:"snug",def:"fitting closely and comfortably",sent:"The sweater is snug but warm."},
+        {w:"fish",def:"an aquatic animal with gills",sent:"We caught a big fish."},
+        {w:"hold",def:"to grasp or keep",sent:"Hold the baby carefully."},
+        {w:"mind",def:"the part of a person that thinks",sent:"Change your mind if you wish."},
+        {w:"stay",def:"to remain in a place",sent:"You can stay for dinner."},
+        {w:"scrub",def:"to clean by rubbing hard",sent:"Scrub the floor with a brush."},
+        {w:"draw",def:"to make a picture with a pencil",sent:"She can draw beautiful portraits."},
+        {w:"brown",def:"a color like coffee or chocolate",sent:"The dog has brown fur."},
+        {w:"cozy",def:"giving a feeling of comfort and warmth",sent:"The cabin is cozy in winter."},
+        {w:"tint",def:"a slight color",sent:"Add a tint of blue to the paint."},
+        {w:"milk",def:"white liquid from cows",sent:"Drink a glass of milk."},
+        {w:"yawn",def:"to open the mouth wide when tired",sent:"He gave a big yawn."},
+        {w:"tank",def:"a large container for liquid",sent:"The fish live in a tank."},
+        {w:"want",def:"to desire something",sent:"I want a new bike."},
+        {w:"crowd",def:"a large group of people",sent:"A crowd gathered at the concert."},
+        {w:"pond",def:"a small body of still water",sent:"Frogs live in the pond."},
+        {w:"skirt",def:"a garment that hangs from the waist",sent:"She wore a red skirt."},
+        {w:"sharks",def:"large fish with sharp teeth",sent:"Sharks swim in the ocean."},
+        {w:"quilt",def:"a warm bed covering made of patches",sent:"Grandma made a quilt."},
+        {w:"twigs",def:"small thin branches",sent:"Birds build nests with twigs."},
+        {w:"taffy",def:"a chewy candy",sent:"Salt-water taffy is delicious."},
+        {w:"comfy",def:"comfortable (informal)",sent:"These shoes are really comfy."},
+        {w:"stretch",def:"to make longer or wider",sent:"Stretch before you run."},
+        {w:"tight",def:"fitting closely",sent:"The lid is on tight."},
+        {w:"candy",def:"sweet food made with sugar",sent:"Halloween candy is fun."},
+        {w:"scrunch",def:"to squeeze together",sent:"Scrunched paper makes a ball."},
+        {w:"ruby",def:"a red gemstone",sent:"Her ring has a ruby."},
+        {w:"close",def:"near in space or time",sent:"The store is close to home."},
+        {w:"tackle",def:"to deal with a problem",sent:"Let’s tackle the homework."},
+        {w:"wire",def:"thin metal thread",sent:"The fence is made of wire."},
+        {w:"skater",def:"a person who skates",sent:"The ice skater performed jumps."},
+        {w:"giant",def:"very large",sent:"The giant tree shaded the yard."},
+        {w:"bucket",def:"a container with a handle",sent:"Fill the bucket with water."},
+        {w:"chance",def:"possibility",sent:"There’s a chance of rain."},
+        {w:"baskets",def:"containers made of woven material",sent:"Easter baskets hold eggs."},
+        {w:"tender",def:"soft or gentle",sent:"The meat is tender."},
+        {w:"paste",def:"a sticky mixture",sent:"Glue is a type of paste."},
+        {w:"melon",def:"a large sweet fruit",sent:"Watermelon is a summer melon."},
+        {w:"farmer",def:"a person who grows crops",sent:"The farmer harvested corn."},
+        {w:"parent",def:"a mother or father",sent:"Every child has a parent."},
+        {w:"tail",def:"the rear part of an animal",sent:"The dog wagged its tail."},
+        {w:"hockey",def:"a sport played on ice",sent:"They love to watch hockey."},
+        {w:"slime",def:"a slippery wet substance",sent:"The snail left a trail of slime."},
+        {w:"insects",def:"small animals with six legs",sent:"Butterflies are insects."},
+        {w:"tooth",def:"hard part in the mouth",sent:"Brush every tooth."},
+        {w:"shortcut",def:"a quicker way",sent:"Take the shortcut through the park."},
+        {w:"bait",def:"food used to attract fish",sent:"Worms are good bait."},
+        {w:"lure",def:"something that tempts",sent:"The bright colors lure birds."},
+        {w:"cluster",def:"a group close together",sent:"A cluster of grapes hung on the vine."},
+        {w:"forest",def:"a large area of trees",sent:"Deer live in the forest."},
+        {w:"hollow",def:"having an empty space inside",sent:"The tree trunk is hollow."},
+        {w:"spinning",def:"turning around quickly",sent:"The wheel is spinning."},
+        {w:"baffling",def:"confusing",sent:"The puzzle is baffling."},
+        {w:"sizzling",def:"making a hissing sound when hot",sent:"The bacon is sizzling."},
+        {w:"hoist",def:"to lift with ropes",sent:"Hoist the sail."},
+        {w:"search",def:"to look for",sent:"Search the room for the keys."},
+        {w:"remind",def:"to cause to remember",sent:"Remind me to call Mom."},
+        {w:"mango",def:"a tropical fruit",sent:"Mango tastes sweet."},
+        {w:"coral",def:"hard material formed by sea animals",sent:"The reef is made of coral."},
+        {w:"jangle",def:"to make a harsh ringing sound",sent:"The keys jangle in his pocket."},
+        {w:"shimmer",def:"to shine with a soft light",sent:"The water shimmers in the sun."},
+        {w:"blossoms",def:"flowers on a tree",sent:"Cherry blossoms are pink."},
+        {w:"swampy",def:"wet and spongy",sent:"The ground is swampy after rain."},
+        {w:"studded",def:"decorated with studs",sent:"The belt is studded with gems."},
+        {w:"focus",def:"to concentrate",sent:"Focus on your homework."},
+        {w:"distress",def:"great pain or anxiety",sent:"The ship sent a distress signal."},
+        {w:"lessons",def:"periods of learning",sent:"Piano lessons are on Tuesday."},
+        {w:"moment",def:"a very short time",sent:"Wait a moment."},
+        {w:"ajar",def:"slightly open",sent:"The door is ajar."},
+        {w:"basil",def:"an aromatic herb",sent:"Add basil to the sauce."},
+        {w:"triple",def:"three times as much",sent:"A triple scoop of ice cream."},
+        {w:"satin",def:"smooth shiny fabric",sent:"The dress is made of satin."},
+        {w:"ahoy",def:"a call used at sea",sent:"Ship ahoy!"},
+        {w:"signal",def:"a sign that gives information",sent:"The traffic signal turned red."},
+        {w:"answer",def:"a reply",sent:"Write your answer on the line."},
+        {w:"raffle",def:"a lottery with prizes",sent:"Buy a ticket for the raffle."},
+        {w:"dollop",def:"a lump of soft food",sent:"A dollop of whipped cream."},
+        {w:"minnows",def:"tiny freshwater fish",sent:"Minnows swim in the stream."},
+        {w:"silver",def:"a shiny gray metal",sent:"The spoon is made of silver."},
+        {w:"before",def:"earlier in time",sent:"Finish your homework before dinner."},
+        {w:"circus",def:"a show with acrobats and animals",sent:"The circus came to town."},
+        {w:"writing",def:"the activity of putting words on paper",sent:"Practice your writing."},
+        {w:"kitchen",def:"a room for cooking",sent:"Mom is in the kitchen."},
+        {w:"sugar",def:"sweet white crystals",sent:"Add sugar to the tea."},
+        {w:"awkward",def:"clumsy or embarrassing",sent:"The silence felt awkward."},
+        {w:"seep",def:"to flow slowly through small openings",sent:"Water seeps through the crack."},
+        {w:"sweet",def:"having a taste like sugar",sent:"The candy is sweet."},
+        {w:"wheels",def:"round parts that turn",sent:"The bike has two wheels."},
+        {w:"faint",def:"weak or barely perceptible",sent:"She heard a faint noise."},
+        {w:"fruit",def:"the edible part of a plant",sent:"Eat more fruit."},
+        {w:"roam",def:"to wander",sent:"Deer roam the forest."},
+        {w:"goats",def:"animals that give milk",sent:"The goats climbed the hill."},
+        {w:"woozy",def:"dizzy or confused",sent:"He felt woozy after the ride."},
+        {w:"limbs",def:"arms, legs, or branches",sent:"The tree lost a limb in the storm."},
+        {w:"ahead",def:"in front",sent:"Go straight ahead."},
+        {w:"senior",def:"older or higher in rank",sent:"She is a senior in high school."},
+        {w:"unicorn",def:"mythical horse with a horn",sent:"The story featured a unicorn."},
+        {w:"faraway",def:"distant",sent:"They live in a faraway land."},
+        {w:"heater",def:"a device that warms",sent:"Turn on the heater."},
+        {w:"pirates",def:"sea robbers",sent:"Pirates sailed the seven seas."},
+        {w:"understand",def:"to comprehend",sent:"Do you understand the instructions?"},
+        {w:"wooden",def:"made of wood",sent:"The table is wooden."},
+        {w:"leaning",def:"tilted to one side",sent:"The tower is leaning."},
+        {w:"breakfast",def:"first meal of the day",sent:"We eat breakfast together."},
+        {w:"window",def:"an opening for light",sent:"Open the window."},
+        {w:"acrobat",def:"a performer of gymnastic feats",sent:"The acrobat flipped in the air."},
+        {w:"message",def:"information sent",sent:"Leave a message on the board."},
+        {w:"chocolate",def:"sweet brown food from cacao",sent:"I love chocolate cake."},
+        {w:"forepaw",def:"front foot of an animal",sent:"The cat raised its forepaw."},
+        {w:"elephant",def:"large mammal with a trunk",sent:"The elephant sprayed water."},
+        {w:"hedgehog",def:"small spiny mammal",sent:"The hedgehog curled into a ball."},
+        {w:"recipe",def:"instructions for cooking",sent:"Follow the recipe carefully."},
+        {w:"garbage",def:"waste material",sent:"Take out the garbage."},
+        {w:"surprise",def:"something unexpected",sent:"The party was a surprise."},
+        {w:"mermaid",def:"mythical sea creature with a tail",sent:"The mermaid swam gracefully."},
+        {w:"bombarded",def:"attacked with many things",sent:"The castle was bombarded with rocks."},
+        {w:"disability",def:"a physical or mental condition that limits",sent:"Ramps help people with a disability."},
+        {w:"incredible",def:"hard to believe",sent:"The view was incredible."},
+        {w:"leather",def:"material made from animal skin",sent:"The jacket is made of leather."},
+        {w:"countess",def:"wife of a count",sent:"The countess wore a crown."},
+        {w:"nervous",def:"worried or anxious",sent:"She felt nervous before the test."},
+        {w:"peppercorn",def:"dried berry used as spice",sent:"Grind the peppercorn for flavor."},
+        {w:"cartwheel",def:"a sideways somersault",sent:"She did a perfect cartwheel."},
+        {w:"raise",def:"to lift or increase",sent:"Raise your hand to answer."},
+        {w:"weather",def:"condition of the atmosphere",sent:"Check the weather before going out."},
+        {w:"zooming",def:"moving very fast",sent:"The race car is zooming by."},
+        {w:"attacked",def:"assaulted",sent:"The army attacked at dawn."},
+        {w:"turnout",def:"number of people who attend",sent:"The turnout for the vote was high."},
+        {w:"eaten",def:"consumed as food",sent:"The cake has been eaten."},
+        {w:"streetlights",def:"lamps along a road",sent:"Streetlights turn on at dusk."},
+        {w:"journey",def:"a long trip",sent:"The journey took three days."},
+        {w:"courtyard",def:"open area surrounded by walls",sent:"Students eat in the courtyard."},
+        {w:"shouting",def:"speaking very loudly",sent:"Stop shouting in the library."},
+        {w:"asleep",def:"in a state of sleep",sent:"The baby is asleep."},
+        {w:"curious",def:"eager to know",sent:"The cat is curious about the box."},
+        {w:"dinosaur",def:"extinct reptile",sent:"The museum has a dinosaur skeleton."},
+        {w:"brilliant",def:"very bright or intelligent",sent:"She gave a brilliant speech."},
+        {w:"vacuum",def:"a space with no air",sent:"A vacuum cleaner removes dust."},
+        {w:"gorgeous",def:"very beautiful",sent:"The sunset was gorgeous."},
+        {w:"monsoon",def:"heavy seasonal rain",sent:"The monsoon flooded the fields."},
+        {w:"dangerous",def:"likely to cause harm",sent:"Swimming here is dangerous."},
+        {w:"avocado",def:"green fruit with a large pit",sent:"Guacamole is made from avocado."},
+        {w:"valentine",def:"a card sent on February 14",sent:"He gave her a valentine."},
+        {w:"February",def:"second month of the year",sent:"February has 28 days."},
+        {w:"formation",def:"arrangement or shape",sent:"Geese fly in a V formation."},
+        {w:"especially",def:"particularly",sent:"I like chocolate, especially dark."}
+    ],
+    two: [
+        {w:"hesitate",def:"to pause before doing something",sent:"Don’t hesitate to ask for help."},
+        {w:"scorcher",def:"a very hot day",sent:"Today is a real scorcher."},
+        {w:"scavenger",def:"an animal that feeds on refuse",sent:"Vultures are scavengers."},
+        {w:"fragments",def:"small broken pieces",sent:"Glass fragments littered the floor."},
+        {w:"deflated",def:"collapsed by letting air out",sent:"The balloon was deflated."},
+        {w:"unleash",def:"to release from restraint",sent:"Unleash the dogs!"},
+        {w:"ration",def:"a fixed allowance of food",sent:"Soldiers received a daily ration."},
+        {w:"cosmetics",def:"products to improve appearance",sent:"She sells cosmetics."},
+        {w:"crawdad",def:"another name for crayfish",sent:"We caught a crawdad in the creek."},
+        {w:"frustration",def:"feeling of being upset",sent:"He slammed the door in frustration."},
+        {w:"unruly",def:"difficult to control",sent:"The unruly crowd pushed forward."},
+        {w:"mascot",def:"symbol of a team",sent:"The tiger is our school mascot."},
+        {w:"aroma",def:"a pleasant smell",sent:"The aroma of coffee filled the room."},
+        {w:"moustache",def:"hair grown on the upper lip",sent:"He trimmed his moustache."},
+        {w:"artifacts",def:"objects made by humans in the past",sent:"The museum displays ancient artifacts."},
+        {w:"perfume",def:"liquid with a pleasant scent",sent:"She sprayed perfume on her wrists."},
+        {w:"sinister",def:"giving the impression of evil",sent:"The villain had a sinister laugh."},
+        {w:"tuxedo",def:"formal black suit",sent:"He wore a tuxedo to the wedding."},
+        {w:"discoveries",def:"things found for the first time",sent:"Scientists made new discoveries."},
+        {w:"lurches",def:"sudden unsteady movements",sent:"The bus lurches at every stop."},
+        {w:"language",def:"system of communication",sent:"She speaks three languages."},
+        {w:"prognosis",def:"forecast of the course of a disease",sent:"The prognosis is good."},
+        {w:"Buffalo",def:"city in New York",sent:"Buffalo is famous for chicken wings."},
+        {w:"sequins",def:"small shiny disks sewn on clothing",sent:"Her dress sparkled with sequins."},
+        {w:"gallop",def:"fastest gait of a horse",sent:"The horse began to gallop."},
+        {w:"fabulous",def:"extraordinary",sent:"The party was fabulous."},
+        {w:"lanky",def:"tall and thin",sent:"The lanky basketball player dunked."},
+        {w:"fluently",def:"speaking smoothly",sent:"She speaks French fluently."},
+        {w:"mysterious",def:"difficult to understand",sent:"The disappearance remains mysterious."},
+        {w:"brandished",def:"waved threateningly",sent:"He brandished a sword."},
+        {w:"sardines",def:"small oily fish",sent:"We ate sardines on crackers."},
+        {w:"anguish",def:"extreme suffering",sent:"She cried out in anguish."},
+        {w:"conical",def:"shaped like a cone",sent:"The hat is conical."},
+        {w:"rickety",def:"shaky or likely to collapse",sent:"The rickety bridge swayed."},
+        {w:"lit",def:"provided with light",sent:"The room was lit by candles."},
+        {w:"pediatric",def:"relating to the care of children",sent:"The pediatric ward is busy."},
+        {w:"porridge",def:"soft food made by boiling grains",sent:"Goldilocks ate the porridge."},
+        {w:"democracy",def:"government by the people",sent:"Ancient Athens had a democracy."},
+        {w:"rummage",def:"to search messily",sent:"She rummaged through the drawer."},
+        {w:"beige",def:"light grayish-brown color",sent:"The walls are painted beige."},
+        {w:"ancestral",def:"relating to ancestors",sent:"The ancestral home is a castle."},
+        {w:"grimace",def:"a facial expression of pain",sent:"He made a grimace when he tasted the lemon."},
+        {w:"gaunt",def:"extremely thin",sent:"The prisoner looked gaunt."},
+        {w:"enormous",def:"very large",sent:"An enormous whale surfaced."},
+        {w:"geranium",def:"a garden plant with bright flowers",sent:"Red geraniums bloom in summer."},
+        {w:"nautical",def:"relating to ships or navigation",sent:"He wore a nautical jacket."},
+        {w:"dubious",def:"doubtful",sent:"She gave a dubious look."},
+        {w:"ebony",def:"hard black wood",sent:"The piano keys are made of ebony."},
+        {w:"foreign",def:"from another country",sent:"She loves foreign films."},
+        {w:"paltry",def:"very small or insignificant",sent:"He offered a paltry sum."},
+        {w:"verdict",def:"decision in a trial",sent:"The jury delivered its verdict."},
+        {w:"garbled",def:"confused or distorted",sent:"The message was garbled."},
+        {w:"encourages",def:"gives support or confidence",sent:"Praise encourages children."},
+        {w:"imitation",def:"a copy",sent:"The bag is an imitation leather."},
+        {w:"miniature",def:"very small version",sent:"He collects miniature cars."},
+        {w:"receptionist",def:"person who greets visitors",sent:"Ask the receptionist for directions."},
+        {w:"preamble",def:"introduction to a document",sent:"The Constitution has a preamble."},
+        {w:"plausible",def:"seemingly reasonable",sent:"His excuse sounded plausible."},
+        {w:"reprimanding",def:"scolding",sent:"The teacher was reprimanding the student."},
+        {w:"commotion",def:"noisy disturbance",sent:"A commotion broke out in the hall."},
+        {w:"oblivion",def:"state of being forgotten",sent:"The old custom fell into oblivion."},
+        {w:"immigrants",def:"people who move to another country",sent:"Many immigrants arrived by ship."},
+        {w:"steeple",def:"tall tower on a church",sent:"The steeple rose above the town."},
+        {w:"spectators",def:"people who watch an event",sent:"Spectators cheered the runners."},
+        {w:"lanyards",def:"cords worn around the neck",sent:"Employees wear ID on lanyards."},
+        {w:"suspicious",def:"distrustful",sent:"The guard looked suspicious."},
+        {w:"parchment",def:"material made from animal skin",sent:"The scroll was written on parchment."},
+        {w:"ramshackle",def:"in bad condition",sent:"The ramshackle barn collapsed."},
+        {w:"fugitive",def:"person fleeing from justice",sent:"The fugitive hid in the woods."},
+        {w:"heron",def:"long-legged wading bird",sent:"A heron stood by the pond."},
+        {w:"dissolving",def:"melting into a liquid",sent:"The sugar is dissolving in the tea."},
+        {w:"nomad",def:"person who moves from place to place",sent:"The nomad traveled with camels."},
+        {w:"billowed",def:"swelled out by wind",sent:"The sails billowed in the breeze."},
+        {w:"skewer",def:"long pin for holding food",sent:"Thread the meat on a skewer."},
+        {w:"Berlin",def:"capital of Germany",sent:"The Berlin Wall fell in 1989."},
+        {w:"lunacy",def:"insanity",sent:"His plan bordered on lunacy."},
+        {w:"conjure",def:"to make appear by magic",sent:"The magician can conjure a rabbit."},
+        {w:"bracken",def:"large fern",sent:"Bracken covers the hillside."},
+        {w:"origin",def:"the beginning",sent:"The origin of the universe is unknown."},
+        {w:"ingot",def:"block of metal",sent:"Gold is cast into ingots."},
+        {w:"rakish",def:"dashing or jaunty",sent:"He wore his hat at a rakish angle."},
+        {w:"hypnosis",def:"trance-like state",sent:"The doctor used hypnosis to help her."},
+        {w:"rotunda",def:"round building or room",sent:"The capitol has a rotunda."},
+        {w:"gusto",def:"enthusiasm",sent:"She attacked the meal with gusto."},
+        {w:"toiletries",def:"personal care items",sent:"Pack your toiletries for the trip."},
+        {w:"gleaned",def:"collected bit by bit",sent:"She gleaned information from books."},
+        {w:"jeered",def:"mocked loudly",sent:"The crowd jeered the loser."},
+        {w:"winsome",def:"charming",sent:"Her winsome smile won hearts."},
+        {w:"prattling",def:"talking foolishly",sent:"The child kept prattling."},
+        {w:"galore",def:"in abundance",sent:"There were prizes galore."},
+        {w:"emporium",def:"large retail store",sent:"The emporium sells everything."},
+        {w:"atrium",def:"open central court",sent:"The hotel atrium is beautiful."},
+        {w:"eccentric",def:"unconventional",sent:"The eccentric inventor built odd machines."},
+        {w:"savant",def:"learned person",sent:"He is a musical savant."},
+        {w:"almanac",def:"annual publication with data",sent:"The farmer’s almanac predicts weather."},
+        {w:"hippies",def:"members of 1960s counterculture",sent:"Hippies wore flowers in their hair."},
+        {w:"samosas",def:"triangular fried pastries",sent:"We ate spicy samosas."},
+        {w:"campaign",def:"organized effort",sent:"The election campaign started."},
+        {w:"pistachio",def:"green nut",sent:"Pistachio ice cream is delicious."},
+        {w:"mosque",def:"Muslim place of worship",sent:"The mosque has a tall minaret."},
+        {w:"zombielike",def:"moving like a zombie",sent:"He walked in a zombielike state."},
+        {w:"warlock",def:"male witch",sent:"The warlock cast a spell."},
+        {w:"colossus",def:"gigantic statue",sent:"The Colossus of Rhodes was famous."},
+        {w:"convulsively",def:"with spasms",sent:"He laughed convulsively."},
+        {w:"dimensional",def:"having dimensions",sent:"A cube is three-dimensional."},
+        {w:"garishly",def:"in an overly bright way",sent:"The room was garishly decorated."},
+        {w:"graffiti",def:"writing or drawings on walls",sent:"Graffiti covered the subway car."},
+        {w:"Everest",def:"highest mountain",sent:"Climbers reached the summit of Everest."},
+        {w:"dexterity",def:"skill in using hands",sent:"The surgeon showed great dexterity."},
+        {w:"cavorting",def:"jumping about playfully",sent:"Puppies were cavorting in the yard."},
+        {w:"marauder",def:"raider",sent:"The marauder stole the treasure."},
+        {w:"conscience",def:"sense of right and wrong",sent:"His conscience bothered him."},
+        {w:"battlements",def:"parapets on a castle wall",sent:"Archers stood on the battlements."},
+        {w:"deferential",def:"showing respect",sent:"He gave a deferential bow."},
+        {w:"albatross",def:"large seabird",sent:"The albatross glided over the ocean."},
+        {w:"khaki",def:"dull yellowish-brown color",sent:"Soldiers wear khaki uniforms."},
+        {w:"opalescent",def:"showing varying colors",sent:"The soap bubble was opalescent."},
+        {w:"asphalt",def:"black road material",sent:"The street is paved with asphalt."},
+        {w:"Yiddish",def:"language of Ashkenazi Jews",sent:"She speaks Yiddish with her grandmother."},
+        {w:"talcum",def:"powder made from talc",sent:"Baby powder is talcum."},
+        {w:"tranquilizer",def:"drug that calms",sent:"The vet gave the dog a tranquilizer."},
+        {w:"equestrian",def:"relating to horseback riding",sent:"She competes in equestrian events."},
+        {w:"plaited",def:"braided",sent:"Her hair was plaited."},
+        {w:"monsieur",def:"French for mister",sent:"Bonjour, monsieur."},
+        {w:"manicures",def:"treatments for fingernails",sent:"She gets weekly manicures."},
+        {w:"prestigious",def:"having high status",sent:"It’s a prestigious university."},
+        {w:"fraidycat",def:"coward (informal)",sent:"Don’t be a fraidycat!"},
+        {w:"guttural",def:"produced in the throat",sent:"The language has guttural sounds."},
+        {w:"lo mein",def:"Chinese noodle dish",sent:"We ordered chicken lo mein."},
+        {w:"courier",def:"messenger",sent:"The courier delivered the package."},
+        {w:"sans serif",def:"typeface without serifs",sent:"Helvetica is a sans serif font."},
+        {w:"psyche",def:"the human mind",sent:"The story explores the psyche."},
+        {w:"stucco",def:"plaster for walls",sent:"The house is covered in stucco."},
+        {w:"Frankenstein",def:"novel by Mary Shelley",sent:"Frankenstein created a monster."},
+        {w:"schema",def:"diagram or plan",sent:"The database uses a schema."},
+        {w:"et cetera",def:"and so forth",sent:"Bring pens, paper, et cetera."},
+        {w:"vidimus",def:"Latin for “we have seen”",sent:"The contract ends with vidimus."},
+        {w:"delphine",def:"relating to dolphins",sent:"The delphine statue stood by the pool."},
+        {w:"slough",def:"swampy area",sent:"The slough is full of reeds."},
+        {w:"archipelago",def:"group of islands",sent:"Indonesia is an archipelago."},
+        {w:"serape",def:"colorful Mexican blanket",sent:"He wore a serape over his shoulders."},
+        {w:"puissance",def:"power (French)",sent:"The king ruled with puissance."},
+        {w:"pinioning",def:"binding the wings",sent:"The falcon was pinioned."},
+        {w:"chignon",def:"knot of hair at the back",sent:"She wore a chignon."},
+        {w:"pheromone",def:"chemical that triggers behavior",sent:"Ants follow a pheromone trail."},
+        {w:"galleon",def:"large sailing ship",sent:"The Spanish galleon carried gold."},
+        {w:"magnanimous",def:"generous in forgiving",sent:"The winner was magnanimous."},
+        {w:"chartreuse",def:"yellow-green color",sent:"The dress is chartreuse."},
+        {w:"wainscoting",def:"wood paneling on lower walls",sent:"The dining room has wainscoting."},
+        {w:"Nehru",def:"Indian prime minister",sent:"Jawaharlal Nehru led India."}
+    ],
+    three: [
+        {w:"gangly",def:"tall and awkward",sent:"The gangly teenager grew fast."},
+        {w:"swaggering",def:"walking with arrogance",sent:"He came in swaggering."},
+        {w:"chimneys",def:"structures for smoke",sent:"Smoke rose from the chimneys."},
+        {w:"riveted",def:"fastened with rivets",sent:"The metal plates are riveted."},
+        {w:"plaid",def:"pattern of crossed stripes",sent:"He wore a plaid shirt."},
+        {w:"dirge",def:"funeral song",sent:"They played a dirge at the burial."},
+        {w:"zeal",def:"great enthusiasm",sent:"She works with zeal."},
+        {w:"whittled",def:"carved with a knife",sent:"He whittled a stick into a flute."},
+        {w:"depots",def:"stations or storehouses",sent:"Trains stop at depots."},
+        {w:"fiberglass",def:"material of glass fibers",sent:"The boat is made of fiberglass."},
+        {w:"salvaged",def:"saved from destruction",sent:"They salvaged parts from the wreck."},
+        {w:"fissures",def:"long narrow cracks",sent:"Fissures appeared in the wall."},
+        {w:"enthusiastic",def:"showing excitement",sent:"The crowd was enthusiastic."},
+        {w:"discipline",def:"training that produces obedience",sent:"Discipline is important in school."},
+        {w:"unfamiliar",def:"not known",sent:"The city felt unfamiliar."},
+        {w:"scurrying",def:"moving hurriedly",sent:"Mice were scurrying across the floor."},
+        {w:"dignitaries",def:"important officials",sent:"Dignitaries attended the ceremony."},
+        {w:"pizzeria",def:"restaurant that sells pizza",sent:"We ate at the pizzeria."},
+        {w:"dismissal",def:"act of sending away",sent:"The bell signals dismissal."},
+        {w:"skittish",def:"nervous or easily frightened",sent:"The horse is skittish."},
+        {w:"careened",def:"swerved violently",sent:"The car careened off the road."},
+        {w:"nomination",def:"act of proposing for office",sent:"She received a nomination."},
+        {w:"opportunist",def:"person who takes advantage",sent:"He is an opportunist."},
+        {w:"dictatorship",def:"government by a dictator",sent:"The country fell into dictatorship."},
+        {w:"comrades",def:"close companions",sent:"The soldiers were comrades."},
+        {w:"sporadic",def:"occurring irregularly",sent:"Sporadic rain fell all day."},
+        {w:"ultimatum",def:"final demand",sent:"They issued an ultimatum."},
+        {w:"prototype",def:"first model",sent:"The engineer built a prototype."},
+        {w:"promenade",def:"walk for pleasure",sent:"They strolled along the promenade."},
+        {w:"whinnying",def:"making a horse’s neigh",sent:"The pony was whinnying."},
+        {w:"cravenly",def:"cowardly",sent:"He cravenly ran away."},
+        {w:"repugnant",def:"extremely distasteful",sent:"The smell was repugnant."},
+        {w:"squalor",def:"filthy conditions",sent:"They lived in squalor."},
+        {w:"mulberry",def:"dark purple fruit",sent:"Mulberry jam is tasty."},
+        {w:"invincible",def:"unable to be defeated",sent:"The army felt invincible."},
+        {w:"memoirs",def:"personal recollections",sent:"She wrote her memoirs."},
+        {w:"hypocritical",def:"pretending to have virtues",sent:"His hypocritical smile fooled no one."},
+        {w:"renowned",def:"famous",sent:"The renowned artist painted a masterpiece."},
+        {w:"cylinders",def:"tube-shaped objects",sent:"The engine has six cylinders."},
+        {w:"chlorine",def:"chemical used in pools",sent:"Chlorine keeps the water clean."},
+        {w:"parachute",def:"device for safe descent",sent:"The skydiver opened the parachute."},
+        {w:"ominous",def:"giving a feeling of evil",sent:"Dark clouds looked ominous."},
+        {w:"traumatic",def:"deeply disturbing",sent:"The accident was traumatic."},
+        {w:"laborious",def:"requiring much effort",sent:"The task was laborious."},
+        {w:"muffler",def:"scarf or car part",sent:"He wrapped a muffler around his neck."},
+        {w:"receipts",def:"proofs of payment",sent:"Keep your receipts."},
+        {w:"appointment",def:"scheduled meeting",sent:"I have a doctor’s appointment."},
+        {w:"syndrome",def:"group of symptoms",sent:"Down syndrome is genetic."},
+        {w:"solemnly",def:"seriously",sent:"They solemnly swore an oath."},
+        {w:"foreseeable",def:"able to be predicted",sent:"No danger was foreseeable."},
+        {w:"premises",def:"building and land",sent:"Smoking is banned on the premises."},
+        {w:"begrudge",def:"to envy resentfully",sent:"Don’t begrudge her success."},
+        {w:"safari",def:"expedition to observe animals",sent:"We went on a safari in Kenya."},
+        {w:"lasagne",def:"layered pasta dish",sent:"Mom made lasagne for dinner."},
+        {w:"contentious",def:"causing argument",sent:"The issue is contentious."},
+        {w:"ratify",def:"to approve formally",sent:"The senate will ratify the treaty."},
+        {w:"substantially",def:"to a great extent",sent:"The price increased substantially."},
+        {w:"precocious",def:"unusually advanced",sent:"The precocious child read at age three."},
+        {w:"scalpel",def:"small surgical knife",sent:"The surgeon used a scalpel."},
+        {w:"mercantile",def:"relating to trade",sent:"The mercantile district is busy."},
+        {w:"ensemble",def:"group of musicians",sent:"The jazz ensemble played."},
+        {w:"reclusive",def:"avoiding company",sent:"The author became reclusive."},
+        {w:"formidable",def:"inspiring fear or respect",sent:"She is a formidable opponent."},
+        {w:"cadre",def:"small group of trained people",sent:"A cadre of experts advised the president."},
+        {w:"compassionate",def:"feeling sympathy",sent:"The nurse was compassionate."},
+        {w:"propaganda",def:"information to influence opinion",sent:"The regime spread propaganda."},
+        {w:"lye",def:"strong alkaline solution",sent:"Soap is made with lye."},
+        {w:"bulletin",def:"short official report",sent:"The news bulletin announced the storm."},
+        {w:"marquee",def:"large tent or sign",sent:"The theater’s marquee displayed the title."},
+        {w:"belfry",def:"bell tower",sent:"Bats live in the belfry."},
+        {w:"alfalfa",def:"plant used for fodder",sent:"Cows eat alfalfa."},
+        {w:"proficient",def:"skilled",sent:"She is proficient in Spanish."},
+        {w:"lacrosse",def:"team sport with a stick",sent:"They play lacrosse in spring."},
+        {w:"officially",def:"in an official manner",sent:"The game is officially over."},
+        {w:"compunction",def:"feeling of guilt",sent:"He felt no compunction about lying."},
+        {w:"sluice",def:"channel for water",sent:"Gold miners used a sluice."},
+        {w:"crematorium",def:"place for burning bodies",sent:"The crematorium is next to the cemetery."},
+        {w:"emphatically",def:"with strong emphasis",sent:"She emphatically denied the claim."},
+        {w:"cajolery",def:"persuasion by flattery",sent:"His cajolery won her over."},
+        {w:"bayonet",def:"blade attached to a rifle",sent:"Soldiers fixed bayonets."},
+        {w:"hyperventilated",def:"breathed too rapidly",sent:"She hyperventilated from panic."},
+        {w:"vigilance",def:"watchfulness",sent:"Security requires vigilance."},
+        {w:"amicable",def:"friendly",sent:"They reached an amicable agreement."},
+        {w:"ostracism",def:"exclusion from a group",sent:"He faced ostracism after the scandal."},
+        {w:"residuals",def:"remaining amounts",sent:"Actors receive residuals from reruns."},
+        {w:"exuberant",def:"full of energy",sent:"The children were exuberant."},
+        {w:"onslaught",def:"fierce attack",sent:"The onslaught overwhelmed the defenders."},
+        {w:"boutique",def:"small fashionable shop",sent:"She bought a dress at the boutique."},
+        {w:"beautician",def:"person who works in beauty",sent:"The beautician styled her hair."},
+        {w:"ruefully",def:"with regret",sent:"He smiled ruefully."},
+        {w:"peroxide",def:"chemical used as bleach",sent:"Hydrogen peroxide cleaned the wound."},
+        {w:"equations",def:"mathematical statements",sent:"Solve the equations."},
+        {w:"misanthrope",def:"person who dislikes humankind",sent:"The old man was a misanthrope."},
+        {w:"aristocracy",def:"highest social class",sent:"The aristocracy lived in palaces."},
+        {w:"assignment",def:"task given",sent:"Finish the assignment by Friday."},
+        {w:"apocalypse",def:"catastrophic event",sent:"The movie depicted an apocalypse."},
+        {w:"tuberculosis",def:"infectious lung disease",sent:"Tuberculosis was once widespread."},
+        {w:"barricade",def:"barrier to block passage",sent:"Police set up a barricade."},
+        {w:"confreres",def:"fellow members",sent:"He greeted his confreres."},
+        {w:"anonymously",def:"without name",sent:"The donation was given anonymously."},
+        {w:"unparalleled",def:"having no equal",sent:"Her talent is unparalleled."},
+        {w:"barrette",def:"hair clip",sent:"She wore a sparkly barrette."},
+        {w:"chassis",def:"frame of a vehicle",sent:"The mechanic repaired the chassis."},
+        {w:"junket",def:"pleasure trip",sent:"The press went on a junket."},
+        {w:"quandary",def:"state of perplexity",sent:"He was in a quandary."},
+        {w:"Erie",def:"one of the Great Lakes",sent:"Lake Erie borders four states."},
+        {w:"gingham",def:"checkered cotton fabric",sent:"Her dress is blue gingham."},
+        {w:"silhouette",def:"outline filled with black",sent:"The silhouette of the mountain was visible."},
+        {w:"auxiliary",def:"providing extra help",sent:"The auxiliary verb is “be”."},
+        {w:"thesaurus",def:"book of synonyms",sent:"Use a thesaurus to find words."},
+        {w:"patriarchs",def:"male heads of families",sent:"The patriarchs gathered for the feast."},
+        {w:"chandler",def:"maker of candles",sent:"The chandler sold beeswax candles."},
+        {w:"boll weevil",def:"beetle that damages cotton",sent:"The boll weevil ruined the crop."},
+        {w:"Oswego",def:"city in New York",sent:"Oswego is on Lake Ontario."},
+        {w:"dulce",def:"sweet (Spanish)",sent:"Dulce de leche is caramel."},
+        {w:"camphor",def:"strong-smelling substance",sent:"Camphor repels moths."},
+        {w:"diphtheria",def:"serious throat infection",sent:"Vaccines prevent diphtheria."},
+        {w:"concierge",def:"hotel employee who assists guests",sent:"Ask the concierge for restaurant recommendations."},
+        {w:"Tucson",def:"city in Arizona",sent:"Tucson is known for its desert."},
+        {w:"baklava",def:"sweet layered pastry",sent:"Baklava is made with honey."},
+        {w:"latticework",def:"criss-cross pattern",sent:"The pie has latticework crust."},
+        {w:"paparazzi",def:"photographers who follow celebrities",sent:"Paparazzi chased the star."},
+        {w:"corbels",def:"brackets that support a structure",sent:"Stone corbels held the balcony."},
+        {w:"hibiscus",def:"tropical flower",sent:"Hibiscus tea is refreshing."},
+        {w:"pumpernickel",def:"dark rye bread",sent:"Pumpernickel pairs with cheese."},
+        {w:"trebuchets",def:"medieval siege engines",sent:"Trebuchets hurled stones."},
+        {w:"tamale",def:"Mexican dish wrapped in corn husk",sent:"She made chicken tamales."},
+        {w:"pogrom",def:"organized massacre",sent:"The pogrom targeted a minority."},
+        {w:"Kilimanjaro",def:"highest mountain in Africa",sent:"Climbers summit Kilimanjaro."},
+        {w:"maracas",def:"rattling percussion instruments",sent:"Shake the maracas to the beat."},
+        {w:"bursitis",def:"inflammation of a bursa",sent:"Bursitis causes shoulder pain."},
+        {w:"fräulein",def:"German for miss",sent:"Fräulein, may I help you?"},
+        {w:"pâtisserie",def:"shop selling fancy pastries",sent:"The pâtisserie smells wonderful."},
+        {w:"protégé",def:"person guided by a mentor",sent:"The artist’s protégé became famous."},
+        {w:"gyroplane",def:"rotorcraft that flies like a helicopter",sent:"The gyroplane landed smoothly."},
+        {w:"cycads",def:"ancient palm-like plants",sent:"Cycads grew in the dinosaur era."},
+        {w:"hors d'oeuvres",def:"small appetizers",sent:"Serve hors d'oeuvres before dinner."},
+        {w:"burpees",def:"full-body exercise",sent:"Do ten burpees for warm-up."},
+        {w:"sarsaparilla",def:"flavored soft drink",sent:"Root beer tastes like sarsaparilla."},
+        {w:"maquettes",def:"small preliminary models",sent:"The architect showed maquettes."},
+        {w:"Adriatic",def:"sea between Italy and Balkans",sent:"We sailed the Adriatic."},
+        {w:"maître d'",def:"headwaiter",sent:"The maître d' seated us."},
+        {w:"Charolais",def:"breed of cattle",sent:"Charolais cattle are white."},
+        {w:"piccolo",def:"small flute",sent:"The piccolo plays high notes."},
+        {w:"cannelloni",def:"tube-shaped pasta",sent:"Cannelloni filled with ricotta."},
+        {w:"au revoir",def:"goodbye (French)",sent:"Au revoir, see you tomorrow!"},
+        {w:"bouillonnerie",def:"broth shop",sent:"The bouillonnerie serves hot soup."},
+        {w:"tulle",def:"fine netting fabric",sent:"The ballet skirt is made of tulle."},
+        {w:"bronchitis",def:"inflammation of bronchial tubes",sent:"Coughing is a symptom of bronchitis."}
+    ]
+};
+
+/* --------------------------------------------------------------
+   GLOBAL VARIABLES
+   -------------------------------------------------------------- */
+let practiceWords = [], curIdx = 0, presented = 0, correct = 0,
+    morePractice = [], voices = [], selVoice = 0, shuffle = true, level = 'one';
+const synth = window.speechSynthesis;
+
+/* --------------------------------------------------------------
+   VOICE & SPEECH
+   -------------------------------------------------------------- */
+function populateVoices(){
+    voices = synth.getVoices();
+    const sel = document.getElementById('voice-select');
+    sel.innerHTML = '';
+    voices.forEach((v,i)=>{
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${v.name} (${v.lang})`;
+        if(v.lang.includes('en')) opt.selected = true;
+        sel.appendChild(opt);
+    });
+    selVoice = sel.selectedIndex;
+    sel.addEventListener('change',e=>selVoice=e.target.value);
+}
+
+function speak(txt){
+    if(!txt) return;
+    const u = new SpeechSynthesisUtterance(txt);
+    u.voice = voices[selVoice];
+    u.rate = 0.9;
+    synth.speak(u);
+}
+
+/* --------------------------------------------------------------
+   SHUFFLE
+   -------------------------------------------------------------- */
+function shuffleArray(a){
+    const arr = [...a];
+    for(let i=arr.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+}
+
+/* --------------------------------------------------------------
+   START SESSION
+   -------------------------------------------------------------- */
+function startSession(){
+    level = document.getElementById('level-select').value;
+    shuffle = document.getElementById('shuffle-option').checked;
+    practiceWords = shuffle ? shuffleArray(wordLists[level]) : [...wordLists[level]];
+    curIdx = presented = correct = 0; morePractice = [];
+    document.getElementById('start-screen').style.display='none';
+    document.getElementById('practice-screen').style.display='block';
+    nextWord();
+}
+
+/* --------------------------------------------------------------
+   SHOW DEFINITION & SENTENCE (NO WORD)
+   -------------------------------------------------------------- */
+function showWordInfo(){
+    const data = practiceWords[curIdx];
+    const infoDiv = document.getElementById('word-info');
+    infoDiv.innerHTML = `
+        <strong>Definition:</strong> ${data.def}<br>
+        <strong>Sentence:</strong> ${data.sent}
+    `;
+}
+
+/* --------------------------------------------------------------
+   NEXT WORD – AUTO-PLAY WORD ONLY
+   -------------------------------------------------------------- */
+function nextWord(){
+    if(curIdx >= practiceWords.length){ endSession(); return; }
+    document.getElementById('input-word').value = '';
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('next-button').disabled = true;
+    document.getElementById('more-practice').checked = false;
+    presented++;
+
+    showWordInfo();
+    setTimeout(()=>speak(practiceWords[curIdx].w), 300);
+}
+
+/* --------------------------------------------------------------
+   PLAY MEANING & SENTENCE (on demand)
+   -------------------------------------------------------------- */
+function playMeaningAndSentence(){
+    const data = practiceWords[curIdx];
+    speak(data.def);
+    setTimeout(()=>speak(data.sent), 2000);
+}
+
+/* --------------------------------------------------------------
+   CHECK SPELLING – SHOW WORD ONLY AFTER
+   -------------------------------------------------------------- */
+function checkSpelling(){
+    const input = document.getElementById('input-word').value.trim().toLowerCase();
+    const data = practiceWords[curIdx];
+    const clean = data.w.toLowerCase().replace(/\*$/,'');
+    const resDiv = document.getElementById('result');
+
+    if(input===clean){
+        resDiv.innerHTML = `Correct! The word is: <strong>${data.w}</strong>`;
+        correct++;
+    }else{
+        resDiv.innerHTML = `Incorrect! The correct spelling is: <strong>${data.w}</strong>`;
+    }
+    document.getElementById('next-button').disabled = false;
+}
+
+/* --------------------------------------------------------------
+   NEXT BUTTON
+   -------------------------------------------------------------- */
+function handleNext(){
+    if(document.getElementById('more-practice').checked){
+        morePractice.push(practiceWords[curIdx].w);
+    }
+    curIdx++;
+    nextWord();
+}
+
+/* --------------------------------------------------------------
+   END SESSION
+   -------------------------------------------------------------- */
+function endSession(){
+    document.getElementById('practice-screen').style.display='none';
+    document.getElementById('result-screen').style.display='block';
+    const pct = presented? Math.round(correct/presented*100):0;
+    document.getElementById('stats').textContent =
+        `Level: ${level.toUpperCase()} BEE | Words: ${presented} | Correct: ${correct} (${pct}%)`;
+
+    const list = document.getElementById('more-practice-list');
+    list.innerHTML = '';
+    if(!morePractice.length){
+        list.innerHTML = '<li><em>None selected</em></li>';
+    }else{
+        morePractice.forEach(w=>{ const li=document.createElement('li'); li.textContent=w; list.appendChild(li); });
+    }
+}
+
+/* --------------------------------------------------------------
+   EVENT LISTENERS
+   -------------------------------------------------------------- */
+document.getElementById('start-button').addEventListener('click',startSession);
+document.getElementById('new-session-button').addEventListener('click',()=>{
+    document.getElementById('result-screen').style.display='none';
+    document.getElementById('start-screen').style.display='block';
+});
+document.getElementById('play-word-btn').addEventListener('click',()=>{ 
+    speak(practiceWords[curIdx].w);
+});
+document.getElementById('play-meaning-btn').addEventListener('click', playMeaningAndSentence);
+document.getElementById('submit-button').addEventListener('click',checkSpelling);
+document.getElementById('next-button').addEventListener('click',handleNext);
+document.getElementById('end-button').addEventListener('click',endSession);
+
+document.getElementById('input-word').addEventListener('keypress',e=>{
+    if(e.key==='Enter') checkSpelling();
+});
+
+/* --------------------------------------------------------------
+   INITIALISE
+   -------------------------------------------------------------- */
+populateVoices();
+if(synth.onvoiceschanged!==undefined) synth.onvoiceschanged=populateVoices;
+</script>
+
+</body>
+</html>

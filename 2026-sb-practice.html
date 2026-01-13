@@ -4,87 +4,209 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Science Bee White Set 2025–26 — Study Dashboard</title>
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: #f6f7fb; color: #111; }
-    header { padding: 16px 18px; background: #fff; border-bottom: 1px solid #e6e8ef; position: sticky; top: 0; z-index: 10; }
-    header h1 { margin: 0; font-size: 18px; }
-    header p { margin: 6px 0 0; color: #555; font-size: 13px; line-height: 1.35; }
 
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
-    .grid { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
-    @media (max-width: 1050px) { .grid { grid-template-columns: 1fr; } }
+<style>
+  :root{
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-    .card { background: #fff; border: 1px solid #e6e8ef; border-radius: 14px; padding: 14px; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
-    .card h2 { margin: 0 0 10px; font-size: 15px; }
-    .muted { color: #666; font-size: 13px; }
+    /* Color palette */
+    --bg1:#f6f7fb;
+    --bg2:#eef6ff;
+    --card:#ffffff;
+    --border:#e6e8ef;
+    --text:#0f172a;
+    --muted:#64748b;
 
-    .controls { display: grid; gap: 10px; }
-    .controlRow { display: grid; gap: 6px; }
-    label { font-size: 12px; color: #555; }
+    --accent:#4f46e5;
+    --accent2:#06b6d4;
+    --soft:#eef2ff;
 
-    select, input[type="search"]{
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #d9dce6;
-      background: #fff;
-      outline: none;
-    }
-    input[type="search"]{ background: #fbfbfe; }
+    --shadow: 0 10px 25px rgba(2,6,23,0.06);
+  }
 
-    .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-top: 6px; }
-    .tabBtn{
-      border:1px solid #d9dce6;
-      background:#fbfbfe;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:13px;
-      cursor:pointer;
-      user-select: none;
-    }
-    .tabBtn.active{ background:#eef1ff; border-color:#b7c2ff; color:#2c3fb0; }
+  body{
+    margin:0;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(79,70,229,0.12), transparent 60%),
+      radial-gradient(900px 500px at 95% 15%, rgba(6,182,212,0.10), transparent 55%),
+      linear-gradient(180deg, var(--bg2), var(--bg1));
+  }
 
-    .metaRow { display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px; }
-    .pill { display:inline-block; font-size: 12px; padding: 3px 8px; border-radius: 999px; background: #eef1ff; color: #2c3fb0; }
-    .pill.gray { background:#f1f3f8; color:#444; }
+  header{
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1{ margin:0; font-size:18px; }
+  header p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; }
 
-    ul { margin: 10px 0 0; padding: 0; list-style: none; }
-    li { margin: 8px 0; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
 
-    .topicBtn {
-      width: 100%;
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid #e6e8ef;
-      background: #fbfbfe;
-      transition: transform 0.05s ease, background 0.15s ease;
-      cursor:pointer;
-    }
-    .topicBtn:hover { background: #f0f3ff; }
-    .topicBtn:active { transform: translateY(1px); }
-    .topicBtn small { display:block; margin-top: 3px; color:#666; }
+  /* Make the main area a fixed-height viewport so we can scroll inside panels */
+  .grid{
+    display:grid;
+    grid-template-columns: 420px 1fr;
+    gap:16px;
+    align-items: start;
+    min-height: calc(100vh - 92px); /* header height-ish */
+  }
+  @media (max-width: 1050px){
+    .grid{ grid-template-columns: 1fr; min-height: auto; }
+  }
 
-    .sectionTitle { margin: 16px 0 8px; font-size: 13px; color: #333; font-weight: 700; letter-spacing: 0.2px; }
-    .notes { line-height: 1.5; font-size: 14px; }
+  .card{
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
 
-    .buzzFacts { padding-left: 16px; }
-    .buzzFacts li { list-style: disc; margin: 6px 0; }
+  /* Make both cards tall; left will have its own scroll region */
+  .leftCard{
+    position: sticky;
+    top: 90px; /* below header */
+    height: calc(100vh - 110px);
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  @media (max-width: 1050px){
+    .leftCard{ position: relative; top:auto; height:auto; }
+  }
 
-    a { color: #1a56db; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+  .rightCard{
+    height: calc(100vh - 110px);
+    overflow:auto;
+  }
+  @media (max-width: 1050px){
+    .rightCard{ height:auto; overflow: visible; }
+  }
 
-    .crumbs { font-size: 13px; color: #666; margin-bottom: 6px; }
-    .backLink { display:inline-block; margin-top: 8px; font-size: 13px; }
+  .card h2{ margin:0 0 10px; font-size:15px; }
+  .muted{ color:var(--muted); font-size:13px; }
 
-    .checklist label { display:flex; gap:10px; align-items:flex-start; margin: 8px 0; }
-    .checklist input { margin-top: 3px; cursor:pointer; }
+  label{ font-size:12px; color:var(--muted); }
 
-    .empty { color:#777; font-size: 14px; padding: 8px 0; }
-    footer { padding: 16px; text-align:center; color:#666; font-size: 12px; }
-    .hr { height:1px; background:#eef0f6; margin: 12px 0; }
-  </style>
+  select, input[type="search"]{
+    width:100%;
+    padding:10px;
+    border-radius:12px;
+    border:1px solid #d9dce6;
+    background:#fff;
+    outline:none;
+  }
+  input[type="search"]{ background:#fbfbfe; }
+
+  .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .tabBtn{
+    border:1px solid #d9dce6;
+    background: linear-gradient(180deg,#ffffff,#f7f8ff);
+    padding:8px 10px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    user-select:none;
+    transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .tabBtn:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(2,6,23,0.08); }
+  .tabBtn.active{
+    background: linear-gradient(90deg, rgba(79,70,229,0.18), rgba(6,182,212,0.16));
+    border-color: rgba(79,70,229,0.45);
+    color: #1e293b;
+    font-weight: 700;
+  }
+
+  .metaRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(79,70,229,0.10);
+    color: #2c3fb0;
+    border:1px solid rgba(79,70,229,0.18);
+  }
+  .pill.gray{ background: rgba(100,116,139,0.10); color:#334155; border-color: rgba(100,116,139,0.20); }
+
+  .hr{ height:1px; background:#eef0f6; margin: 8px 0; }
+
+  /* Independent scroll area for topic list */
+  .scrollArea{
+    overflow:auto;
+    padding-right: 6px;
+    flex: 1;
+    border-top: 1px dashed rgba(100,116,139,0.25);
+    margin-top: 6px;
+  }
+
+  ul{ margin:10px 0 0; padding:0; list-style:none; }
+  li{ margin: 10px 0; }
+
+  .topicBtn{
+    width:100%;
+    text-align:left;
+    padding: 11px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(226,232,240,1);
+    background: linear-gradient(180deg, #ffffff, #f7f9ff);
+    cursor:pointer;
+    transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .topicBtn:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 12px 20px rgba(2,6,23,0.08);
+    border-color: rgba(79,70,229,0.35);
+  }
+  .topicBtn small{ display:block; margin-top: 4px; color: var(--muted); }
+
+  .chip{
+    display:inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
+    border: 1px solid rgba(2,6,23,0.10);
+    background: rgba(255,255,255,0.7);
+  }
+
+  /* Category colors (for “interesting to see”) */
+  .cat-Astronomy{ background: rgba(59,130,246,0.12); }
+  .cat-Biology\ \&\ Anatomy{ background: rgba(34,197,94,0.12); }
+  .cat-Chemistry{ background: rgba(245,158,11,0.14); }
+  .cat-Earth\ Science{ background: rgba(14,165,233,0.14); }
+  .cat-Engineering{ background: rgba(168,85,247,0.14); }
+  .cat-Math{ background: rgba(236,72,153,0.14); }
+  .cat-Physics{ background: rgba(239,68,68,0.12); }
+  .cat-Further\ Study{ background: rgba(100,116,139,0.14); }
+
+  .sectionTitle{ margin: 16px 0 8px; font-size: 13px; color:#0f172a; font-weight: 800; letter-spacing: .2px; }
+  .notes{ line-height: 1.55; font-size:14px; }
+
+  .buzzFacts{ padding-left: 16px; }
+  .buzzFacts li{ list-style: disc; margin: 6px 0; }
+
+  a{ color: #1a56db; text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  .crumbs{ font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .backLink{ display:inline-block; margin-top: 8px; font-size: 13px; color: var(--accent); }
+
+  .checklist label{ display:flex; gap:10px; align-items:flex-start; margin: 8px 0; }
+  .checklist input{ margin-top: 3px; cursor:pointer; }
+
+  .empty{ color: var(--muted); font-size:14px; padding: 8px 0; }
+
+  footer{ padding: 16px; text-align:center; color: var(--muted); font-size: 12px; }
+</style>
+
 </head>
 
 <body>
@@ -99,7 +221,7 @@
 <div class="wrap">
   <div class="grid">
     <!-- LEFT -->
-    <div class="card">
+    <div class="card leftCard">
       <h2>Browse Topics</h2>
 
       <div class="controls">
@@ -129,16 +251,21 @@
         </div>
       </div>
 
-      <div class="hr"></div>
+      
+  <div class="hr"></div>
 
-      <ul id="topicList"></ul>
-      <div id="noTopics" class="empty" style="display:none;">No topics match your filters.</div>
+  <!-- NEW: scrollable list container -->
+  <div class="scrollArea">
+    <ul id="topicList"></ul>
+    <div id="noTopics" class="empty" style="display:none;">No topics match your filters.</div>
+  </div>
 
-      <a class="backLink" id="backLink" href="#home" style="display:none;">← Back</a>
-    </div>
-
+  <a class="backLink" id="backLink" href="#home" style="display:none;">← Back</a>
+</div
+      
+     
     <!-- RIGHT -->
-    <div class="card" id="contentCard">
+    <div class="card rightCard" id="contentCard">
       <div id="content"></div>
     </div>
   </div>

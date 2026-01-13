@@ -1,0 +1,1579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Science Bee White Set 2025–26 — Study Dashboard</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: #f6f7fb; color: #111; }
+    header { padding: 16px 18px; background: #fff; border-bottom: 1px solid #e6e8ef; position: sticky; top: 0; z-index: 10; }
+    header h1 { margin: 0; font-size: 18px; }
+    header p { margin: 6px 0 0; color: #555; font-size: 13px; line-height: 1.35; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    .grid { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
+    @media (max-width: 1050px) { .grid { grid-template-columns: 1fr; } }
+
+    .card { background: #fff; border: 1px solid #e6e8ef; border-radius: 14px; padding: 14px; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .card h2 { margin: 0 0 10px; font-size: 15px; }
+    .muted { color: #666; font-size: 13px; }
+
+    .controls { display: grid; gap: 10px; }
+    .controlRow { display: grid; gap: 6px; }
+    label { font-size: 12px; color: #555; }
+
+    select, input[type="search"]{
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d9dce6;
+      background: #fff;
+      outline: none;
+    }
+    input[type="search"]{ background: #fbfbfe; }
+
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-top: 6px; }
+    .tabBtn{
+      border:1px solid #d9dce6;
+      background:#fbfbfe;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      cursor:pointer;
+      user-select: none;
+    }
+    .tabBtn.active{ background:#eef1ff; border-color:#b7c2ff; color:#2c3fb0; }
+
+    .metaRow { display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px; }
+    .pill { display:inline-block; font-size: 12px; padding: 3px 8px; border-radius: 999px; background: #eef1ff; color: #2c3fb0; }
+    .pill.gray { background:#f1f3f8; color:#444; }
+
+    ul { margin: 10px 0 0; padding: 0; list-style: none; }
+    li { margin: 8px 0; }
+
+    .topicBtn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #e6e8ef;
+      background: #fbfbfe;
+      transition: transform 0.05s ease, background 0.15s ease;
+      cursor:pointer;
+    }
+    .topicBtn:hover { background: #f0f3ff; }
+    .topicBtn:active { transform: translateY(1px); }
+    .topicBtn small { display:block; margin-top: 3px; color:#666; }
+
+    .sectionTitle { margin: 16px 0 8px; font-size: 13px; color: #333; font-weight: 700; letter-spacing: 0.2px; }
+    .notes { line-height: 1.5; font-size: 14px; }
+
+    .buzzFacts { padding-left: 16px; }
+    .buzzFacts li { list-style: disc; margin: 6px 0; }
+
+    a { color: #1a56db; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .crumbs { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .backLink { display:inline-block; margin-top: 8px; font-size: 13px; }
+
+    .checklist label { display:flex; gap:10px; align-items:flex-start; margin: 8px 0; }
+    .checklist input { margin-top: 3px; cursor:pointer; }
+
+    .empty { color:#777; font-size: 14px; padding: 8px 0; }
+    footer { padding: 16px; text-align:center; color:#666; font-size: 12px; }
+    .hr { height:1px; background:#eef0f6; margin: 12px 0; }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Science Bee White Set 2025–26 — Study Dashboard</h1>
+  <p>
+    Browse by <b>Subject</b> (or <b>All Subjects</b>) or toggle to <b>Day</b> mode.
+    Click a topic to see kid-friendly notes + <b>buzz-early facts</b> + clickable YouTube links.
+  </p>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <!-- LEFT -->
+    <div class="card">
+      <h2>Browse Topics</h2>
+
+      <div class="controls">
+        <div class="tabs" aria-label="Browse mode">
+          <button class="tabBtn active" id="modeSubject">Subject Mode</button>
+          <button class="tabBtn" id="modeDay">Day Mode</button>
+        </div>
+
+        <div class="controlRow" id="subjectRow">
+          <label for="subjectSelect">Subject Area</label>
+          <select id="subjectSelect"></select>
+        </div>
+
+        <div class="controlRow" id="dayRow" style="display:none;">
+          <label for="daySelect">Study Day</label>
+          <select id="daySelect"></select>
+        </div>
+
+        <div class="controlRow">
+          <label for="searchBox">Search (filters the topic list)</label>
+          <input id="searchBox" type="search" placeholder="Type: Mars, pollen, CERN, oxbow lake..." />
+        </div>
+
+        <div class="metaRow">
+          <span class="pill gray" id="listMeta">—</span>
+          <span class="pill gray" id="countMeta">0 topics</span>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <ul id="topicList"></ul>
+      <div id="noTopics" class="empty" style="display:none;">No topics match your filters.</div>
+
+      <a class="backLink" id="backLink" href="#home" style="display:none;">← Back</a>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card" id="contentCard">
+      <div id="content"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Built from the White Set study guide you provided (2025–2026).
+</footer>
+
+<script>
+/* ---------- Helpers ---------- */
+const ytSearch = (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+const esc = (str) => String(str)
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+/* ---------- Topics (ALL White Set topics you shared) ---------- */
+const TOPICS = {
+  /* Biology & Anatomy (8) */
+  covid_vaccines: {
+    title: "COVID-19 vaccines (Pfizer & Moderna)",
+    category: "Biology & Anatomy",
+    notes: [
+      "Vaccines train your immune system so your body can fight a germ faster later.",
+      "Pfizer and Moderna made COVID-19 vaccines to help people during the COVID-19 pandemic.",
+      "These vaccines teach the body to recognize the virus and respond quickly."
+    ],
+    buzzFacts: [
+      "“Pfizer and Moderna vaccines” → COVID-19 vaccines",
+      "“Vaccine made during the COVID-19 pandemic” → COVID-19 vaccines",
+      "“Immune system training shot” → vaccine (COVID-19 is a famous example)"
+    ],
+    videos: [
+      { label: "How vaccines work (kids) — search", url: ytSearch("how do vaccines work for kids") },
+      { label: "COVID-19 vaccine explained for kids — search", url: ytSearch("COVID-19 vaccine explained for kids") }
+    ],
+    checklist: ["I can explain what vaccines do.", "I remember Pfizer & Moderna.", "I watched 1 video."]
+  },
+  pollen: {
+    title: "Pollen",
+    category: "Biology & Anatomy",
+    notes: [
+      "Pollen is a powder made by many plants.",
+      "It helps plants reproduce (make seeds).",
+      "Pollen can also cause allergies when it gets into our noses or eyes."
+    ],
+    buzzFacts: [
+      "“Yellow powder from plants that causes allergies” → Pollen",
+      "“Plant reproduction powder” → Pollen",
+      "“Spring sneezing clue” → Pollen"
+    ],
+    videos: [
+      { label: "Pollination / pollen for kids — search", url: ytSearch("pollen pollination for kids") }
+    ],
+    checklist: ["I know pollen helps plant reproduction.", "I can connect pollen to allergies."]
+  },
+  paleontology: {
+    title: "Paleontology",
+    category: "Biology & Anatomy",
+    notes: [
+      "Paleontology is the study of ancient life.",
+      "Paleontologists use fossils to learn about organisms that lived long ago, like dinosaurs."
+    ],
+    buzzFacts: [
+      "“Study of fossils” → Paleontology",
+      "“Ancient life through fossils” → Paleontology",
+      "“Dinosaur fossils scientist” → Paleontologist"
+    ],
+    videos: [
+      { label: "Paleontology for kids — search", url: ytSearch("paleontology explained for kids fossils") }
+    ],
+    checklist: ["I can define paleontology.", "I can say fossils are studied in paleontology."]
+  },
+  influenza: {
+    title: "Influenza (flu) + 1918–1920 pandemic",
+    category: "Biology & Anatomy",
+    notes: [
+      "Influenza (the flu) is an illness caused by viruses.",
+      "A very severe influenza pandemic happened in 1918–1920 and spread around the world."
+    ],
+    buzzFacts: [
+      "“1918 flu pandemic” → Influenza",
+      "“Flu is caused by viruses” → Influenza",
+      "“Worldwide outbreak of flu” → Influenza pandemic"
+    ],
+    videos: [
+      { label: "What is the flu? (kids) — search", url: ytSearch("what is influenza flu for kids") },
+      { label: "Pandemic explained for kids — search", url: ytSearch("pandemic explained for kids") }
+    ],
+    checklist: ["I know influenza is a virus.", "I remember 1918–1920 was a major flu pandemic."]
+  },
+  proteins: {
+    title: "Proteins",
+    category: "Biology & Anatomy",
+    notes: [
+      "Proteins are important molecules in living things.",
+      "They help build and repair body tissues and help cells do many jobs.",
+      "Protein-rich foods include eggs, meat, beans, and nuts."
+    ],
+    buzzFacts: [
+      "“Builds muscles / repairs body” → Protein",
+      "“Found in eggs and meat” → Protein",
+      "“Made of amino acids” → Protein"
+    ],
+    videos: [
+      { label: "Proteins for kids — search", url: ytSearch("proteins explained for kids") }
+    ],
+    checklist: ["I can name 2 protein foods.", "I know proteins help build/repair."]
+  },
+  chromosomes: {
+    title: "Chromosomes",
+    category: "Biology & Anatomy",
+    notes: [
+      "Chromosomes are tiny structures inside a cell’s nucleus.",
+      "They hold genes (DNA instructions) that help determine traits."
+    ],
+    buzzFacts: [
+      "“Threadlike bodies in nucleus with genes” → Chromosomes",
+      "“Genes are on…” → Chromosomes",
+      "“DNA bundles in nucleus” → Chromosomes"
+    ],
+    videos: [
+      { label: "Chromosomes and genes for kids — search", url: ytSearch("chromosomes genes DNA for kids") }
+    ],
+    checklist: ["I know chromosomes are in the nucleus.", "I know chromosomes carry genes."]
+  },
+  predators: {
+    title: "Predators",
+    category: "Biology & Anatomy",
+    notes: [
+      "A predator is an animal that hunts and eats other animals.",
+      "The hunted animal is called prey.",
+      "Predators are part of food chains and ecosystems."
+    ],
+    buzzFacts: [
+      "“Animal that hunts and eats other animals” → Predator",
+      "“Predator vs prey” → Predator is the hunter",
+      "“Apex predator” → top predator"
+    ],
+    videos: [
+      { label: "Predator vs prey for kids — search", url: ytSearch("predator vs prey for kids") }
+    ],
+    checklist: ["I can define predator.", "I can give a predator example."]
+  },
+  vitamin_a: {
+    title: "Vitamin A (carrots; eye health)",
+    category: "Biology & Anatomy",
+    notes: [
+      "Vitamin A supports healthy vision and helps the retina in the eye.",
+      "Carrots are a well-known source of vitamin A."
+    ],
+    buzzFacts: [
+      "“Found in carrots” → Vitamin A",
+      "“Retina development / eye health” → Vitamin A",
+      "“Vision vitamin” → Vitamin A"
+    ],
+    videos: [
+      { label: "Vitamin A for kids — search", url: ytSearch("vitamin A explained for kids carrots retina") }
+    ],
+    checklist: ["I connect carrots → Vitamin A.", "I connect retina/vision → Vitamin A."]
+  },
+
+  /* Astronomy (4) */
+  mars: {
+    title: "Mars",
+    category: "Astronomy",
+    notes: [
+      "Mars is the fourth planet from the Sun.",
+      "It is called the Red Planet because iron-rich dust makes it look reddish.",
+      "Mars has two moons: Phobos and Deimos.",
+      "Olympus Mons is the largest volcano in the solar system and is on Mars."
+    ],
+    buzzFacts: [
+      "“Red Planet” → Mars",
+      "“Phobos and Deimos” → Mars",
+      "“Largest volcano in the solar system” → Mars (Olympus Mons)",
+      "“4th planet from the Sun” → Mars"
+    ],
+    videos: [
+      { label: "Mars for kids — search", url: ytSearch("Mars for kids red planet Phobos Deimos") }
+    ],
+    checklist: ["I know why Mars is red.", "I remember Phobos & Deimos.", "I watched 1 video."]
+  },
+  gamma_rays: {
+    title: "Gamma rays",
+    category: "Astronomy",
+    notes: [
+      "Gamma rays are a type of electromagnetic radiation.",
+      "They have extremely high energy, even higher than X-rays.",
+      "They can come from powerful events in space."
+    ],
+    buzzFacts: [
+      "“Highest-energy electromagnetic radiation” → Gamma rays",
+      "“More energetic than X-rays” → Gamma rays",
+      "“Space explosion radiation clue” → Gamma rays"
+    ],
+    videos: [
+      { label: "Electromagnetic spectrum for kids — search", url: ytSearch("electromagnetic spectrum for kids gamma rays") }
+    ],
+    checklist: ["I know gamma rays are very high energy.", "I know they are electromagnetic radiation."]
+  },
+  big_bang: {
+    title: "Big Bang theory",
+    category: "Astronomy",
+    notes: [
+      "The Big Bang theory says the universe began in a very hot, dense state.",
+      "Then it expanded quickly, and the universe is still expanding today.",
+      "Over time, stars and galaxies formed."
+    ],
+    buzzFacts: [
+      "“Universe began with sudden expansion” → Big Bang",
+      "“Hot, dense beginning of the universe” → Big Bang",
+      "“Universe is expanding” → Big Bang theory"
+    ],
+    videos: [
+      { label: "Big Bang explained for kids — search", url: ytSearch("Big Bang explained for kids") }
+    ],
+    checklist: ["I can say Big Bang = expansion from hot dense beginning."]
+  },
+  gemini: {
+    title: "Gemini (Castor & Pollux)",
+    category: "Astronomy",
+    notes: [
+      "Gemini is a constellation (a pattern of stars).",
+      "It contains the stars Castor and Pollux, named after mythological twins."
+    ],
+    buzzFacts: [
+      "“Castor and Pollux” → Gemini",
+      "“Twin constellation” → Gemini",
+      "“Zodiac constellation twins” → Gemini"
+    ],
+    videos: [
+      { label: "Gemini constellation for kids — search", url: ytSearch("Gemini constellation Castor Pollux for kids") }
+    ],
+    checklist: ["I remember Castor & Pollux.", "I know Gemini means twins."]
+  },
+
+  /* Chemistry (5) */
+  hydrogen: {
+    title: "Hydrogen (H)",
+    category: "Chemistry",
+    notes: [
+      "Hydrogen is an element with the symbol H.",
+      "It is the lightest element on the periodic table.",
+      "Hydrogen is part of water: H₂O."
+    ],
+    buzzFacts: [
+      "“Lightest element” → Hydrogen",
+      "“Symbol H” → Hydrogen",
+      "“Part of H₂O” → Hydrogen"
+    ],
+    videos: [
+      { label: "Hydrogen explained for kids — search", url: ytSearch("hydrogen element explained for kids") }
+    ],
+    checklist: ["I know H = hydrogen.", "I know hydrogen is the lightest element."]
+  },
+  zinc: {
+    title: "Zinc (Zn) + copper → brass",
+    category: "Chemistry",
+    notes: [
+      "Zinc is a metal with the symbol Zn.",
+      "When zinc is combined with copper, it can form brass.",
+      "Brass is an alloy (a mixture of metals)."
+    ],
+    buzzFacts: [
+      "“Zn” → Zinc",
+      "“Copper + zinc” → Brass",
+      "“Alloy used for instruments/handles” → Brass"
+    ],
+    videos: [
+      { label: "Alloys (brass) explained for kids — search", url: ytSearch("brass alloy copper zinc explained for kids") }
+    ],
+    checklist: ["I connect Zn → zinc.", "I connect brass → copper + zinc."]
+  },
+  silicon: {
+    title: "Silicon (metalloid; Silicon Valley)",
+    category: "Chemistry",
+    notes: [
+      "Silicon is a metalloid element used in electronics.",
+      "Silicon Valley in California is named because computer chips use silicon."
+    ],
+    buzzFacts: [
+      "“Silicon Valley” → Silicon",
+      "“Computer chips” → Silicon",
+      "“Metalloid used in electronics” → Silicon"
+    ],
+    videos: [
+      { label: "Silicon and computer chips for kids — search", url: ytSearch("silicon computer chips explained for kids") }
+    ],
+    checklist: ["I connect Silicon Valley → silicon.", "I know silicon is used in electronics."]
+  },
+  nitrogen: {
+    title: "Nitrogen (~78% of air)",
+    category: "Chemistry",
+    notes: [
+      "Nitrogen is a gas that makes up most of Earth’s air.",
+      "About 78% of the atmosphere is nitrogen."
+    ],
+    buzzFacts: [
+      "“78% of air” → Nitrogen",
+      "“Main gas in the atmosphere” → Nitrogen",
+      "“Most of air is…” → Nitrogen"
+    ],
+    videos: [
+      { label: "Earth’s atmosphere composition for kids — search", url: ytSearch("Earth atmosphere composition for kids nitrogen 78") }
+    ],
+    checklist: ["I remember nitrogen is ~78% of air."]
+  },
+  iron: {
+    title: "Iron + carbon → steel",
+    category: "Chemistry",
+    notes: [
+      "Iron is a metallic element.",
+      "When iron is mixed with carbon, the alloy steel can form.",
+      "Steel is strong and used in buildings and tools."
+    ],
+    buzzFacts: [
+      "“Iron + carbon” → Steel",
+      "“Alloy used in skyscrapers” → Steel",
+      "“Steel is stronger than pure iron” → Steel"
+    ],
+    videos: [
+      { label: "Steel (iron + carbon) for kids — search", url: ytSearch("steel alloy iron carbon explained for kids") }
+    ],
+    checklist: ["I connect steel → iron + carbon."]
+  },
+
+  /* Engineering (2) */
+  google_chrome: {
+    title: "Google + Chrome browser",
+    category: "Engineering",
+    notes: [
+      "Google is a technology company.",
+      "Chrome is a web browser made by Google.",
+      "A web browser helps you open and view websites."
+    ],
+    buzzFacts: [
+      "“Chrome browser” → Google",
+      "“Popular web browser by Google” → Chrome",
+      "“Software to view websites” → Browser (Chrome is one)"
+    ],
+    videos: [
+      { label: "What is a web browser? (kids) — search", url: ytSearch("what is a web browser for kids") }
+    ],
+    checklist: ["I know Chrome is a browser.", "I know Google makes Chrome."]
+  },
+  concrete: {
+    title: "Concrete",
+    category: "Engineering",
+    notes: [
+      "Concrete is a building material used in sidewalks, bridges, and buildings.",
+      "It is poured as a mixture and hardens into a strong solid."
+    ],
+    buzzFacts: [
+      "“Building material for bridges and skyscrapers” → Concrete",
+      "“Poured then hardens” → Concrete",
+      "“Sidewalk material” → Concrete"
+    ],
+    videos: [
+      { label: "Concrete explained for kids — search", url: ytSearch("concrete explained for kids") }
+    ],
+    checklist: ["I can name two things made of concrete."]
+  },
+
+  /* Earth Science (9) */
+  lightning: {
+    title: "Lightning",
+    category: "Earth Science",
+    notes: [
+      "Lightning is a powerful electrical discharge during storms.",
+      "It happens when charges build up in clouds and then release."
+    ],
+    buzzFacts: [
+      "“Electrical discharge during thunderstorms” → Lightning",
+      "“Charge build-up in clouds” → Lightning",
+      "“Flash of electricity in the sky” → Lightning"
+    ],
+    videos: [
+      { label: "Thunder and lightning for kids — search", url: ytSearch("thunder lightning explained for kids") }
+    ],
+    checklist: ["I know lightning is electricity.", "I know it happens during storms."]
+  },
+  fronts: {
+    title: "Fronts (weather boundaries)",
+    category: "Earth Science",
+    notes: [
+      "A front is a boundary where two air masses meet.",
+      "Fronts often bring weather changes, like rain, wind, or temperature shifts."
+    ],
+    buzzFacts: [
+      "“Boundary between air masses” → Front",
+      "“Cold front” → cooler air moving in",
+      "“Warm front” → warmer air moving in"
+    ],
+    videos: [
+      { label: "Weather fronts for kids — search", url: ytSearch("weather fronts explained for kids cold front warm front") }
+    ],
+    checklist: ["I can define a weather front."]
+  },
+  glaciers: {
+    title: "Glaciers",
+    category: "Earth Science",
+    notes: [
+      "Glaciers are large, moving bodies of ice.",
+      "They store a big portion of Earth’s fresh water."
+    ],
+    buzzFacts: [
+      "“Moving river of ice” → Glacier",
+      "“Stores lots of fresh water” → Glaciers",
+      "“Carves valleys over time” → Glaciers"
+    ],
+    videos: [
+      { label: "Glaciers for kids — search", url: ytSearch("glaciers explained for kids") }
+    ],
+    checklist: ["I know glaciers are moving ice.", "I know glaciers store fresh water."]
+  },
+  axis: {
+    title: "Axis (planet rotation line)",
+    category: "Earth Science",
+    notes: [
+      "An axis is an imaginary line a planet spins around.",
+      "Earth’s rotation around its axis causes day and night."
+    ],
+    buzzFacts: [
+      "“Imaginary line of rotation” → Axis",
+      "“Tilted axis relates to seasons” → Axis",
+      "“Rotation causes day/night” → Axis"
+    ],
+    videos: [
+      { label: "Earth’s axis and rotation for kids — search", url: ytSearch("Earth axis rotation for kids") }
+    ],
+    checklist: ["I can define axis.", "I can connect rotation → day/night."]
+  },
+  floods: {
+    title: "Floods",
+    category: "Earth Science",
+    notes: [
+      "A flood happens when water covers land that is usually dry.",
+      "Floods can come from heavy rain, storms, or rivers overflowing."
+    ],
+    buzzFacts: [
+      "“Water overflows onto dry land” → Flood",
+      "“River overflow after rain” → Flood",
+      "“Storm surge / heavy rain” → Flood"
+    ],
+    videos: [
+      { label: "Floods explained for kids — search", url: ytSearch("floods explained for kids") }
+    ],
+    checklist: ["I can name one cause of floods."]
+  },
+  diamonds: {
+    title: "Diamonds (hard carbon)",
+    category: "Earth Science",
+    notes: [
+      "Diamonds are a form of carbon.",
+      "They are the hardest natural material and form deep underground under high pressure."
+    ],
+    buzzFacts: [
+      "“Hardest natural material” → Diamond",
+      "“Made of carbon” → Diamond",
+      "“Forms under high pressure deep underground” → Diamond"
+    ],
+    videos: [
+      { label: "How diamonds form for kids — search", url: ytSearch("how diamonds form carbon hardest for kids") }
+    ],
+    checklist: ["I connect diamonds → carbon.", "I connect hardest → diamond."]
+  },
+  fog: {
+    title: "Fog",
+    category: "Earth Science",
+    notes: [
+      "Fog is a cloud close to the ground.",
+      "It is made of tiny water droplets suspended near Earth’s surface."
+    ],
+    buzzFacts: [
+      "“Cloud on the ground” → Fog",
+      "“Water droplets near surface” → Fog",
+      "“Low visibility weather” → Fog"
+    ],
+    videos: [
+      { label: "Fog for kids — search", url: ytSearch("what is fog for kids") }
+    ],
+    checklist: ["I can explain fog in one sentence."]
+  },
+  lava: {
+    title: "Lava",
+    category: "Earth Science",
+    notes: [
+      "Lava is molten rock that reaches Earth’s surface during a volcanic eruption.",
+      "Molten rock underground is called magma."
+    ],
+    buzzFacts: [
+      "“Molten rock on Earth’s surface” → Lava",
+      "“Magma becomes lava when it erupts” → Lava",
+      "“Volcano eruption clue” → Lava"
+    ],
+    videos: [
+      { label: "Magma vs lava for kids — search", url: ytSearch("magma vs lava explained for kids") }
+    ],
+    checklist: ["I know magma vs lava."]
+  },
+  temperature: {
+    title: "Temperature (average kinetic energy)",
+    category: "Earth Science",
+    notes: [
+      "Temperature tells how hot or cold something is.",
+      "In science, it relates to the average kinetic energy (movement) of particles."
+    ],
+    buzzFacts: [
+      "“Average kinetic energy of particles” → Temperature",
+      "“Particles move faster when hotter” → Temperature",
+      "“Measured by thermometer” → Temperature"
+    ],
+    videos: [
+      { label: "Temperature and particles for kids — search", url: ytSearch("temperature kinetic energy particles for kids") }
+    ],
+    checklist: ["I connect particle motion → temperature."]
+  },
+
+  /* Math (3) */
+  pi: {
+    title: "Pi (π ≈ 3.14159)",
+    category: "Math",
+    notes: [
+      "Pi (π) is a number used with circles.",
+      "It is about 3.14159 (often rounded to 3.14)."
+    ],
+    buzzFacts: [
+      "“3.14159” → Pi",
+      "“Circle number” → Pi",
+      "“Circumference/diameter” → Pi"
+    ],
+    videos: [
+      { label: "Pi explained for kids — search", url: ytSearch("pi 3.14 explained for kids") }
+    ],
+    checklist: ["I remember pi ≈ 3.14.", "I know pi is used with circles."]
+  },
+  perimeter: {
+    title: "Perimeter",
+    category: "Math",
+    notes: [
+      "Perimeter is the distance around a shape.",
+      "You find it by adding the lengths of all the sides."
+    ],
+    buzzFacts: [
+      "“Distance around a shape” → Perimeter",
+      "“Add all side lengths” → Perimeter",
+      "“Fence around a yard” → Perimeter clue"
+    ],
+    videos: [
+      { label: "Perimeter for kids — search", url: ytSearch("perimeter explained for kids") }
+    ],
+    checklist: ["I can find the perimeter of a rectangle."]
+  },
+  geometry: {
+    title: "Geometry",
+    category: "Math",
+    notes: [
+      "Geometry is the study of shapes and space.",
+      "It includes lines, angles, triangles, circles, and more."
+    ],
+    buzzFacts: [
+      "“Math of shapes” → Geometry",
+      "“Angles and triangles” → Geometry",
+      "“Shapes and space” → Geometry"
+    ],
+    videos: [
+      { label: "Geometry basics for kids — search", url: ytSearch("geometry basics for kids shapes angles") }
+    ],
+    checklist: ["I can say geometry is about shapes and space."]
+  },
+
+  /* Physics (4) */
+  cern: {
+    title: "CERN + Large Hadron Collider (LHC)",
+    category: "Physics",
+    notes: [
+      "CERN is a large science organization in Europe.",
+      "It operates the Large Hadron Collider (LHC), which helps scientists study tiny particles."
+    ],
+    buzzFacts: [
+      "“Large Hadron Collider” → CERN",
+      "“Particle collider in Europe” → CERN",
+      "“Studies tiny particles” → CERN/LHC"
+    ],
+    videos: [
+      { label: "CERN / LHC explained for kids — search", url: ytSearch("CERN Large Hadron Collider explained for kids") }
+    ],
+    checklist: ["I connect LHC → CERN.", "I know CERN studies particles."]
+  },
+  einstein: {
+    title: "Einstein (E = mc²)",
+    category: "Physics",
+    notes: [
+      "Einstein showed that energy equals mass times the speed of light squared: E = mc².",
+      "This means mass and energy are connected."
+    ],
+    buzzFacts: [
+      "“E equals mc squared” → Einstein",
+      "“Mass-energy equivalence” → E = mc²",
+      "“Speed of light squared” → Einstein’s equation"
+    ],
+    videos: [
+      { label: "E=mc² explained for kids — search", url: ytSearch("E=mc2 explained for kids") }
+    ],
+    checklist: ["I recognize E=mc².", "I know it connects mass and energy."]
+  },
+  magnetic_fields: {
+    title: "Magnetic fields (measured in tesla)",
+    category: "Physics",
+    notes: [
+      "A magnetic field is an invisible area where magnets push or pull.",
+      "Magnetic field strength is measured in tesla (T)."
+    ],
+    buzzFacts: [
+      "“Measured in tesla” → Magnetic field",
+      "“Invisible force around a magnet” → Magnetic field",
+      "“Field lines around magnet” → Magnetic field"
+    ],
+    videos: [
+      { label: "Magnetic fields for kids — search", url: ytSearch("magnetic field explained for kids tesla") }
+    ],
+    checklist: ["I connect tesla → magnetic field."]
+  },
+  electrons: {
+    title: "Electrons (negative charge)",
+    category: "Physics",
+    notes: [
+      "Electrons are tiny particles with a negative charge.",
+      "They move around the nucleus of an atom and are important in electricity."
+    ],
+    buzzFacts: [
+      "“Negative particle” → Electron",
+      "“Orbits atomic nucleus” → Electron",
+      "“Electric current is moving…” → Electrons"
+    ],
+    videos: [
+      { label: "Electrons and atoms for kids — search", url: ytSearch("electrons negative charge atoms for kids") }
+    ],
+    checklist: ["I remember electrons are negative.", "I can connect electrons to electricity."]
+  },
+
+  /* Terms for Further Study (30) — all included */
+  stalactite: {
+    title: "Stalactite",
+    category: "Further Study",
+    notes: [
+      "A stalactite is a rock formation that hangs from the ceiling of a cave.",
+      "It forms when mineral-rich water drips and leaves minerals behind."
+    ],
+    buzzFacts: [
+      "“Hangs from cave ceiling” → Stalactite",
+      "“Stalactite vs stalagmite” → Stalactite = ceiling",
+      "“Dripping minerals in caves” → Stalactite"
+    ],
+    videos: [{ label: "Stalactite vs stalagmite for kids — search", url: ytSearch("stalactite vs stalagmite for kids") }],
+    checklist: ["I know stalactites hang from the ceiling."]
+  },
+  acceleration: {
+    title: "Acceleration",
+    category: "Further Study",
+    notes: [
+      "Acceleration is how quickly velocity changes.",
+      "It can mean speeding up, slowing down, or changing direction."
+    ],
+    buzzFacts: [
+      "“Change in speed or direction” → Acceleration",
+      "“Speeding up or slowing down” → Acceleration",
+      "“Measured in m/s²” → Acceleration"
+    ],
+    videos: [{ label: "Acceleration for kids — search", url: ytSearch("acceleration explained for kids") }],
+    checklist: ["I can explain acceleration as change in speed/direction."]
+  },
+  chloroplast: {
+    title: "Chloroplast",
+    category: "Further Study",
+    notes: [
+      "Chloroplasts are parts of plant cells where photosynthesis happens.",
+      "They contain chlorophyll, which helps capture sunlight."
+    ],
+    buzzFacts: [
+      "“Photosynthesis happens here” → Chloroplast",
+      "“Chlorophyll and green color” → Chloroplast",
+      "“Plant cell organelle” → Chloroplast"
+    ],
+    videos: [{ label: "Chloroplasts/photosynthesis for kids — search", url: ytSearch("chloroplast photosynthesis for kids") }],
+    checklist: ["I connect chloroplast → photosynthesis."]
+  },
+  rats_term: {
+    title: "Rats (in science)",
+    category: "Further Study",
+    notes: [
+      "Rats are used in research because they are mammals and can help scientists learn about biology and health.",
+      "They also learn behaviors quickly, so they’re used in learning and memory studies."
+    ],
+    buzzFacts: [
+      "“Common lab animal” → Rats",
+      "“Used in research studies” → Rats",
+      "“Model organism” → Rats (and mice)"
+    ],
+    videos: [{ label: "Why scientists use rats — search", url: ytSearch("why do scientists use rats in experiments for kids") }],
+    checklist: ["I know rats are used as research animals."]
+  },
+  alveoli: {
+    title: "Alveoli",
+    category: "Further Study",
+    notes: [
+      "Alveoli are tiny air sacs in the lungs.",
+      "Oxygen moves from alveoli into the blood, and carbon dioxide moves out."
+    ],
+    buzzFacts: [
+      "“Tiny air sacs in lungs” → Alveoli",
+      "“Gas exchange in lungs” → Alveoli",
+      "“Oxygen into blood” → Alveoli"
+    ],
+    videos: [{ label: "Alveoli and gas exchange for kids — search", url: ytSearch("alveoli gas exchange lungs for kids") }],
+    checklist: ["I connect alveoli → gas exchange."]
+  },
+  triassic: {
+    title: "Triassic period",
+    category: "Further Study",
+    notes: [
+      "The Triassic period is part of the Mesozoic Era.",
+      "It is an early time when dinosaurs and other reptiles lived long ago."
+    ],
+    buzzFacts: [
+      "“Early dinosaur period” → Triassic",
+      "“Mesozoic Era periods” → Triassic/Jurassic/Cretaceous",
+      "“Older than Jurassic” → Triassic"
+    ],
+    videos: [{ label: "Triassic period for kids — search", url: ytSearch("Triassic period explained for kids") }],
+    checklist: ["I know Triassic is a dinosaur time period."]
+  },
+  mad_cow: {
+    title: "Mad cow disease",
+    category: "Further Study",
+    notes: [
+      "Mad cow disease is a serious brain disease in cattle.",
+      "It is linked to abnormal proteins called prions."
+    ],
+    buzzFacts: [
+      "“Prions” → Mad cow disease",
+      "“Cattle brain disease” → Mad cow disease",
+      "“Abnormal proteins cause disease” → Prions / Mad cow"
+    ],
+    videos: [{ label: "Mad cow disease and prions — search", url: ytSearch("mad cow disease prions explained simply") }],
+    checklist: ["I connect mad cow → prions."]
+  },
+  uranium: {
+    title: "Uranium",
+    category: "Further Study",
+    notes: [
+      "Uranium is a heavy element.",
+      "Some uranium atoms are radioactive, meaning they release energy as they break down over time."
+    ],
+    buzzFacts: [
+      "“Radioactive element used in nuclear energy” → Uranium",
+      "“Heavy radioactive element” → Uranium",
+      "“Nuclear fuel clue” → Uranium"
+    ],
+    videos: [{ label: "Uranium and radioactivity for kids — search", url: ytSearch("uranium radioactivity explained for kids") }],
+    checklist: ["I know uranium is radioactive."]
+  },
+  python_prog: {
+    title: "Python (programming)",
+    category: "Further Study",
+    notes: [
+      "Python is a programming language used to build apps, games, and tools.",
+      "It is popular because it is easy to read and learn."
+    ],
+    buzzFacts: [
+      "“Programming language named Python” → Python",
+      "“Easy-to-read code language” → Python",
+      "“Coding language clue” → Python"
+    ],
+    videos: [{ label: "Python for kids beginner — search", url: ytSearch("python programming for kids beginner") }],
+    checklist: ["I know Python is a programming language."]
+  },
+  alex_bell: {
+    title: "Alexander Graham Bell",
+    category: "Further Study",
+    notes: [
+      "Alexander Graham Bell is famous for inventing the telephone.",
+      "His work helped change communication technology."
+    ],
+    buzzFacts: [
+      "“Invented the telephone” → Alexander Graham Bell",
+      "“Telephone inventor clue” → Bell",
+      "“Early communication invention” → Bell"
+    ],
+    videos: [{ label: "Alexander Graham Bell for kids — search", url: ytSearch("Alexander Graham Bell telephone inventor for kids") }],
+    checklist: ["I connect Bell → telephone."]
+  },
+  hookes_law: {
+    title: "Hooke’s law",
+    category: "Further Study",
+    notes: [
+      "Hooke’s law describes how springs work.",
+      "The more a spring is stretched, the more force it pushes or pulls back with (within a normal range)."
+    ],
+    buzzFacts: [
+      "“Spring force proportional to stretch” → Hooke’s law",
+      "“F = kx” → Hooke’s law",
+      "“Rubber band/spring stretch clue” → Hooke"
+    ],
+    videos: [{ label: "Hooke’s law explained — search", url: ytSearch("Hooke's law F=kx explained") }],
+    checklist: ["I connect Hooke’s law → springs."]
+  },
+  jonas_salk: {
+    title: "Jonas Salk",
+    category: "Further Study",
+    notes: [
+      "Jonas Salk developed the first successful polio vaccine.",
+      "Polio used to cause serious illness, especially in children."
+    ],
+    buzzFacts: [
+      "“Polio vaccine” → Jonas Salk",
+      "“Vaccines history clue” → Salk",
+      "“Polio prevention” → Salk"
+    ],
+    videos: [{ label: "Jonas Salk and polio vaccine — search", url: ytSearch("Jonas Salk polio vaccine for kids") }],
+    checklist: ["I connect Salk → polio vaccine."]
+  },
+  leibniz: {
+    title: "Gottfried Leibniz",
+    category: "Further Study",
+    notes: [
+      "Leibniz was a mathematician who helped develop calculus.",
+      "In history, calculus is often connected to Leibniz and Isaac Newton."
+    ],
+    buzzFacts: [
+      "“Co-inventor of calculus” → Leibniz",
+      "“Newton and Leibniz” → calculus history",
+      "“Calculus development clue” → Leibniz"
+    ],
+    videos: [{ label: "Leibniz explained — search", url: ytSearch("Gottfried Leibniz calculus explained") }],
+    checklist: ["I connect Leibniz → calculus."]
+  },
+  carbon14: {
+    title: "Carbon-14",
+    category: "Further Study",
+    notes: [
+      "Carbon-14 is used to date once-living materials like bones or wood.",
+      "This method is called radiocarbon dating."
+    ],
+    buzzFacts: [
+      "“Radiocarbon dating” → Carbon-14",
+      "“Dating fossils/old bones” → Carbon-14",
+      "“Age of once-living things” → Carbon-14"
+    ],
+    videos: [{ label: "Carbon-14 dating explained — search", url: ytSearch("carbon 14 radiocarbon dating explained for students") }],
+    checklist: ["I connect Carbon-14 → dating old things."]
+  },
+  ceres: {
+    title: "Ceres",
+    category: "Further Study",
+    notes: [
+      "Ceres is a dwarf planet in the asteroid belt between Mars and Jupiter.",
+      "It is the largest object in the asteroid belt."
+    ],
+    buzzFacts: [
+      "“Dwarf planet in the asteroid belt” → Ceres",
+      "“Between Mars and Jupiter” → Asteroid belt → Ceres",
+      "“Largest asteroid-belt object” → Ceres"
+    ],
+    videos: [{ label: "Ceres dwarf planet for kids — search", url: ytSearch("Ceres dwarf planet asteroid belt for kids") }],
+    checklist: ["I know Ceres is in the asteroid belt."]
+  },
+  microprocessor: {
+    title: "Microprocessor",
+    category: "Further Study",
+    notes: [
+      "A microprocessor is like the brain of a computer.",
+      "It processes instructions so a device can do tasks."
+    ],
+    buzzFacts: [
+      "“Computer brain” → Microprocessor",
+      "“CPU chip” → Microprocessor",
+      "“Processes instructions” → Microprocessor"
+    ],
+    videos: [{ label: "Microprocessor / CPU explained — search", url: ytSearch("microprocessor CPU explained for kids") }],
+    checklist: ["I connect microprocessor → computer brain."]
+  },
+  brute_force: {
+    title: "Brute force attacks",
+    category: "Further Study",
+    notes: [
+      "A brute force attack is when someone tries many passwords until one works.",
+      "Strong passwords and limits on tries can help stop it."
+    ],
+    buzzFacts: [
+      "“Tries many passwords” → Brute force attack",
+      "“Password guessing over and over” → Brute force",
+      "“Cybersecurity password clue” → Brute force"
+    ],
+    videos: [{ label: "Password security for kids — search", url: ytSearch("password security brute force explained") }],
+    checklist: ["I know brute force = many password tries."]
+  },
+  laika: {
+    title: "Laika",
+    category: "Further Study",
+    notes: [
+      "Laika was a dog sent into space by the Soviet Union in 1957.",
+      "Laika was the first animal to orbit Earth."
+    ],
+    buzzFacts: [
+      "“First dog in space” → Laika",
+      "“1957 space dog” → Laika",
+      "“First animal to orbit Earth” → Laika"
+    ],
+    videos: [{ label: "Laika space dog for kids — search", url: ytSearch("Laika first dog in space for kids") }],
+    checklist: ["I connect Laika → first dog to orbit Earth."]
+  },
+  venus: {
+    title: "Venus",
+    category: "Further Study",
+    notes: [
+      "Venus is the second planet from the Sun.",
+      "It is extremely hot because its thick atmosphere traps heat (greenhouse effect)."
+    ],
+    buzzFacts: [
+      "“2nd planet from the Sun” → Venus",
+      "“Hottest planet due to greenhouse effect” → Venus",
+      "“Thick atmosphere traps heat” → Venus"
+    ],
+    videos: [{ label: "Venus explained for kids — search", url: ytSearch("Venus planet greenhouse effect explained for kids") }],
+    checklist: ["I know Venus is very hot.", "I know Venus is 2nd from the Sun."]
+  },
+  lcd: {
+    title: "Liquid crystal displays (LCDs)",
+    category: "Further Study",
+    notes: [
+      "LCDs are screens used in TVs, calculators, and many devices.",
+      "They use liquid crystals to control light and make images."
+    ],
+    buzzFacts: [
+      "“Screen that uses liquid crystals” → LCD",
+      "“Calculator/TV screen type” → LCD",
+      "“Display technology clue” → LCD"
+    ],
+    videos: [{ label: "How LCD screens work — search", url: ytSearch("how LCD screens work explained simply") }],
+    checklist: ["I connect LCD → screens."]
+  },
+  genetics: {
+    title: "Genetics",
+    category: "Further Study",
+    notes: [
+      "Genetics is the study of how traits are passed from parents to children.",
+      "Traits come from genes made of DNA."
+    ],
+    buzzFacts: [
+      "“Traits passed down” → Genetics",
+      "“Genes and inheritance” → Genetics",
+      "“DNA instructions for traits” → Genetics"
+    ],
+    videos: [{ label: "Genetics for kids — search", url: ytSearch("genetics inheritance genes for kids") }],
+    checklist: ["I connect genetics → inherited traits."]
+  },
+  braggs_law: {
+    title: "Bragg’s law",
+    category: "Further Study",
+    notes: [
+      "Bragg’s law is used to study crystals using X-rays.",
+      "It helps scientists understand crystal structure by how X-rays scatter."
+    ],
+    buzzFacts: [
+      "“X-rays and crystals” → Bragg’s law",
+      "“X-ray diffraction” → Bragg’s law",
+      "“Crystal structure clue” → Bragg"
+    ],
+    videos: [{ label: "Bragg's law explained — search", url: ytSearch("Bragg's law X-ray diffraction explained") }],
+    checklist: ["I connect Bragg’s law → X-rays & crystals."]
+  },
+  northridge_1994: {
+    title: "1994 Northridge earthquake",
+    category: "Further Study",
+    notes: [
+      "The 1994 Northridge earthquake was a major earthquake near Los Angeles, California.",
+      "Earthquakes happen when rocks move suddenly along faults."
+    ],
+    buzzFacts: [
+      "“1994 earthquake near Los Angeles” → Northridge",
+      "“California 1994 quake” → Northridge",
+      "“Fault slip causes earthquakes” → Earthquake concept"
+    ],
+    videos: [{ label: "Earthquakes (faults/plates) for kids — search", url: ytSearch("earthquakes faults tectonic plates for kids") }],
+    checklist: ["I connect Northridge → 1994 LA earthquake."]
+  },
+  voltage: {
+    title: "Voltage",
+    category: "Further Study",
+    notes: [
+      "Voltage is like an electrical push that helps electricity move in a circuit.",
+      "Voltage is measured in volts."
+    ],
+    buzzFacts: [
+      "“Electrical push” → Voltage",
+      "“Measured in volts” → Voltage",
+      "“Battery provides voltage” → Voltage"
+    ],
+    videos: [{ label: "Voltage for kids — search", url: ytSearch("voltage explained for kids circuits") }],
+    checklist: ["I connect volts → voltage."]
+  },
+  airbus: {
+    title: "Airbus",
+    category: "Further Study",
+    notes: [
+      "Airbus is a company that builds airplanes.",
+      "Airbus planes are used by many airlines worldwide."
+    ],
+    buzzFacts: [
+      "“Airplane manufacturer” → Airbus",
+      "“Boeing vs Airbus” → aircraft companies",
+      "“Commercial jets company” → Airbus"
+    ],
+    videos: [{ label: "Airplanes for kids — search", url: ytSearch("how airplanes fly for kids") }],
+    checklist: ["I connect Airbus → airplanes."]
+  },
+  newton: {
+    title: "Isaac Newton",
+    category: "Further Study",
+    notes: [
+      "Isaac Newton explained important ideas about gravity and motion.",
+      "Newton’s laws of motion describe how forces affect movement."
+    ],
+    buzzFacts: [
+      "“Laws of motion” → Newton",
+      "“Gravity scientist” → Newton",
+      "“Force and motion” → Newton"
+    ],
+    videos: [{ label: "Newton and gravity for kids — search", url: ytSearch("Isaac Newton gravity laws of motion for kids") }],
+    checklist: ["I connect Newton → gravity & motion."]
+  },
+  yeast: {
+    title: "Yeast",
+    category: "Further Study",
+    notes: [
+      "Yeast is a tiny living fungus.",
+      "It helps bread rise by producing gas when it uses sugar."
+    ],
+    buzzFacts: [
+      "“Makes bread rise” → Yeast",
+      "“Fungus used in baking” → Yeast",
+      "“Gas bubbles in dough” → Yeast"
+    ],
+    videos: [{ label: "Why bread rises (yeast) — search", url: ytSearch("yeast makes bread rise for kids") }],
+    checklist: ["I connect yeast → bread rising."]
+  },
+  ozempic: {
+    title: "Ozempic",
+    category: "Further Study",
+    notes: [
+      "Ozempic is a medicine used for diabetes to help control blood sugar.",
+      "For Science Bee, recognize it as a medication name connected to diabetes."
+    ],
+    buzzFacts: [
+      "“Diabetes medicine name” → Ozempic",
+      "“Blood sugar control medication” → Ozempic"
+    ],
+    videos: [{ label: "Diabetes explained for kids — search", url: ytSearch("diabetes blood sugar explained for kids") }],
+    checklist: ["I recognize Ozempic as a diabetes medicine."]
+  },
+  algae: {
+    title: "Algae",
+    category: "Further Study",
+    notes: [
+      "Algae are organisms that often live in water and can make food using sunlight (photosynthesis).",
+      "Seaweed is a type of algae."
+    ],
+    buzzFacts: [
+      "“Photosynthetic organisms in water” → Algae",
+      "“Seaweed is…” → Algae",
+      "“Green pond water clue” → Algae"
+    ],
+    videos: [{ label: "Algae for kids — search", url: ytSearch("algae explained for kids seaweed photosynthesis") }],
+    checklist: ["I can describe algae in one sentence."]
+  },
+  oxbow_lake: {
+    title: "Oxbow lake",
+    category: "Further Study",
+    notes: [
+      "An oxbow lake forms when a river’s big curve (meander) gets cut off.",
+      "The cut-off curve becomes a U-shaped lake."
+    ],
+    buzzFacts: [
+      "“U-shaped lake from river bend” → Oxbow lake",
+      "“River meander cut off” → Oxbow lake",
+      "“Old river curve becomes lake” → Oxbow lake"
+    ],
+    videos: [{ label: "Oxbow lakes for kids — search", url: ytSearch("oxbow lake explained for kids meanders") }],
+    checklist: ["I connect oxbow lake → cut-off river bend."]
+  }
+};
+
+/* ---------- Day schedule (Jan 11–31) with subject+day toggle ---------- */
+/* Notes:
+   - The study guide itself says it isn’t fully comprehensive.
+   - This schedule covers ALL study-guide items you pasted, plus review/mock days.
+*/
+const DAYS = [
+  { id: "d1",  label: "Day 1 — Jan 11: Vaccines + flu", topics: ["covid_vaccines", "influenza", "jonas_salk", "mad_cow"] },
+  { id: "d2",  label: "Day 2 — Jan 12: Nutrition + lungs + pollen", topics: ["proteins", "vitamin_a", "alveoli", "pollen", "ozempic"] },
+  { id: "d3",  label: "Day 3 — Jan 13: DNA + inheritance", topics: ["chromosomes", "genetics", "carbon14"] },
+  { id: "d4",  label: "Day 4 — Jan 14: Life science mix", topics: ["predators", "rats_term", "algae", "yeast"] },
+  { id: "d5",  label: "Day 5 — Jan 15: Fossils + deep time", topics: ["paleontology", "triassic"] },
+
+  { id: "d6",  label: "Day 6 — Jan 16: Planets", topics: ["mars", "venus", "ceres", "axis", "laika"] },
+  { id: "d7",  label: "Day 7 — Jan 17: Universe + radiation + stars", topics: ["big_bang", "gamma_rays", "gemini"] },
+
+  { id: "d8",  label: "Day 8 — Jan 18: Weather", topics: ["lightning", "fronts", "fog", "temperature"] },
+  { id: "d9",  label: "Day 9 — Jan 19: Ice/water/landforms", topics: ["glaciers", "floods", "oxbow_lake", "stalactite", "northridge_1994"] },
+  { id: "d10", label: "Day 10 — Jan 20: Earth materials + volcanoes", topics: ["lava", "diamonds", "uranium"] },
+
+  { id: "d11", label: "Day 11 — Jan 21: Air & atoms", topics: ["nitrogen", "hydrogen", "electrons"] },
+  { id: "d12", label: "Day 12 — Jan 22: Metals + alloys + tech", topics: ["zinc", "iron", "silicon", "microprocessor", "lcd"] },
+  { id: "d13", label: "Day 13 — Jan 23: Forces + electricity", topics: ["magnetic_fields", "voltage", "acceleration", "hookes_law"] },
+  { id: "d14", label: "Day 14 — Jan 24: Big physics names", topics: ["cern", "einstein", "newton"] },
+
+  { id: "d15", label: "Day 15 — Jan 25: Math + calculus history", topics: ["pi", "perimeter", "geometry", "leibniz"] },
+  { id: "d16", label: "Day 16 — Jan 26: Engineering + inventors", topics: ["google_chrome", "concrete", "airbus", "alex_bell"] },
+  { id: "d17", label: "Day 17 — Jan 27: Cyber + coding", topics: ["python_prog", "brute_force"] },
+  { id: "d18", label: "Day 18 — Jan 28: Crystal science", topics: ["braggs_law"] },
+
+  { id: "d19", label: "Day 19 — Jan 29: Review Day (Bio + Earth)", topics: [] },
+  { id: "d20", label: "Day 20 — Jan 30: Review Day (Astro + Chem + Physics + Math)", topics: [] },
+  { id: "d21", label: "Day 21 — Jan 31: Mock Day (Mixed)", topics: [] },
+];
+
+/* Add the remaining “Further Study” terms that were also in your list but are not explicitly in core buckets above.
+   These are already included above:
+   Stalactite, Acceleration, Chloroplast, Rats, Alveoli, Triassic period, Mad cow disease, Uranium, Python,
+   Alexander Graham Bell, Hooke’s law, Jonas Salk, Gottfried Leibniz, Carbon-14, Ceres, Microprocessor,
+   Brute force attacks, Laika, Venus, LCDs, Genetics, Bragg’s law, 1994 Northridge earthquake, Voltage, Airbus,
+   Isaac Newton, Yeast, Ozempic, Algae, Oxbow lake.
+   ✅ All 30 are present.
+*/
+
+/* ---------- Subjects list (includes All Subjects) ---------- */
+const SUBJECTS = [
+  "All Subjects",
+  "Astronomy",
+  "Biology & Anatomy",
+  "Chemistry",
+  "Earth Science",
+  "Engineering",
+  "Math",
+  "Physics",
+  "Further Study"
+];
+
+/* ---------- DOM ---------- */
+const subjectSelect = document.getElementById("subjectSelect");
+const daySelect = document.getElementById("daySelect");
+const dayRow = document.getElementById("dayRow");
+const subjectRow = document.getElementById("subjectRow");
+const searchBox = document.getElementById("searchBox");
+const topicList = document.getElementById("topicList");
+const noTopics = document.getElementById("noTopics");
+const listMeta = document.getElementById("listMeta");
+const countMeta = document.getElementById("countMeta");
+const content = document.getElementById("content");
+const backLink = document.getElementById("backLink");
+
+const modeSubjectBtn = document.getElementById("modeSubject");
+const modeDayBtn = document.getElementById("modeDay");
+
+let mode = "subject"; // "subject" or "day"
+
+/* Some topics in schedule reference IDs that must exist in TOPICS.
+   For Day 1 schedule, we referenced jonas_salk and mad_cow; ensure IDs match TOPICS keys:
+*/
+TOPICS.jonas_salk = TOPICS.jonas_salk || TOPICS["jonas_salk"];
+TOPICS.mad_cow = TOPICS.mad_cow || TOPICS["mad_cow"];
+
+/* ---------- Utilities ---------- */
+function getAllTopicIds() {
+  return Object.keys(TOPICS);
+}
+
+function topicMatchesSubject(t, subject) {
+  if (subject === "All Subjects") return true;
+  if (subject === "Further Study") return t.category === "Further Study";
+  return t.category === subject;
+}
+
+function getFilteredTopicIds() {
+  const q = searchBox.value.trim().toLowerCase();
+  let ids = [];
+
+  if (mode === "subject") {
+    const subject = subjectSelect.value;
+    ids = getAllTopicIds().filter(id => topicMatchesSubject(TOPICS[id], subject));
+    listMeta.textContent = subject === "All Subjects" ? "Showing: All Subjects" : `Showing: ${subject}`;
+  } else {
+    const dayId = daySelect.value;
+    const day = DAYS.find(d => d.id === dayId);
+    ids = (day?.topics || []).slice();
+
+    listMeta.textContent = `Showing: ${day?.label || "Day"}`;
+
+    // For review/mock days with no topics, show a helpful message
+    if (!ids.length) {
+      listMeta.textContent += " • (Review/Mock day)";
+    }
+  }
+
+  if (q) {
+    ids = ids.filter(id => {
+      const t = TOPICS[id];
+      const hay = `${t.title} ${t.category} ${(t.buzzFacts||[]).join(" ")}`.toLowerCase();
+      return hay.includes(q);
+    });
+    listMeta.textContent += ` • Filter: "${searchBox.value}"`;
+  }
+
+  return ids;
+}
+
+function renderTopicList() {
+  const ids = getFilteredTopicIds();
+  topicList.innerHTML = "";
+  noTopics.style.display = ids.length ? "none" : "block";
+  countMeta.textContent = `${ids.length} topic${ids.length === 1 ? "" : "s"}`;
+
+  ids.forEach(id => {
+    const t = TOPICS[id];
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "topicBtn";
+    btn.innerHTML = `${esc(t.title)}<small>${esc(t.category)}</small>`;
+    btn.addEventListener("click", () => {
+      location.hash = `#topic=${encodeURIComponent(id)}`;
+    });
+    li.appendChild(btn);
+    topicList.appendChild(li);
+  });
+}
+
+function renderHome() {
+  backLink.style.display = "none";
+
+  const help = mode === "subject"
+    ? "Choose a subject (or All Subjects), then click a topic."
+    : "Choose a day, then click a topic. Review/Mock days are for practice and revisiting weak topics.";
+
+  content.innerHTML = `
+    <div class="crumbs">Home</div>
+    <h2 style="margin:0 0 6px; font-size:18px;">Pick a topic to start</h2>
+    <div class="muted">${esc(help)}</div>
+
+    <div class="sectionTitle">How to Buzz Early (simple rule)</div>
+    <div class="notes">
+      Listen for a <b>trigger clue</b>. The moment you recognize it, buzz and say the answer.
+      Your “Buzz Facts” are the trigger clues.
+    </div>
+  `;
+}
+
+function renderReviewOrMock(dayLabel) {
+  backLink.style.display = "inline-block";
+  const isReview = dayLabel.toLowerCase().includes("review");
+  const title = isReview ? "Review Day" : "Mock Day";
+
+  content.innerHTML = `
+    <div class="crumbs">${esc(dayLabel)} → <strong>${title}</strong></div>
+    <h2 style="margin:0 0 4px; font-size:20px;">☑ ${title}</h2>
+    <div class="muted">${esc(dayLabel)}</div>
+
+    <div class="sectionTitle">Today’s Plan</div>
+    <div class="notes">
+      ${isReview
+        ? "Flip through buzz facts quickly. Re-read notes for weak topics. Then try a fast mixed quiz out loud."
+        : "Do a mixed mock. If you miss something, add that topic to a “weak list” and review it right after."}
+    </div>
+
+    <div class="sectionTitle">▶ Helpful Video Searches</div>
+    <ul>
+      <li><a target="_blank" rel="noopener" href="${ytSearch("science quiz for kids general knowledge")}">Science quiz for kids (YouTube search)</a></li>
+      <li><a target="_blank" rel="noopener" href="${ytSearch("science bee practice questions")}">Science Bee practice questions (YouTube search)</a></li>
+    </ul>
+
+    <div class="sectionTitle">☑ Checklist</div>
+    <div class="checklist">
+      <label><input type="checkbox" /> I reviewed my weakest 3 topics.</label>
+      <label><input type="checkbox" /> I practiced answers out loud.</label>
+      <label><input type="checkbox" /> I did a mini-mock (10–20 questions).</label>
+    </div>
+  `;
+}
+
+function renderTopic(id) {
+  const t = TOPICS[id];
+  if (!t) return;
+
+  backLink.style.display = "inline-block";
+
+  const notesHtml = (t.notes || []).map(p => `<p class="notes" style="margin:8px 0;">${esc(p)}</p>`).join("");
+  const buzzFactsHtml = (t.buzzFacts || []).map(f => `<li>${esc(f)}</li>`).join("");
+  const videosHtml = (t.videos || []).map(v =>
+    `<li style="margin:6px 0;"><a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.label)}</a></li>`
+  ).join("");
+  const checklistHtml = (t.checklist || []).map((c, idx) => {
+    const cid = `chk_${id}_${idx}`;
+    return `
+      <label for="${esc(cid)}">
+        <input id="${esc(cid)}" type="checkbox" />
+        <span>${esc(c)}</span>
+      </label>
+    `;
+  }).join("");
+
+  // Create a breadcrumb label based on mode
+  let crumbLeft = "Topic";
+  if (mode === "day") {
+    const day = DAYS.find(d => d.id === daySelect.value);
+    crumbLeft = day ? day.label : "Day";
+  } else {
+    crumbLeft = subjectSelect.value === "All Subjects" ? "All Subjects" : subjectSelect.value;
+  }
+
+  content.innerHTML = `
+    <div class="crumbs">${esc(crumbLeft)} → <strong>${esc(t.title)}</strong></div>
+    <h2 style="margin:0 0 4px; font-size:20px;">☑ ${esc(t.title)}</h2>
+    <div class="muted">${esc(t.category)}</div>
+
+    <div class="sectionTitle">📘 Easy Notes (Read & Revise)</div>
+    ${notesHtml || `<div class="muted">Notes not available.</div>`}
+
+    <div class="sectionTitle">⚡ Quick & Unique Buzz Facts (Buzz Early!)</div>
+    <ul class="buzzFacts">${buzzFactsHtml || `<li>No buzz facts yet.</li>`}</ul>
+
+    <div class="sectionTitle">▶ Kid-Friendly Videos (Clickable)</div>
+    <ul>${videosHtml || `<li class="muted">No videos added yet.</li>`}</ul>
+
+    <div class="sectionTitle">☑ Checklist</div>
+    <div class="checklist">${checklistHtml}</div>
+  `;
+}
+
+function route() {
+  const hash = location.hash || "#home";
+  if (hash.startsWith("#topic=")) {
+    const id = decodeURIComponent(hash.split("=", 2)[1] || "");
+    // If day mode and the day has no topics, show review/mock page instead of blank list
+    if (mode === "day") {
+      const day = DAYS.find(d => d.id === daySelect.value);
+      if (day && day.topics.length === 0) {
+        renderReviewOrMock(day.label);
+        return;
+      }
+    }
+    renderTopic(id);
+  } else {
+    // If day mode and review/mock selected, render that
+    if (mode === "day") {
+      const day = DAYS.find(d => d.id === daySelect.value);
+      if (day && day.topics.length === 0) {
+        renderReviewOrMock(day.label);
+        return;
+      }
+    }
+    renderHome();
+  }
+}
+
+/* ---------- Init ---------- */
+function init() {
+  // Subject dropdown
+  SUBJECTS.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    opt.textContent = s;
+    subjectSelect.appendChild(opt);
+  });
+  subjectSelect.value = "All Subjects";
+
+  // Day dropdown
+  DAYS.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.id;
+    opt.textContent = d.label;
+    daySelect.appendChild(opt);
+  });
+  daySelect.value = DAYS[0].id;
+
+  // Mode buttons
+  modeSubjectBtn.addEventListener("click", () => {
+    mode = "subject";
+    modeSubjectBtn.classList.add("active");
+    modeDayBtn.classList.remove("active");
+    dayRow.style.display = "none";
+    subjectRow.style.display = "block";
+    location.hash = "#home";
+    renderTopicList();
+    route();
+  });
+
+  modeDayBtn.addEventListener("click", () => {
+    mode = "day";
+    modeDayBtn.classList.add("active");
+    modeSubjectBtn.classList.remove("active");
+    dayRow.style.display = "block";
+    subjectRow.style.display = "none";
+    location.hash = "#home";
+    renderTopicList();
+    route();
+  });
+
+  // Filters
+  subjectSelect.addEventListener("change", () => { location.hash = "#home"; renderTopicList(); route(); });
+  daySelect.addEventListener("change", () => { location.hash = "#home"; renderTopicList(); route(); });
+  searchBox.addEventListener("input", () => renderTopicList());
+
+  // Back link (hash handles it)
+  window.addEventListener("hashchange", route);
+
+  // First render
+  renderTopicList();
+  route();
+}
+
+// Ensure missing IDs in day schedule exist (safety check)
+(function sanityCheck(){
+  const missing = [];
+  for (const d of DAYS) {
+    for (const id of d.topics) {
+      if (!TOPICS[id]) missing.push({ day: d.label, id });
+    }
+  }
+  if (missing.length) {
+    console.warn("Missing topics referenced in schedule:", missing);
+  }
+})();
+
+init();
+</script>
+</body>
+</html>

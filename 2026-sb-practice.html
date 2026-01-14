@@ -177,6 +177,22 @@
     background: rgba(255,255,255,0.7);
   }
 
+  .notesList {
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+.notesList li {
+  margin: 6px 0;
+  line-height: 1.55;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.notesList li::marker {
+  color: #4f46e5; /* accent bullet color */
+}
+
   /* Category colors (for “interesting to see”) */
   .cat-Astronomy{ background: rgba(59,130,246,0.12); }
   .cat-Biology\ \&\ Anatomy{ background: rgba(34,197,94,0.12); }
@@ -1575,7 +1591,12 @@ function renderTopic(id) {
 
   backLink.style.display = "inline-block";
 
-  const notesHtml = (t.notes || []).map(p => `<p class="notes" style="margin:8px 0;">${esc(p)}</p>`).join("");
+const notesHtml = `
+  <ul class="notesList">
+    ${(t.notes || []).map(p => `<li>${esc(p)}</li>`).join("")}
+  </ul>
+`;
+  
   const buzzFactsHtml = (t.buzzFacts || []).map(f => `<li>${esc(f)}</li>`).join("");
   const videosHtml = (t.videos || []).map(v =>
     `<li style="margin:6px 0;"><a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.label)}</a></li>`

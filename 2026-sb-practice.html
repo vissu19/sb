@@ -1593,7 +1593,7 @@ function renderTopic(id) {
 
 const notesHtml = `
   <ul class="notesList">
-    ${(t.notes || []).map(p => `<li>${esc(p)}</li>`).join("")}
+    ${(t.notes || []).map(p => `<li>- ${esc(p)}</li>`).join("")}
   </ul>
 `;
   

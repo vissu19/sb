@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<title>Nithya's Spelling Bee Adventure 🐝</title>
+<style>
+:root{--ink:#182341;--muted:#66738c;--sky:#eaf5ff;--cream:#fffbef;--gold:#ffca4b;--yellow:#ffeb9a;--blue:#3861c8;--light:#fff;--purple:#7250bc;--green:#1a9871;--red:#ce5479;--stroke:#dbe4f0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#e8ddff,transparent 45%),radial-gradient(ellipse at 0% 20%,#fff0b0,transparent 38%),#f4f8ff;color:var(--ink);font:500 16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.48;cursor:not-allowed}
+.wrapper{max-width:1060px;margin:auto;padding:22px 16px 62px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 23px}.logo{font-weight:900;font-size:clamp(23px,4vw,35px);letter-spacing:-1px}.logo span{font-size:31px}.sub{color:var(--muted);font-weight:600;font-size:13px}.btn{border:1px solid #c6d2e8;background:white;color:var(--ink);border-radius:16px;padding:12px 16px;font-weight:800;box-shadow:0 3px 0 #d9e1ed;transition:transform .1s,box-shadow .1s}.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 0 0 transparent}.btn.primary{background:var(--blue);border-color:var(--blue);color:white;box-shadow:0 4px 0 #27468f}.btn.gold{background:var(--gold);border-color:#f4b52b;box-shadow:0 4px 0 #cc9e25}.btn.ghost{background:transparent;box-shadow:none}.btn.warn{color:#af335b}.small{font-size:13px;padding:9px 12px;border-radius:12px}
+.grid{display:grid;grid-template-columns:1.42fr .75fr;gap:20px}.panel{background:#fff;border:1px solid var(--stroke);border-radius:28px;box-shadow:0 16px 35px #364f8a12;padding:24px}.levels{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.level{flex:1;min-width:130px;display:flex;align-items:center;justify-content:center;gap:9px;border:2px solid #d7e0ef;background:white;color:var(--ink);border-radius:17px;padding:12px 10px;font-size:15px;font-weight:900}.level.active{border-color:var(--purple);background:#f2eafe;box-shadow:0 0 0 3px #cfc1f53d}.level .bubble{display:inline-grid;place-items:center;border-radius:100%;background:#f2f5ff;width:30px;height:30px}
+.ribbon{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}.tag{display:inline-block;border-radius:100px;background:#edf2ff;color:#4562a1;padding:6px 12px;font-weight:800;font-size:12px}.tag.review{background:#fff1dd;color:#9b641c}.progress{height:13px;background:#edf1f8;border-radius:99px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,#67d2ba,#55a9ec);border-radius:99px;transition:width .35s}.label{font-size:13px;font-weight:800;color:var(--muted)}.title{font-weight:900;font-size:clamp(24px,3.8vw,34px);letter-spacing:-.7px;margin:16px 0 9px}.question{background:linear-gradient(135deg,#f4f0ff,#fff9e8);padding:20px;border-radius:22px;border:1px solid #e7ddf7;margin:18px 0}.question .meaning{font-size:20px;font-weight:750;line-height:1.5;margin:10px 0 2px}.audio{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.audio .btn{flex:1;min-width:170px}.typebox{width:100%;border:2px solid #c8d4ea;border-radius:18px;padding:15px 17px;font-size:24px;font-weight:700;letter-spacing:.5px;color:var(--ink);outline:none;transition:border-color .2s;background:#fff}.typebox:focus{border-color:#8065c7;box-shadow:0 0 0 4px #decdfa80}.hintrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:13px 0 18px}.submitrow{display:flex;gap:10px;flex-wrap:wrap}.submitrow .primary{flex:1}.feedback{border:2px solid #ccefe1;background:#effff7;border-radius:18px;padding:17px;margin-top:17px;display:none;animation:pop .3s ease-out}.feedback.bad{background:#fff2f6;border-color:#f4cedb}.feedback .big{font-size:21px;font-weight:900}.feedback p{margin:4px 0 0}.celebrate{display:none;text-align:center;font-size:25px;font-weight:900;color:#7351b8;margin:8px 0}.scorecards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:17px 0}.stat{padding:13px;border-radius:17px;background:#f5f8ff;border:1px solid #e5ebf8}.stat strong{display:block;font-weight:950;font-size:25px}.stat small{font-size:12px;color:var(--muted);font-weight:750}.section-title{font-weight:950;margin:16px 0 8px;font-size:18px}.tiny{font-size:12px;color:var(--muted)}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.meter{margin:10px 0}.meter .row{font-size:13px;font-weight:750;margin-bottom:5px}.meter .progress{height:8px}.recent{list-style:none;padding:0;margin:6px 0;max-height:160px;overflow:auto}.recent li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #eef2f6;font-size:13px}.right{display:flex;gap:8px;flex-wrap:wrap}.divider{height:1px;background:#e7ebf3;margin:18px 0}.bottom{margin-top:20px;color:var(--muted);text-align:center;font-size:12px}.modal{border:0;border-radius:24px;padding:25px;width:min(500px,calc(100vw - 32px));box-shadow:0 26px 60px #1a284680}.modal::backdrop{background:#1823419e}.modal h2{margin:0 0 8px}.modal p{color:var(--muted)}.modal .line{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.modebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.modebar select{padding:10px;border:1px solid #d0d9e9;background:#fff;border-radius:12px;color:var(--ink);font-weight:750}.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-140px);background:#30224c;color:white;padding:13px 24px;border-radius:18px;font-weight:900;z-index:10;box-shadow:0 10px 25px #0003;transition:transform .35s}.toast.show{transform:translate(-50%,0)}
+.confetti{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:20}.piece{position:absolute;top:-30px;width:11px;height:19px;border-radius:4px;animation:fall 1.75s linear forwards;opacity:.95}@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(800deg);opacity:0}}@keyframes pop{from{transform:scale(.96);opacity:.3}to{transform:scale(1);opacity:1}}
+:focus-visible{outline:3px solid #8566ca;outline-offset:3px}
+@media(max-width:780px){.grid{grid-template-columns:1fr}.panel{padding:18px}.wrapper{padding:14px 12px 50px}.question{padding:17px}.audio .btn{min-width:130px}.submitrow .btn{flex:auto}.top{margin-bottom:12px}.logo{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Road to 450 */
+.race{margin:0 0 20px;background:linear-gradient(125deg,#e6f7fa,#fff4cb);border:2px solid #cde5ef;border-radius:25px;padding:19px;box-shadow:0 12px 28px #294e7b15}.race-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.race-head h2{margin:0;font-size:22px}.race-head strong{font-size:18px}.race-track{margin-top:12px;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}.race-tile{min-height:61px;position:relative;border:2px dashed #b9c9db;border-radius:15px;background:#fff9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:23px;transition:.2s}.race-tile small{font-size:11px;font-weight:900;color:#55667b}.race-tile.done{background:#d9f7e6;border:2px solid #45b98d}.race-tile.current{background:#fff0a0;border:3px solid #dba63a;transform:scale(1.04);box-shadow:0 6px 12px #b8853240}.race-tile.locked{opacity:.7}.race-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px;font-weight:750;font-size:13px}.badge-case{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.badge-medal{border-radius:100px;background:#fff0c9;border:1px solid #e7bb62;padding:6px 10px;font-weight:900;font-size:12px}.race-tile .bee-racer{position:absolute;top:-16px;right:-8px;font-size:21px;filter:drop-shadow(0 2px 1px #0002)}
+.game-picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.game-picks button{font-size:15px;min-height:95px}.game-zone{margin-top:13px;padding:12px;border:1px solid #d9e2ee;background:#f5f9ff;border-radius:15px;position:relative;min-height:160px}.runner{height:165px;overflow:hidden;position:relative;background:linear-gradient(#c4ecff 78%,#d2c49c 78%);border-radius:12px}.runner-player{position:absolute;left:40px;bottom:28px;font-size:38px}.runner-obstacle{position:absolute;bottom:30px;font-size:30px}.runner-score{position:absolute;top:8px;left:10px;font-weight:900}.catch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.catch-grid button{min-height:58px;font-size:27px;border-radius:14px;background:white;border:2px solid #dae4ed}.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.memory-grid button{min-height:65px;font-size:26px;border:2px solid #d9d5f0;background:#eee8ff;border-radius:12px}.memory-grid button.flipped{background:#fff}.game-zone .game-instructions{font-weight:700;margin:5px 0 12px}.mini-info{font-size:13px;color:#526177;font-weight:800}.success-title{font-weight:950;color:#6241ab;font-size:22px}.game-modal{width:min(620px,calc(100vw - 24px))}@media(max-width:700px){.race-track{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.race-tile{min-height:53px;font-size:21px}.race-tile small{font-size:10px}.game-picks{grid-template-columns:1fr}.game-picks button{min-height:52px}}
+
+/* Speech voices and spelling-aloud mode */
+.answer-mode{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 0 12px}
+.mode-switch{display:flex;gap:5px;align-items:center;padding:4px;background:#f1f3fc;border:1px solid #dbe2f2;border-radius:17px}
+.mode-switch .btn{font-size:14px;box-shadow:none;padding:10px 13px;border-radius:12px}
+.mode-switch .btn[aria-pressed="true"]{background:#e7daff;border-color:#8e72d2;color:#342466;box-shadow:inset 0 0 0 1px #8e72d2}
+.spell-aloud{background:#f5f0ff;border:1px solid #d8c8f7;padding:16px;border-radius:18px;margin-bottom:14px}
+.spell-aloud p{margin:0 0 11px;color:#5b4b7f;font-size:13px;font-weight:700}
+.spelled-letters{min-height:67px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;word-break:break-word;padding:12px;border-radius:14px;background:#fff;border:2px solid #b7a1e4;font-size:clamp(21px,4.5vw,29px);font-weight:900;letter-spacing:2px;color:#402a76;text-align:center}
+.spell-aloud .mic-status{font-size:13px;min-height:22px;margin:10px 0;color:#584878;font-weight:750}
+.speech-actions{display:flex;gap:9px;flex-wrap:wrap}.speech-actions .btn{flex:1;min-width:135px}
+.mic-live{background:#ffdcdf!important;border-color:#d95867!important;animation:micpulse 1.2s infinite}
+@keyframes micpulse{50%{box-shadow:0 0 0 7px #ef698b22}}
+.letter-pad-wrap{margin-top:12px}.letter-pad-wrap summary{cursor:pointer;color:#493480;font-weight:850;font-size:14px;line-height:1.7}
+.letter-pad{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:10px}
+.letter-pad button{background:white;border:1px solid #c8b7ee;border-radius:9px;min-height:38px;font-weight:850;color:#47317d;padding:4px 1px;font-size:15px}
+.letter-pad button.special{grid-column:span 3;background:#e8e1fa;font-size:12px}
+.voice-setting{margin:14px 0}.voice-setting label{display:block;font-weight:850;margin-bottom:6px}
+.voice-setting select{max-width:100%;width:100%;padding:12px;border:1px solid #c6d2e8;border-radius:12px;background:white;color:var(--ink)}
+.voice-setting input[type=range]{width:100%;accent-color:#7250bc}
+.settings-helper{font-size:12px;color:#56677d;line-height:1.4}
+/* The type mode uses its own keyboard: mobile OS predictions never open. */
+.tile-answer{background:#f8f5ff;cursor:default;letter-spacing:1.3px;user-select:text}
+.tile-hint{font-size:13px;font-weight:720;color:#52617f;margin:10px 0 2px}
+.tile-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.tile-actions .btn{flex:1;min-width:130px}
+#typingPanel .letter-pad{grid-template-columns:repeat(9,minmax(0,1fr))}
+#typingPanel .letter-pad button{min-height:49px;border:2px solid #b7a4e7;background:#fff;font-size:18px;border-radius:13px;box-shadow:0 2px 0 #d8caee;touch-action:manipulation}
+#typingPanel .letter-pad button:active:not(:disabled){transform:translateY(2px);background:#eadeff;box-shadow:none}
+#typingPanel .letter-pad button.special{font-size:12px;background:#f1eaff}
+#switchToTiles{margin-top:12px;width:100%}
+@media(max-width:460px){#typingPanel .letter-pad{grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}#typingPanel .letter-pad button{min-height:47px;font-size:17px}.answer-mode{align-items:stretch}.mode-switch{flex:1;justify-content:space-evenly}}
+
+
+
+/* Familiar QWERTY layout that never summons the device's autocorrect keyboard. */
+#typingPanel .letter-pad{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+#typingPanel .keyboard-row{display:flex;justify-content:center;gap:5px;width:100%}
+#typingPanel .keyboard-row button{flex:1 1 0;min-width:0;max-width:55px;min-height:48px;padding:5px 0}
+#typingPanel .keyboard-row.home-row{padding-inline:4%}
+#typingPanel .keyboard-row.bottom-row{padding-inline:13%}
+#typingPanel .keyboard-row.utility-row{padding-inline:0}
+#typingPanel .keyboard-row.utility-row button{flex:1 1 0;max-width:none;font-size:12px;min-height:39px}
+#typingPanel .keyboard-row button:focus-visible{outline:3px solid #6b42bf;outline-offset:2px}
+.spell-sequence{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0}
+.spell-step{border:1px solid #c8b8e7;border-radius:999px;padding:6px 9px;background:#fff;color:#55466e;font-size:12px;font-weight:750}
+.spell-step.complete{background:#e4f7ef;color:#166747;border-color:#96d8b3}
+.spell-step.active{background:#f1e8ff;color:#4b2c92;border-color:#a986ef}
+@media(max-width:460px){#typingPanel .letter-pad{display:flex;flex-direction:column;gap:7px}#typingPanel .keyboard-row{gap:3px}#typingPanel .keyboard-row button{min-height:44px;font-size:15px;border-radius:8px}#typingPanel .keyboard-row.home-row{padding-inline:4%}#typingPanel .keyboard-row.bottom-row{padding-inline:12%}}
+
+/* Live speech results, with intermediate recognition separated from finalized spelling. */
+.live-transcript-box{border:1px solid #bfcdea;background:white;border-radius:14px;padding:12px;margin:12px 0}
+.live-heading{font-size:12px;font-weight:900;color:#553982;display:flex;justify-content:space-between;gap:8px}
+#liveSignal{color:#64718c;font-size:11px;white-space:nowrap}
+.live-words{margin-top:7px;min-height:27px;font-weight:750;font-size:17px;line-height:1.5;overflow-wrap:anywhere;color:#283b65}
+.heard-final{font-size:12px;margin-top:7px;color:#69768e;overflow-wrap:anywhere}
+.guided-toggle{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:800;color:#50357f;cursor:pointer;margin-top:10px}
+.guided-toggle input{width:20px;height:20px;accent-color:#7250bc;flex:none}
+.guided-tip{font-size:12px;font-weight:600;color:#6a5981;line-height:1.5;padding:3px 0}
+.preview-interim{color:#805bbb;opacity:.8;font-size:.8em}
+.spell-steps-note{font-size:13px;color:#493480}
+</style>
+</head>
+<body>
+<div class="confetti" id="confetti"></div><div id="toast" class="toast" role="status"></div>
+<main class="wrapper">
+<header class="top"><div><div class="logo"><span>🐝</span> Nithya's Spelling Bee Adventure</div><div class="sub">Listen • Understand • Spell • Level up!</div></div><div class="right"><button class="btn small" id="export">⬇️ Save progress</button><button class="btn small" id="import">⬆️ Restore</button><button class="btn small" id="settings">⚙️ Settings</button></div></header>
+<nav class="levels" aria-label="Difficulty level"><button class="level active" data-level="1"><span class="bubble">🌱</span> One Bee</button><button class="level" data-level="2"><span class="bubble">🌻</span> Two Bee</button><button class="level" data-level="3"><span class="bubble">🏆</span> Three Bee</button></nav>
+<section class="race" aria-label="The road to 450 mastered words"><div class="race-head"><div><h2>🏁 Race to the Golden Hive</h2><div class="sub">Master each word twice in a row on the first try to move your racer</div></div><strong id="raceScore">0 / 450 mastered</strong></div><div class="race-track" id="raceTrack" aria-label="18 checkpoints of 25 words each"></div><div class="race-foot"><span id="checkpointText">Next checkpoint: 25 different words spelled correctly</span><span id="ticketText">🎮 0 game breaks available</span></div><div class="badge-case" id="badgeCase"><span class="tiny">Earn your first badge after 25 unique correct words!</span></div><div style="margin-top:9px"><button class="btn small gold" id="openArcade">🎮 Mini-game arcade</button> <button class="btn small" id="saveRace">💾 Back up my race</button></div></section>
+<div class="grid">
+<section class="panel" aria-label="Spelling practice">
+<div class="ribbon"><span class="tag" id="context">🌱 One Bee</span><span class="label" id="levelCount">0 of 150 mastered</span></div><div class="progress" role="progressbar" aria-label="Level mastery" aria-valuemin="0" aria-valuemax="100" id="levelProgress"><div style="width:0%" id="progressFill"></div></div>
+<div class="modebar" style="margin-top:14px"><label class="label" for="mode">Practice:</label><select id="mode"><option value="all">New words + missed-word review</option><option value="weak">🎯 Tricky words</option><option value="fresh">✨ New words</option></select><button id="skip" class="btn small ghost" title="Move to another word">Skip ↪</button></div>
+<div id="playing">
+<div class="title">Listen to your mystery word!</div>
+<div class="question"><div class="label">🔍 MEANING CLUE (the word is hidden)</div><div id="meaning" class="meaning" aria-live="polite"></div></div>
+<div class="audio"><button id="sayWord" class="btn gold">🔊 Hear the word</button><button id="sayMeaning" class="btn">📖 Read the meaning</button><button id="repeat" class="btn small">🔁 Again</button><button id="quickVoice" class="btn small" type="button">🎭 Change character</button></div>
+<div class="answer-mode"><strong>How will you spell?</strong><div class="mode-switch" role="group" aria-label="Spelling input method"><button type="button" id="typeMode" class="btn" aria-pressed="true">⌨️ Type</button><button type="button" id="speakMode" class="btn" aria-pressed="false">🎤 Spell aloud</button></div></div>
+<form id="answerForm" autocomplete="off"><div id="typingPanel"><label class="label" for="answer">TAP THE LETTERS TO SPELL</label><input id="answer" class="typebox tile-answer" type="text" placeholder="Tap letters below…" readonly inputmode="none" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" aria-label="Spelling built with on-screen letter tiles; no phone keyboard" aria-readonly="true" tabindex="-1"><p class="tile-hint">🔠 Build the spelling with these buttons. No phone keyboard, autocorrect, or predictive suggestions.</p><div class="letter-pad" id="letterPad" aria-label="On-screen alphabet keyboard"></div><div class="tile-actions"><button type="button" id="typeBackspace" class="btn small">⌫ Delete last</button><button type="button" id="typeClear" class="btn small">🧽 Clear spelling</button></div></div>
+<div id="spokenPanel" class="spell-aloud" hidden>
+<p><b>Spelling Bee style:</b> say the word, spell each letter slowly, then say the word again. The game scores <b>only the letters</b> you spell — saying the word alone does not count. You can also spell just the letters.</p>
+<div class="spell-sequence" id="spellSequence" aria-label="Competition-style speaking steps"><span class="spell-step" id="stageIntro">1 · Say word</span><span class="spell-step" id="stageLetters">2 · Spell letters</span><span class="spell-step" id="stageOutro">3 · Say word again</span></div>
+<label class="guided-toggle"><input id="guidedSpeech" type="checkbox"> 🧭 Guided speaking (3 short recordings; more reliable)</label>
+<div class="guided-tip" id="guidedTip">In normal mode, say the word, each letter, and the word again. You can switch to guided mode if the microphone mixes the words and letters.</div>
+<div class="live-transcript-box"><div class="live-heading">🔴 LIVE — What the microphone hears <span id="liveSignal">Ready</span></div><div id="liveSpeech" class="live-words" role="status" aria-live="polite">Start listening to see speech appear here as you talk.</div><div id="heardFinal" class="heard-final" aria-live="off"></div></div>
+<div class="spelled-letters" id="spokenPreview" aria-live="polite">Your spoken letters appear here</div>
+<div id="micStatus" class="mic-status" role="status" aria-live="polite">Tap Start listening. Say the word, the letter names, then the word again.</div>
+<div class="speech-actions"><button type="button" id="startMic" class="btn primary">🎙️ Start listening</button><button type="button" id="nextSpeechStage" class="btn small" hidden>Next: spell letters →</button><button type="button" id="deleteLetter" class="btn small">⌫ Last letter</button><button type="button" id="clearLetters" class="btn small">🧽 Clear</button></div>
+<button type="button" id="switchToTiles" class="btn small">⌨️ Edit with letter tiles instead</button>
+<p class="settings-helper" style="margin-top:10px">The LIVE transcription is a best guess and may mishear letter names. Only the finalized letters (below the live text) count. For a misheard letter, choose Edit with letter tiles. Microphone access needs permission and a compatible browser, usually Chrome; your device or its speech service may process the audio.</p>
+</div>
+<div class="hintrow"><span id="attemptInfo" class="tiny">No rush! You've got this 💜</span><button type="button" class="btn ghost small" id="hint">💡 Get a hint (costs 10 points)</button></div>
+<div class="submitrow"><button type="submit" id="submit" class="btn primary">Check spelling ✓</button><button type="button" id="reveal" class="btn small">Show answer</button><button type="button" id="next" class="btn gold" style="display:none">Next word →</button></div></form>
+<div id="feedback" class="feedback" role="status" aria-live="polite"></div><div id="celebrate" class="celebrate"></div>
+</div>
+<div id="empty" style="display:none"><div class="title">🌟 All caught up!</div><p id="emptyText">You've finished these words.</p><button class="btn gold" id="resetMode">Keep practicing</button></div>
+</section>
+<aside class="panel" aria-label="Progress dashboard"><div class="row"><h2 style="margin:0;font-size:21px">🏅 Bee Headquarters</h2><span class="tag" id="rank">Scout Bee</span></div>
+<div class="scorecards"><div class="stat"><strong id="points">0</strong><small>⭐ Star points</small></div><div class="stat"><strong id="streak">0</strong><small>🔥 Current streak</small></div><div class="stat"><strong id="best">0</strong><small>🏆 Best streak</small></div><div class="stat"><strong id="accuracy">—</strong><small>🎯 First-try accuracy</small></div></div>
+<div class="section-title">Your word garden 🌼</div><div class="meter"><div class="row"><span>💚 Confident</span><span id="confident">0</span></div><div class="progress"><div id="confBar" style="background:#49bb8b;width:0%"></div></div></div>
+<div class="meter"><div class="row"><span>💛 Practicing</span><span id="practicing">0</span></div><div class="progress"><div id="practiceBar" style="background:#eab44d;width:0%"></div></div></div>
+<div class="meter"><div class="row"><span>💗 Needs another try</span><span id="tricky">0</span></div><div class="progress"><div id="trickyBar" style="background:#e5789e;width:0%"></div></div></div>
+<div class="divider"></div><div class="row"><span class="section-title">Today's mission 🚀</span><span id="daily" class="tag">0/10</span></div><div class="progress"><div id="dailyBar" style="background:linear-gradient(90deg,#ffbb57,#f489bb);width:0%"></div></div><p class="tiny">Spell 10 words correctly today to win your mission badge! You can repeat this every day.</p>
+<div class="section-title">Recent practice</div><ul class="recent" id="recent"><li>No words tried yet—begin your adventure!</li></ul>
+<div class="divider"></div><div class="right"><button class="btn small" id="review">🎯 Review tricky</button><button class="btn small" id="report">📊 Full report</button></div>
+</aside>
+</div>
+<p class="bottom">450 words from the uploaded 2026–2027 Scripps School Spelling Bee Study List • Progress saves only in this browser • Speech needs a device voice and sound turned on</p>
+</main>
+<dialog id="settingsDialog" class="modal"><h2>⚙️ Your Bee Settings</h2><p>Saved progress stays on this device/browser unless you export a backup.</p><label><input type="checkbox" id="sounds" checked> Celebration sounds</label>
+<div class="voice-setting"><label for="voiceSelect">🎭 Choose your speaker personality</label><select id="voiceSelect" aria-label="Speaker character and delivery style"><option value="coach">🙌 Friendly Coach</option><option value="robot">🤖 Silly Robot</option><option value="host">🎙️ Excited Game Show Host</option><option value="story">📚 Calm Storyteller</option><option value="royal">👑 Royal Queen Bee</option><option value="detective">🕵️ Word Detective</option></select><p class="settings-helper" id="characterDescription">Warm, encouraging, and ready to celebrate every win.</p><p class="settings-helper">All characters speak English. They change speech pitch, pace, and celebration phrases; how different they sound depends on the English voices installed on the device.</p>
+<label for="voiceRate">Voice speed: <output id="voiceRateValue">0.87×</output></label><input type="range" id="voiceRate" min="0.65" max="1.20" step="0.05" value="0.85"><button type="button" class="btn small" id="testVoice">🔊 Preview character</button></div>
+<p class="tiny">Computer-generated spoken words may pronounce proper names or unusual words imperfectly. The original spelling is preserved.</p><div class="line"><button class="btn" id="closeSettings">Done</button><button class="btn warn" id="resetProgress">Erase all progress</button></div></dialog>
+<dialog id="reportDialog" class="modal"><h2>📊 Spelling progress</h2><div id="reportBody" style="max-height:60vh;overflow:auto"></div><div class="line"><button class="btn primary" id="closeReport">Done</button><button class="btn" id="exportReport">Download report (CSV)</button></div></dialog>
+<dialog id="rewardDialog" class="modal game-modal"><h2 id="rewardTitle">🏅 Checkpoint unlocked!</h2><p id="rewardDesc"></p><div class="game-picks"><button class="btn gold" id="pickDino">🦖 Dino Dash<br><small>Jump over cacti</small></button><button class="btn" id="pickCatch">🍯 Honey Catch<br><small>Catch the honey</small></button><button class="btn" id="pickMemory">🧠 Memory Match<br><small>Match the pictures</small></button></div><div class="game-zone" id="gameZone"><div class="game-instructions">Pick a mini-game to celebrate!</div></div><div class="line"><button class="btn primary" id="closeArcade">Back to spelling 🐝</button></div></dialog>
+<input type="file" id="fileInput" accept="application/json,.json" hidden>
+<script>
+'use strict';
+const WORDS=[{"id":"1-1-1","level":1,"page":1,"word":"ran","accepted":["ran"],"clue":"Moved quickly on foot"},{"id":"1-1-2","level":1,"page":1,"word":"wind","accepted":["wind"],"clue":"A moving current of air"},{"id":"1-1-3","level":1,"page":1,"word":"leg","accepted":["leg"],"clue":"A body part used for walking"},{"id":"1-1-4","level":1,"page":1,"word":"dirt","accepted":["dirt"],"clue":"Loose soil on the ground"},{"id":"1-2-1","level":1,"page":1,"word":"rod","accepted":["rod"],"clue":"A long thin stick"},{"id":"1-2-2","level":1,"page":1,"word":"good","accepted":["good"],"clue":"Pleasant or of high quality"},{"id":"1-2-3","level":1,"page":1,"word":"most","accepted":["most"],"clue":"The greatest amount or number"},{"id":"1-2-4","level":1,"page":1,"word":"hurt","accepted":["hurt"],"clue":"To feel pain"},{"id":"1-3-1","level":1,"page":1,"word":"shy","accepted":["shy"],"clue":"Quiet or nervous around others"},{"id":"1-3-2","level":1,"page":1,"word":"bunny","accepted":["bunny"],"clue":"A young rabbit"},{"id":"1-3-3","level":1,"page":1,"word":"down","accepted":["down"],"clue":"Toward a lower place"},{"id":"1-3-4","level":1,"page":1,"word":"steps","accepted":["steps"],"clue":"Movements made when walking"},{"id":"1-4-1","level":1,"page":1,"word":"drink","accepted":["drink"],"clue":"To swallow a liquid"},{"id":"1-4-2","level":1,"page":1,"word":"silly","accepted":["silly"],"clue":"Not serious; playful or foolish"},{"id":"1-4-3","level":1,"page":1,"word":"sick","accepted":["sick"],"clue":"Not feeling well"},{"id":"1-4-4","level":1,"page":1,"word":"path","accepted":["path"],"clue":"A narrow trail or walkway"},{"id":"1-5-1","level":1,"page":1,"word":"mist","accepted":["mist"],"clue":"Tiny drops floating in air"},{"id":"1-5-2","level":1,"page":1,"word":"stars","accepted":["stars"],"clue":"Bright points in the night sky"},{"id":"1-5-3","level":1,"page":1,"word":"truck","accepted":["truck"],"clue":"A large vehicle for carrying goods"},{"id":"1-5-4","level":1,"page":1,"word":"fire","accepted":["fire"],"clue":"Flames that give off heat"},{"id":"1-6-1","level":1,"page":1,"word":"still","accepted":["still"],"clue":"Not moving"},{"id":"1-6-2","level":1,"page":1,"word":"hello","accepted":["hello"],"clue":"A greeting you say when meeting someone"},{"id":"1-6-3","level":1,"page":1,"word":"bush","accepted":["bush"],"clue":"A woody plant smaller than a tree"},{"id":"1-6-4","level":1,"page":1,"word":"late","accepted":["late"],"clue":"After the expected time"},{"id":"1-7-1","level":1,"page":1,"word":"pump","accepted":["pump"],"clue":"A machine that moves liquid"},{"id":"1-7-2","level":1,"page":1,"word":"shell","accepted":["shell"],"clue":"A hard covering around some sea creatures"},{"id":"1-7-3","level":1,"page":1,"word":"yarn","accepted":["yarn"],"clue":"Thread used for knitting"},{"id":"1-7-4","level":1,"page":1,"word":"wings","accepted":["wings"],"clue":"Parts birds use to fly"},{"id":"1-8-1","level":1,"page":1,"word":"sharp","accepted":["sharp"],"clue":"Having a pointed edge"},{"id":"1-8-2","level":1,"page":1,"word":"easy","accepted":["easy"],"clue":"Not difficult"},{"id":"1-8-3","level":1,"page":1,"word":"body","accepted":["body"],"clue":"The physical form of a person"},{"id":"1-8-4","level":1,"page":1,"word":"house","accepted":["house"],"clue":"A building where people live"},{"id":"1-9-1","level":1,"page":1,"word":"rich","accepted":["rich"],"clue":"Having a lot of money"},{"id":"1-9-2","level":1,"page":1,"word":"shift","accepted":["shift"],"clue":"To move or change position"},{"id":"1-9-3","level":1,"page":1,"word":"heart","accepted":["heart"],"clue":"The organ that pumps blood"},{"id":"1-9-4","level":1,"page":1,"word":"tusk","accepted":["tusk"],"clue":"A long pointed tooth"},{"id":"1-10-1","level":1,"page":1,"word":"shoot","accepted":["shoot"],"clue":"To fire or send something quickly"},{"id":"1-10-2","level":1,"page":1,"word":"seal","accepted":["seal"],"clue":"An ocean animal with flippers"},{"id":"1-10-3","level":1,"page":1,"word":"even","accepted":["even"],"clue":"A whole number divisible by two"},{"id":"1-10-4","level":1,"page":1,"word":"dive","accepted":["dive"],"clue":"To jump into water headfirst"},{"id":"1-11-1","level":1,"page":1,"word":"claws","accepted":["claws"],"clue":"Sharp curved nails on animal feet"},{"id":"1-11-2","level":1,"page":1,"word":"crack","accepted":["crack"],"clue":"A narrow split or break"},{"id":"1-11-3","level":1,"page":1,"word":"come","accepted":["come"],"clue":"To move toward someone"},{"id":"1-11-4","level":1,"page":1,"word":"fine","accepted":["fine"],"clue":"Of high quality or very small"},{"id":"1-12-1","level":1,"page":1,"word":"winter","accepted":["winter"],"clue":"The coldest season"},{"id":"1-12-2","level":1,"page":1,"word":"apple","accepted":["apple"],"clue":"A round fruit that grows on trees"},{"id":"1-12-3","level":1,"page":1,"word":"sound","accepted":["sound"],"clue":"Something heard by the ears"},{"id":"1-12-4","level":1,"page":1,"word":"mossy","accepted":["mossy"],"clue":"Covered in soft green growth"},{"id":"1-13-1","level":1,"page":1,"word":"yellow","accepted":["yellow"],"clue":"The color of sunshine"},{"id":"1-13-2","level":1,"page":1,"word":"shine","accepted":["shine"],"clue":"To give off bright reflected light"},{"id":"1-13-3","level":1,"page":1,"word":"chips","accepted":["chips"],"clue":"Thin crisp pieces of food"},{"id":"1-13-4","level":1,"page":1,"word":"beans","accepted":["beans"],"clue":"Edible seeds in pods"},{"id":"1-14-1","level":1,"page":1,"word":"mouth","accepted":["mouth"],"clue":"The opening used to eat or speak"},{"id":"1-14-2","level":1,"page":1,"word":"spray","accepted":["spray"],"clue":"To scatter fine drops of liquid"},{"id":"1-14-3","level":1,"page":1,"word":"year","accepted":["year"],"clue":"A period of twelve months"},{"id":"1-14-4","level":1,"page":1,"word":"truth","accepted":["truth"],"clue":"A fact that is real"},{"id":"1-15-1","level":1,"page":1,"word":"paper","accepted":["paper"],"clue":"Thin material for writing"},{"id":"1-15-2","level":1,"page":1,"word":"rabbit","accepted":["rabbit"],"clue":"A small animal with long ears"},{"id":"1-15-3","level":1,"page":1,"word":"feed","accepted":["feed"],"clue":"To give food to someone"},{"id":"1-15-4","level":1,"page":1,"word":"tallest","accepted":["tallest"],"clue":"The one with the greatest height"},{"id":"1-16-1","level":1,"page":1,"word":"inside","accepted":["inside"],"clue":"Within something"},{"id":"1-16-2","level":1,"page":1,"word":"frozen","accepted":["frozen"],"clue":"Turned to ice"},{"id":"1-16-3","level":1,"page":1,"word":"speak","accepted":["speak"],"clue":"To say words aloud"},{"id":"1-16-4","level":1,"page":1,"word":"cliffs","accepted":["cliffs"],"clue":"Steep rocky edges"},{"id":"1-17-1","level":1,"page":1,"word":"whale","accepted":["whale"],"clue":"A very large sea mammal"},{"id":"1-17-2","level":1,"page":1,"word":"market","accepted":["market"],"clue":"A place where goods are bought and sold"},{"id":"1-17-3","level":1,"page":1,"word":"flock","accepted":["flock"],"clue":"A group of birds together"},{"id":"1-17-4","level":1,"page":1,"word":"crunch","accepted":["crunch"],"clue":"To crush noisily with teeth"},{"id":"1-18-1","level":1,"page":1,"word":"lizard","accepted":["lizard"],"clue":"A scaly reptile with four legs"},{"id":"1-18-2","level":1,"page":1,"word":"beware","accepted":["beware"],"clue":"Be careful of danger"},{"id":"1-18-3","level":1,"page":1,"word":"sparkle","accepted":["sparkle"],"clue":"A small flash of light"},{"id":"1-18-4","level":1,"page":1,"word":"sweater","accepted":["sweater"],"clue":"A warm knitted top"},{"id":"1-19-1","level":1,"page":1,"word":"nurse","accepted":["nurse"],"clue":"A person who helps care for sick patients"},{"id":"1-19-2","level":1,"page":1,"word":"wrong","accepted":["wrong"],"clue":"Not correct"},{"id":"1-19-3","level":1,"page":1,"word":"hopped","accepted":["hopped"],"clue":"Jumped on one foot"},{"id":"1-19-4","level":1,"page":1,"word":"money","accepted":["money"],"clue":"Coins and notes used to buy things"},{"id":"2-1-1","level":1,"page":2,"word":"cabin","accepted":["cabin"],"clue":"A small simple house"},{"id":"2-1-2","level":1,"page":2,"word":"darkness","accepted":["darkness"],"clue":"A lack of light"},{"id":"2-1-3","level":1,"page":2,"word":"always","accepted":["always"],"clue":"At every time"},{"id":"2-1-4","level":1,"page":2,"word":"sprout","accepted":["sprout"],"clue":"A new shoot beginning to grow"},{"id":"2-2-1","level":1,"page":2,"word":"carve","accepted":["carve"],"clue":"To shape with a knife"},{"id":"2-2-2","level":1,"page":2,"word":"shadows","accepted":["shadows"],"clue":"Dark shapes made by blocking light"},{"id":"2-2-3","level":1,"page":2,"word":"morning","accepted":["morning"],"clue":"The early part of the day"},{"id":"2-2-4","level":1,"page":2,"word":"alive","accepted":["alive"],"clue":"Living rather than dead"},{"id":"2-3-1","level":1,"page":2,"word":"earth","accepted":["earth"],"clue":"The planet we live on"},{"id":"2-3-2","level":1,"page":2,"word":"friend","accepted":["friend"],"clue":"Someone you like and trust"},{"id":"2-3-3","level":1,"page":2,"word":"lovely","accepted":["lovely"],"clue":"Very pretty or pleasant"},{"id":"2-3-4","level":1,"page":2,"word":"return","accepted":["return"],"clue":"To go back"},{"id":"2-4-1","level":1,"page":2,"word":"half","accepted":["half"],"clue":"One of two equal parts"},{"id":"2-4-2","level":1,"page":2,"word":"swift","accepted":["swift"],"clue":"Moving very fast"},{"id":"2-4-3","level":1,"page":2,"word":"grandfather","accepted":["grandfather"],"clue":"Your parent's father"},{"id":"2-4-4","level":1,"page":2,"word":"footprints","accepted":["footprints"],"clue":"Marks left by feet"},{"id":"2-5-1","level":1,"page":2,"word":"fear","accepted":["fear"],"clue":"An unpleasant feeling of danger"},{"id":"2-5-2","level":1,"page":2,"word":"thirsty","accepted":["thirsty"],"clue":"Needing water to drink"},{"id":"2-5-3","level":1,"page":2,"word":"peer","accepted":["peer"],"clue":"A person the same age or social group"},{"id":"2-5-4","level":1,"page":2,"word":"gentle","accepted":["gentle"],"clue":"Kind and careful"},{"id":"2-6-1","level":1,"page":2,"word":"riddle","accepted":["riddle"],"clue":"A puzzling question"},{"id":"2-6-2","level":1,"page":2,"word":"voice","accepted":["voice"],"clue":"The sound someone makes when speaking"},{"id":"2-6-3","level":1,"page":2,"word":"peach","accepted":["peach"],"clue":"A soft juicy fruit with a fuzzy skin"},{"id":"2-6-4","level":1,"page":2,"word":"pancakes","accepted":["pancakes"],"clue":"Flat round breakfast cakes"},{"id":"2-7-1","level":1,"page":2,"word":"illness","accepted":["illness"],"clue":"A state of being sick"},{"id":"2-7-2","level":1,"page":2,"word":"lead","accepted":["lead"],"clue":"To guide someone or be first"},{"id":"2-7-3","level":1,"page":2,"word":"groan","accepted":["groan"],"clue":"A deep sad or painful sound"},{"id":"2-7-4","level":1,"page":2,"word":"sloth","accepted":["sloth"],"clue":"A slow-moving tree-dwelling animal"},{"id":"2-8-1","level":1,"page":2,"word":"knit","accepted":["knit"],"clue":"To make fabric with needles and yarn"},{"id":"2-8-2","level":1,"page":2,"word":"cloak","accepted":["cloak"],"clue":"A loose outer garment"},{"id":"2-8-3","level":1,"page":2,"word":"parade","accepted":["parade"],"clue":"A public march or celebration"},{"id":"2-8-4","level":1,"page":2,"word":"whistle","accepted":["whistle"],"clue":"A high-pitched sound made by blowing air"},{"id":"2-9-1","level":1,"page":2,"word":"total","accepted":["total"],"clue":"The complete amount"},{"id":"2-9-2","level":1,"page":2,"word":"indoors","accepted":["indoors"],"clue":"Inside a building"},{"id":"2-9-3","level":1,"page":2,"word":"trouble","accepted":["trouble"],"clue":"Difficulty or problems"},{"id":"2-9-4","level":1,"page":2,"word":"relax","accepted":["relax"],"clue":"To become less tense"},{"id":"2-10-1","level":1,"page":2,"word":"finish","accepted":["finish"],"clue":"To bring something to an end"},{"id":"2-10-2","level":1,"page":2,"word":"holiday","accepted":["holiday"],"clue":"A day of celebration or rest"},{"id":"2-10-3","level":1,"page":2,"word":"safety","accepted":["safety"],"clue":"Freedom from danger"},{"id":"2-10-4","level":1,"page":2,"word":"stout","accepted":["stout"],"clue":"Thickset or strongly built"},{"id":"2-11-1","level":1,"page":2,"word":"spiders","accepted":["spiders"],"clue":"Eight-legged creatures that spin webs"},{"id":"2-11-2","level":1,"page":2,"word":"entire","accepted":["entire"],"clue":"Whole and complete"},{"id":"2-11-3","level":1,"page":2,"word":"library","accepted":["library"],"clue":"A place to borrow books"},{"id":"2-11-4","level":1,"page":2,"word":"guide","accepted":["guide"],"clue":"A person or book that shows the way"},{"id":"2-12-1","level":1,"page":2,"word":"hospital","accepted":["hospital"],"clue":"A place where doctors treat patients"},{"id":"2-12-2","level":1,"page":2,"word":"mustard","accepted":["mustard"],"clue":"A yellow condiment used on sandwiches"},{"id":"2-12-3","level":1,"page":2,"word":"company","accepted":["company"],"clue":"A business or group of people"},{"id":"2-12-4","level":1,"page":2,"word":"ginger","accepted":["ginger"],"clue":"A spicy root used in cooking"},{"id":"2-13-1","level":1,"page":2,"word":"narrow","accepted":["narrow"],"clue":"Not wide"},{"id":"2-13-2","level":1,"page":2,"word":"medium","accepted":["medium"],"clue":"Of an intermediate size"},{"id":"2-13-3","level":1,"page":2,"word":"pennies","accepted":["pennies"],"clue":"Coins worth one cent each"},{"id":"2-13-4","level":1,"page":2,"word":"hiking","accepted":["hiking"],"clue":"Walking on trails outdoors"},{"id":"2-14-1","level":1,"page":2,"word":"foolish","accepted":["foolish"],"clue":"Unwise or lacking good judgment"},{"id":"2-14-2","level":1,"page":2,"word":"afraid","accepted":["afraid"],"clue":"Feeling fear"},{"id":"2-14-3","level":1,"page":2,"word":"remember","accepted":["remember"],"clue":"To keep information in your memory"},{"id":"2-14-4","level":1,"page":2,"word":"result","accepted":["result"],"clue":"The outcome of an action"},{"id":"2-15-1","level":1,"page":2,"word":"charming","accepted":["charming"],"clue":"Delightful or attractive"},{"id":"2-15-2","level":1,"page":2,"word":"source","accepted":["source"],"clue":"A place where something comes from"},{"id":"2-15-3","level":1,"page":2,"word":"pearls","accepted":["pearls"],"clue":"Shiny gems formed inside oysters"},{"id":"2-15-4","level":1,"page":2,"word":"tangy","accepted":["tangy"],"clue":"Having a sharp pleasantly sour flavor"},{"id":"2-16-1","level":1,"page":2,"word":"beasts","accepted":["beasts"],"clue":"Wild animals"},{"id":"2-16-2","level":1,"page":2,"word":"shivering","accepted":["shivering"],"clue":"Shaking because of cold or fear"},{"id":"2-16-3","level":1,"page":2,"word":"barge","accepted":["barge"],"clue":"A flat-bottomed boat for carrying cargo"},{"id":"2-16-4","level":1,"page":2,"word":"grumpily","accepted":["grumpily"],"clue":"In a bad-tempered way"},{"id":"2-17-1","level":1,"page":2,"word":"smoothly","accepted":["smoothly"],"clue":"Without bumps or difficulty"},{"id":"2-17-2","level":1,"page":2,"word":"cottage","accepted":["cottage"],"clue":"A small cozy country house"},{"id":"2-17-3","level":1,"page":2,"word":"humble","accepted":["humble"],"clue":"Not proud or boastful"},{"id":"2-17-4","level":1,"page":2,"word":"seventy","accepted":["seventy"],"clue":"The number after sixty-nine"},{"id":"2-18-1","level":1,"page":2,"word":"dangle","accepted":["dangle"],"clue":"To hang or swing loosely"},{"id":"2-18-2","level":1,"page":2,"word":"distance","accepted":["distance"],"clue":"The space between two places"},{"id":"2-18-3","level":1,"page":2,"word":"breeze","accepted":["breeze"],"clue":"A gentle current of air"},{"id":"2-18-4","level":1,"page":2,"word":"soared","accepted":["soared"],"clue":"Flew high into the sky"},{"id":"2-19-1","level":1,"page":2,"word":"frazzled","accepted":["frazzled"],"clue":"Overwhelmed or worn out"},{"id":"2-19-2","level":1,"page":2,"word":"bamboo","accepted":["bamboo"],"clue":"A very tall hollow-stemmed grass"},{"id":"3-1-1","level":2,"page":3,"word":"buttons","accepted":["buttons"],"clue":"Small fasteners on clothing"},{"id":"3-1-2","level":2,"page":3,"word":"cuddle","accepted":["cuddle"],"clue":"To hug or hold close"},{"id":"3-1-3","level":2,"page":3,"word":"puffy","accepted":["puffy"],"clue":"Soft, swollen and light"},{"id":"3-1-4","level":2,"page":3,"word":"tiptoed","accepted":["tiptoed"],"clue":"Walked quietly on the toes"},{"id":"3-2-1","level":2,"page":3,"word":"clever","accepted":["clever"],"clue":"Quick to understand"},{"id":"3-2-2","level":2,"page":3,"word":"basement","accepted":["basement"],"clue":"A room below ground level"},{"id":"3-2-3","level":2,"page":3,"word":"burlap","accepted":["burlap"],"clue":"Rough cloth made from plant fibers"},{"id":"3-2-4","level":2,"page":3,"word":"wetlands","accepted":["wetlands"],"clue":"Marshy places with water-soaked ground"},{"id":"3-3-1","level":2,"page":3,"word":"invite","accepted":["invite"],"clue":"To ask someone to come"},{"id":"3-3-2","level":2,"page":3,"word":"butterflies","accepted":["butterflies"],"clue":"Colorful winged insects"},{"id":"3-3-3","level":2,"page":3,"word":"kelp","accepted":["kelp"],"clue":"A large brown seaweed"},{"id":"3-3-4","level":2,"page":3,"word":"property","accepted":["property"],"clue":"Something someone owns"},{"id":"3-4-1","level":2,"page":3,"word":"carefully","accepted":["carefully"],"clue":"With attention and caution"},{"id":"3-4-2","level":2,"page":3,"word":"sniffling","accepted":["sniffling"],"clue":"Breathing through the nose repeatedly"},{"id":"3-4-3","level":2,"page":3,"word":"beneath","accepted":["beneath"],"clue":"Below or under"},{"id":"3-4-4","level":2,"page":3,"word":"tractor","accepted":["tractor"],"clue":"A farm vehicle that pulls equipment"},{"id":"3-5-1","level":2,"page":3,"word":"permit","accepted":["permit"],"clue":"To allow or give permission"},{"id":"3-5-2","level":2,"page":3,"word":"awning","accepted":["awning"],"clue":"A fabric shade above a doorway"},{"id":"3-5-3","level":2,"page":3,"word":"fickle","accepted":["fickle"],"clue":"Quick to change one's mind"},{"id":"3-5-4","level":2,"page":3,"word":"relief","accepted":["relief"],"clue":"A feeling of comfort after worry"},{"id":"3-6-1","level":2,"page":3,"word":"lunar","accepted":["lunar"],"clue":"Related to the moon"},{"id":"3-6-2","level":2,"page":3,"word":"boycotting","accepted":["boycotting"],"clue":"Refusing to buy or take part as a protest"},{"id":"3-6-3","level":2,"page":3,"word":"molten","accepted":["molten"],"clue":"Melted by intense heat"},{"id":"3-6-4","level":2,"page":3,"word":"elite","accepted":["elite"],"clue":"A select or outstanding group"},{"id":"3-7-1","level":2,"page":3,"word":"woven","accepted":["woven"],"clue":"Made by interlacing threads"},{"id":"3-7-2","level":2,"page":3,"word":"proclaim","accepted":["proclaim"],"clue":"To announce publicly"},{"id":"3-7-3","level":2,"page":3,"word":"thimble","accepted":["thimble"],"clue":"A metal covering worn on a finger while sewing"},{"id":"3-7-4","level":2,"page":3,"word":"custody","accepted":["custody"],"clue":"Being in someone's care or control"},{"id":"3-8-1","level":2,"page":3,"word":"granola","accepted":["granola"],"clue":"A breakfast mix of oats and nuts"},{"id":"3-8-2","level":2,"page":3,"word":"warrior","accepted":["warrior"],"clue":"A brave fighter"},{"id":"3-8-3","level":2,"page":3,"word":"rigid","accepted":["rigid"],"clue":"Hard and not easily bent"},{"id":"3-8-4","level":2,"page":3,"word":"fierce","accepted":["fierce"],"clue":"Very strong or aggressive"},{"id":"3-9-1","level":2,"page":3,"word":"laughter","accepted":["laughter"],"clue":"The sound of being amused"},{"id":"3-9-2","level":2,"page":3,"word":"salary","accepted":["salary"],"clue":"Money earned from a job"},{"id":"3-9-3","level":2,"page":3,"word":"disappear","accepted":["disappear"],"clue":"To vanish from sight"},{"id":"3-9-4","level":2,"page":3,"word":"hurdler","accepted":["hurdler"],"clue":"Someone who runs over obstacles in races"},{"id":"3-10-1","level":2,"page":3,"word":"lounge","accepted":["lounge"],"clue":"A comfortable sitting room"},{"id":"3-10-2","level":2,"page":3,"word":"jovial","accepted":["jovial"],"clue":"Cheerful and friendly"},{"id":"3-10-3","level":2,"page":3,"word":"inferior","accepted":["inferior"],"clue":"Lower in rank or quality"},{"id":"3-10-4","level":2,"page":3,"word":"December","accepted":["December"],"clue":"The twelfth month"},{"id":"3-11-1","level":2,"page":3,"word":"duration","accepted":["duration"],"clue":"The length of time something lasts"},{"id":"3-11-2","level":2,"page":3,"word":"dictionary","accepted":["dictionary"],"clue":"A reference book of word meanings"},{"id":"3-11-3","level":2,"page":3,"word":"business","accepted":["business"],"clue":"Buying and selling goods for profit"},{"id":"3-11-4","level":2,"page":3,"word":"reinstate","accepted":["reinstate"],"clue":"To restore to a previous position"},{"id":"3-12-1","level":2,"page":3,"word":"examine","accepted":["examine"],"clue":"To look closely to find facts"},{"id":"3-12-2","level":2,"page":3,"word":"versus","accepted":["versus"],"clue":"Compared with or against"},{"id":"3-12-3","level":2,"page":3,"word":"lullaby","accepted":["lullaby"],"clue":"A soft song to put a child to sleep"},{"id":"3-12-4","level":2,"page":3,"word":"opposite","accepted":["opposite"],"clue":"On the other side or completely different"},{"id":"3-13-1","level":2,"page":3,"word":"tissues","accepted":["tissues"],"clue":"Soft paper used for wiping"},{"id":"3-13-2","level":2,"page":3,"word":"marlin","accepted":["marlin"],"clue":"A large ocean fish with a pointed snout"},{"id":"3-13-3","level":2,"page":3,"word":"Halloween","accepted":["Halloween"],"clue":"A holiday with costumes and pumpkins"},{"id":"3-13-4","level":2,"page":3,"word":"compliment","accepted":["compliment"],"clue":"A kind remark of praise"},{"id":"3-14-1","level":2,"page":3,"word":"compromise","accepted":["compromise"],"clue":"An agreement where each side gives something up"},{"id":"3-14-2","level":2,"page":3,"word":"incident","accepted":["incident"],"clue":"An event or happening"},{"id":"3-14-3","level":2,"page":3,"word":"Japanese","accepted":["Japanese"],"clue":"Related to a country in East Asia"},{"id":"3-14-4","level":2,"page":3,"word":"investment","accepted":["investment"],"clue":"Money put into something to earn more"},{"id":"3-15-1","level":2,"page":3,"word":"bifocals","accepted":["bifocals"],"clue":"Eyeglasses with lenses for near and far vision"},{"id":"3-15-2","level":2,"page":3,"word":"cutlery","accepted":["cutlery"],"clue":"Knives, forks and spoons"},{"id":"3-15-3","level":2,"page":3,"word":"chisel","accepted":["chisel"],"clue":"A tool for cutting wood or stone"},{"id":"3-15-4","level":2,"page":3,"word":"fundraiser","accepted":["fundraiser"],"clue":"Someone raising money for a cause"},{"id":"3-16-1","level":2,"page":3,"word":"geologist","accepted":["geologist"],"clue":"A scientist who studies Earth and rocks"},{"id":"3-16-2","level":2,"page":3,"word":"bellowed","accepted":["bellowed"],"clue":"Shouted with a deep loud voice"},{"id":"3-16-3","level":2,"page":3,"word":"organism","accepted":["organism"],"clue":"A living thing"},{"id":"3-16-4","level":2,"page":3,"word":"quail","accepted":["quail"],"clue":"A small ground-dwelling game bird"},{"id":"3-17-1","level":2,"page":3,"word":"atmosphere","accepted":["atmosphere"],"clue":"The layer of air surrounding Earth"},{"id":"3-17-2","level":2,"page":3,"word":"disappointment","accepted":["disappointment"],"clue":"Sadness after hopes are not met"},{"id":"3-17-3","level":2,"page":3,"word":"truant","accepted":["truant"],"clue":"A student who stays away from school without permission"},{"id":"3-17-4","level":2,"page":3,"word":"pamphlet","accepted":["pamphlet"],"clue":"A small booklet of information"},{"id":"3-18-1","level":2,"page":3,"word":"helium","accepted":["helium"],"clue":"A light gas used in balloons"},{"id":"3-18-2","level":2,"page":3,"word":"suggested","accepted":["suggested"],"clue":"Put forward an idea"},{"id":"3-18-3","level":2,"page":3,"word":"chimpanzees","accepted":["chimpanzees"],"clue":"Very intelligent great apes"},{"id":"3-18-4","level":2,"page":3,"word":"desperate","accepted":["desperate"],"clue":"Feeling little hope"},{"id":"3-19-1","level":2,"page":3,"word":"annoyance","accepted":["annoyance"],"clue":"A feeling of irritation"},{"id":"3-19-2","level":2,"page":3,"word":"interruption","accepted":["interruption"],"clue":"An unexpected break in activity"},{"id":"3-19-3","level":2,"page":3,"word":"concentrate","accepted":["concentrate"],"clue":"To focus your attention"},{"id":"3-19-4","level":2,"page":3,"word":"piñata","accepted":["piñata"],"clue":"A colorful decorated container broken at a party"},{"id":"4-1-1","level":2,"page":4,"word":"territory","accepted":["territory"],"clue":"Land belonging to a place or group"},{"id":"4-1-2","level":2,"page":4,"word":"stragglers","accepted":["stragglers"],"clue":"People who fall behind"},{"id":"4-1-3","level":2,"page":4,"word":"albino","accepted":["albino"],"clue":"A person or animal lacking usual pigment"},{"id":"4-1-4","level":2,"page":4,"word":"ridiculous","accepted":["ridiculous"],"clue":"Very silly or unreasonable"},{"id":"4-2-1","level":2,"page":4,"word":"monorail","accepted":["monorail"],"clue":"A train running on a single rail"},{"id":"4-2-2","level":2,"page":4,"word":"exploratory","accepted":["exploratory"],"clue":"Intended for investigation"},{"id":"4-2-3","level":2,"page":4,"word":"indigo","accepted":["indigo"],"clue":"A deep blue-purple color"},{"id":"4-2-4","level":2,"page":4,"word":"bratwurst","accepted":["bratwurst"],"clue":"A German-style sausage"},{"id":"4-3-1","level":2,"page":4,"word":"alphabetical","accepted":["alphabetical"],"clue":"Arranged in letter order"},{"id":"4-3-2","level":2,"page":4,"word":"integrity","accepted":["integrity"],"clue":"Being honest and following strong principles"},{"id":"4-3-3","level":2,"page":4,"word":"Oregon","accepted":["Oregon"],"clue":"A state in the northwestern United States"},{"id":"4-3-4","level":2,"page":4,"word":"rebuttal","accepted":["rebuttal"],"clue":"An answer arguing against a claim"},{"id":"4-4-1","level":2,"page":4,"word":"prejudice","accepted":["prejudice"],"clue":"An unfair judgment formed in advance"},{"id":"4-4-2","level":2,"page":4,"word":"solidarity","accepted":["solidarity"],"clue":"Unity and mutual support"},{"id":"4-4-3","level":2,"page":4,"word":"calico","accepted":["calico"],"clue":"A colorful patterned cotton fabric"},{"id":"4-4-4","level":2,"page":4,"word":"sputnik","accepted":["sputnik"],"clue":"An early satellite placed in orbit"},{"id":"4-5-1","level":2,"page":4,"word":"cartridge","accepted":["cartridge"],"clue":"A container for ammunition or printer ink"},{"id":"4-5-2","level":2,"page":4,"word":"segregation","accepted":["segregation"],"clue":"The enforced separation of groups"},{"id":"4-5-3","level":2,"page":4,"word":"tortillas","accepted":["tortillas"],"clue":"Thin flat round Mexican breads"},{"id":"4-5-4","level":2,"page":4,"word":"civilian","accepted":["civilian"],"clue":"A person not in the military"},{"id":"4-6-1","level":2,"page":4,"word":"fertilizer","accepted":["fertilizer","fertiliser"],"clue":"A substance added to soil to help plants grow"},{"id":"4-6-2","level":2,"page":4,"word":"apprentice","accepted":["apprentice"],"clue":"A person learning a trade from an expert"},{"id":"4-6-3","level":2,"page":4,"word":"synthetic","accepted":["synthetic"],"clue":"Made by chemical processes rather than naturally"},{"id":"4-6-4","level":2,"page":4,"word":"Caesar","accepted":["Caesar"],"clue":"A famous ancient Roman leader's surname"},{"id":"4-7-2","level":2,"page":4,"word":"glamorous","accepted":["glamorous"],"clue":"Attractive and full of style"},{"id":"4-7-3","level":2,"page":4,"word":"salamanders","accepted":["salamanders"],"clue":"Amphibians with tails like lizards"},{"id":"4-7-4","level":2,"page":4,"word":"suspension","accepted":["suspension"],"clue":"The act of temporarily stopping something"},{"id":"4-8-1","level":2,"page":4,"word":"sorceress","accepted":["sorceress"],"clue":"A woman said to use magic"},{"id":"4-8-2","level":2,"page":4,"word":"fictitious","accepted":["fictitious"],"clue":"Invented rather than real"},{"id":"4-8-3","level":2,"page":4,"word":"convertible","accepted":["convertible"],"clue":"A car with a folding or removable roof"},{"id":"4-8-4","level":2,"page":4,"word":"snarkiness","accepted":["snarkiness"],"clue":"Sarcastic or rude remarks"},{"id":"4-9-1","level":2,"page":4,"word":"singularity","accepted":["singularity"],"clue":"Being unique or unusual"},{"id":"4-9-2","level":2,"page":4,"word":"collateral","accepted":["collateral"],"clue":"Something held as security for a loan"},{"id":"4-9-3","level":2,"page":4,"word":"initiation","accepted":["initiation"],"clue":"The act of formally admitting someone into a group"},{"id":"4-9-4","level":2,"page":4,"word":"mascara","accepted":["mascara"],"clue":"Cosmetic darkening eyelashes"},{"id":"4-10-1","level":2,"page":4,"word":"battalion","accepted":["battalion"],"clue":"A large organized group of soldiers"},{"id":"4-10-2","level":2,"page":4,"word":"precedent","accepted":["precedent"],"clue":"An earlier example or decision used as a guide"},{"id":"4-10-3","level":2,"page":4,"word":"materialize","accepted":["materialize","materialise"],"clue":"To become real or appear"},{"id":"4-10-4","level":2,"page":4,"word":"magnesium","accepted":["magnesium"],"clue":"A silvery chemical element essential for the body"},{"id":"4-11-1","level":2,"page":4,"word":"perimeter","accepted":["perimeter"],"clue":"The distance around the edge of a shape"},{"id":"4-11-2","level":2,"page":4,"word":"haddock","accepted":["haddock"],"clue":"A fish commonly used as food"},{"id":"4-11-4","level":2,"page":4,"word":"optometrist","accepted":["optometrist"],"clue":"A specialist who examines eyes"},{"id":"4-12-1","level":2,"page":4,"word":"meticulous","accepted":["meticulous"],"clue":"Extremely careful about details"},{"id":"4-12-2","level":2,"page":4,"word":"cosmodrome","accepted":["cosmodrome"],"clue":"A facility for launching rockets"},{"id":"4-12-3","level":2,"page":4,"word":"hypothermia","accepted":["hypothermia"],"clue":"A dangerously low body temperature"},{"id":"4-12-4","level":2,"page":4,"word":"schnauzer","accepted":["schnauzer"],"clue":"A breed of dog with a long muzzle and beard"},{"id":"4-13-1","level":2,"page":4,"word":"megahertz","accepted":["megahertz"],"clue":"A measure of frequency of a million cycles per second"},{"id":"4-13-2","level":2,"page":4,"word":"regolith","accepted":["regolith"],"clue":"Loose rocky material covering solid rock"},{"id":"4-13-3","level":2,"page":4,"word":"arthritis","accepted":["arthritis"],"clue":"Inflammation of a joint"},{"id":"4-13-4","level":2,"page":4,"word":"persnickety","accepted":["persnickety"],"clue":"Fussy about small details"},{"id":"4-14-1","level":2,"page":4,"word":"insurrection","accepted":["insurrection"],"clue":"A violent uprising against authority"},{"id":"4-14-2","level":2,"page":4,"word":"pheasants","accepted":["pheasants"],"clue":"Long-tailed game birds"},{"id":"4-14-3","level":2,"page":4,"word":"pentathletes","accepted":["pentathletes"],"clue":"Athletes competing in five events"},{"id":"4-14-4","level":2,"page":4,"word":"Senegal","accepted":["Senegal"],"clue":"A country in West Africa"},{"id":"4-15-1","level":2,"page":4,"word":"fascism","accepted":["fascism"],"clue":"A political system of extreme authoritarian rule"},{"id":"4-15-2","level":2,"page":4,"word":"duende","accepted":["duende"],"clue":"A special mysterious charm or spirit"},{"id":"4-15-3","level":2,"page":4,"word":"predecessor","accepted":["predecessor"],"clue":"A person who came before another"},{"id":"4-15-4","level":2,"page":4,"word":"Polaroid","accepted":["Polaroid"],"clue":"A brand known for instant photographs"},{"id":"4-16-1","level":2,"page":4,"word":"reservoir","accepted":["reservoir"],"clue":"A large lake used to store water"},{"id":"4-16-2","level":2,"page":4,"word":"matrilineal","accepted":["matrilineal"],"clue":"Related to descent through the mother's family"},{"id":"4-16-3","level":2,"page":4,"word":"conscious","accepted":["conscious"],"clue":"Awake and aware of surroundings"},{"id":"4-16-4","level":2,"page":4,"word":"arnica","accepted":["arnica"],"clue":"A small plant also called mountain tobacco"},{"id":"4-17-1","level":2,"page":4,"word":"carrion","accepted":["carrion"],"clue":"The dead and decaying flesh of animals"},{"id":"4-17-2","level":2,"page":4,"word":"glaucoma","accepted":["glaucoma"],"clue":"A condition that can damage the optic nerve"},{"id":"4-17-3","level":2,"page":4,"word":"piteously","accepted":["piteously"],"clue":"In a sorrowful or pleading way"},{"id":"4-17-4","level":2,"page":4,"word":"adrenaline","accepted":["adrenaline"],"clue":"A hormone linked to the body's emergency response"},{"id":"4-18-1","level":2,"page":4,"word":"elliptical","accepted":["elliptical"],"clue":"Having the shape of a stretched circle"},{"id":"4-18-2","level":2,"page":4,"word":"staccato","accepted":["staccato"],"clue":"Musical notes played short and detached"},{"id":"4-18-3","level":2,"page":4,"word":"iridium","accepted":["iridium"],"clue":"A dense metallic chemical element"},{"id":"4-18-4","level":2,"page":4,"word":"romerillo","accepted":["romerillo"],"clue":"A tropical plant also called Mexican pepperleaf"},{"id":"4-19-1","level":2,"page":4,"word":"cemetery","accepted":["cemetery"],"clue":"A burial ground"},{"id":"4-19-2","level":2,"page":4,"word":"dachshund","accepted":["dachshund"],"clue":"A small dog breed with long body and short legs"},{"id":"4-19-3","level":2,"page":4,"word":"rendezvous","accepted":["rendezvous"],"clue":"A planned meeting at an agreed time"},{"id":"4-19-4","level":2,"page":4,"word":"Aeolus","accepted":["Aeolus"],"clue":"The name of a figure in Greek mythology"},{"id":"5-1-1","level":3,"page":5,"word":"newt","accepted":["newt"],"clue":"A small amphibian resembling a lizard"},{"id":"5-1-2","level":3,"page":5,"word":"thrummed","accepted":["thrummed"],"clue":"Made a dull repeated rumbling sound"},{"id":"5-1-3","level":3,"page":5,"word":"censers","accepted":["censers"],"clue":"Religious containers used for burning incense"},{"id":"5-1-4","level":3,"page":5,"word":"lapels","accepted":["lapels"],"clue":"Folded parts of a jacket near the collar"},{"id":"5-2-1","level":3,"page":5,"word":"generosity","accepted":["generosity"],"clue":"Willingness to give and share"},{"id":"5-2-2","level":3,"page":5,"word":"burnished","accepted":["burnished"],"clue":"Made shiny by rubbing"},{"id":"5-2-3","level":3,"page":5,"word":"embankment","accepted":["embankment"],"clue":"A raised bank beside a river or road"},{"id":"5-2-4","level":3,"page":5,"word":"unrelenting","accepted":["unrelenting"],"clue":"Never giving up or stopping"},{"id":"5-3-1","level":3,"page":5,"word":"wallowing","accepted":["wallowing"],"clue":"Rolling or moving around in mud"},{"id":"5-3-2","level":3,"page":5,"word":"imperial","accepted":["imperial"],"clue":"Related to an empire or emperor"},{"id":"5-3-3","level":3,"page":5,"word":"mortar","accepted":["mortar"],"clue":"A mixture used to bind bricks"},{"id":"5-3-4","level":3,"page":5,"word":"arsonists","accepted":["arsonists"],"clue":"People who deliberately set fires"},{"id":"5-4-1","level":3,"page":5,"word":"mewling","accepted":["mewling"],"clue":"Crying with a weak high-pitched sound"},{"id":"5-4-2","level":3,"page":5,"word":"generator","accepted":["generator"],"clue":"A machine that produces power"},{"id":"5-4-3","level":3,"page":5,"word":"persistent","accepted":["persistent"],"clue":"Continuing despite difficulty"},{"id":"5-4-4","level":3,"page":5,"word":"authority","accepted":["authority"],"clue":"The right or power to give orders"},{"id":"5-5-1","level":3,"page":5,"word":"panoramic","accepted":["panoramic"],"clue":"Showing a wide view of a scene"},{"id":"5-5-2","level":3,"page":5,"word":"Doberman","accepted":["Doberman"],"clue":"A breed of large short-haired dog"},{"id":"5-5-3","level":3,"page":5,"word":"dominion","accepted":["dominion"],"clue":"A region under the rule of someone"},{"id":"5-5-4","level":3,"page":5,"word":"decisively","accepted":["decisively"],"clue":"In a firm and determined way"},{"id":"5-6-1","level":3,"page":5,"word":"gauntlets","accepted":["gauntlets"],"clue":"Protective gloves with long wrists"},{"id":"5-6-2","level":3,"page":5,"word":"inanimate","accepted":["inanimate"],"clue":"Not alive"},{"id":"5-6-3","level":3,"page":5,"word":"lemmings","accepted":["lemmings"],"clue":"Small rodents sometimes moving in large groups"},{"id":"5-6-4","level":3,"page":5,"word":"auditory","accepted":["auditory"],"clue":"Related to hearing"},{"id":"5-7-1","level":3,"page":5,"word":"appetizing","accepted":["appetizing"],"clue":"Making someone want to eat"},{"id":"5-7-2","level":3,"page":5,"word":"sentinels","accepted":["sentinels"],"clue":"People standing guard"},{"id":"5-7-3","level":3,"page":5,"word":"frequency","accepted":["frequency"],"clue":"How often something happens"},{"id":"5-7-4","level":3,"page":5,"word":"self-sufficient","accepted":["self-sufficient"],"clue":"Able to provide for your own needs"},{"id":"5-8-1","level":3,"page":5,"word":"prospective","accepted":["prospective"],"clue":"Expected to happen or likely to become"},{"id":"5-8-2","level":3,"page":5,"word":"subscription","accepted":["subscription"],"clue":"A paid arrangement for regular deliveries"},{"id":"5-8-3","level":3,"page":5,"word":"blithely","accepted":["blithely"],"clue":"In a carefree or cheerful way"},{"id":"5-8-4","level":3,"page":5,"word":"conspicuous","accepted":["conspicuous"],"clue":"Easy to notice or see"},{"id":"5-9-1","level":3,"page":5,"word":"preconception","accepted":["preconception"],"clue":"An idea formed before knowing all the facts"},{"id":"5-9-2","level":3,"page":5,"word":"procession","accepted":["procession"],"clue":"A group moving forward in a formal line"},{"id":"5-9-3","level":3,"page":5,"word":"tenuous","accepted":["tenuous"],"clue":"Weak or very thin"},{"id":"5-9-4","level":3,"page":5,"word":"perpendicular","accepted":["perpendicular"],"clue":"At right angles to a line"},{"id":"5-10-1","level":3,"page":5,"word":"hemisphere","accepted":["hemisphere"],"clue":"One half of a sphere"},{"id":"5-10-2","level":3,"page":5,"word":"seminal","accepted":["seminal"],"clue":"Very important or strongly influential"},{"id":"5-10-3","level":3,"page":5,"word":"saxophone","accepted":["saxophone"],"clue":"A brass musical instrument with keys"},{"id":"5-10-4","level":3,"page":5,"word":"torrential","accepted":["torrential"],"clue":"Having very heavy rain"},{"id":"5-11-1","level":3,"page":5,"word":"reluctance","accepted":["reluctance"],"clue":"Unwillingness or hesitation"},{"id":"5-11-2","level":3,"page":5,"word":"consulate","accepted":["consulate"],"clue":"A diplomatic office in another country"},{"id":"5-11-3","level":3,"page":5,"word":"canter","accepted":["canter"],"clue":"A horse's gentle movement between a walk and gallop"},{"id":"5-11-4","level":3,"page":5,"word":"sauntered","accepted":["sauntered"],"clue":"Walked in a relaxed manner"},{"id":"5-12-1","level":3,"page":5,"word":"propeller","accepted":["propeller"],"clue":"A device with blades that pushes a vehicle forward"},{"id":"5-12-2","level":3,"page":5,"word":"modish","accepted":["modish"],"clue":"Following fashionable but short-lived styles"},{"id":"5-12-3","level":3,"page":5,"word":"cuisine","accepted":["cuisine"],"clue":"A style of cooking, often from a region"},{"id":"5-12-4","level":3,"page":5,"word":"juniper","accepted":["juniper"],"clue":"An evergreen shrub with needle-like leaves"},{"id":"5-13-1","level":3,"page":5,"word":"settee","accepted":["settee"],"clue":"A small sofa or bench"},{"id":"5-13-2","level":3,"page":5,"word":"unconscious","accepted":["unconscious"],"clue":"Not awake or unaware"},{"id":"5-13-3","level":3,"page":5,"word":"influenza","accepted":["influenza"],"clue":"A contagious respiratory viral illness"},{"id":"5-13-4","level":3,"page":5,"word":"palazzo","accepted":["palazzo"],"clue":"An Italian-style large public building"},{"id":"5-14-1","level":3,"page":5,"word":"finesse","accepted":["finesse"],"clue":"Great skill or delicate handling"},{"id":"5-14-2","level":3,"page":5,"word":"foliage","accepted":["foliage"],"clue":"The leaves of a plant collectively"},{"id":"5-14-3","level":3,"page":5,"word":"odorant","accepted":["odorant","odourant"],"clue":"A substance that gives off a smell"},{"id":"5-14-4","level":3,"page":5,"word":"irrelevant","accepted":["irrelevant"],"clue":"Not connected with the matter being discussed"},{"id":"5-15-1","level":3,"page":5,"word":"curriculum","accepted":["curriculum"],"clue":"The courses and subjects taught in a school"},{"id":"5-15-2","level":3,"page":5,"word":"quizzically","accepted":["quizzically"],"clue":"In a puzzled or questioning manner"},{"id":"5-15-4","level":3,"page":5,"word":"diplomatically","accepted":["diplomatically"],"clue":"In a careful and tactful way"},{"id":"5-16-1","level":3,"page":5,"word":"enigmatic","accepted":["enigmatic"],"clue":"Mysterious and difficult to understand"},{"id":"5-16-2","level":3,"page":5,"word":"increments","accepted":["increments"],"clue":"Small increases in amount"},{"id":"5-16-3","level":3,"page":5,"word":"crocheted","accepted":["crocheted"],"clue":"Made fabric using a hooked needle"},{"id":"5-16-4","level":3,"page":5,"word":"calibrate","accepted":["calibrate"],"clue":"To adjust an instrument for accurate measurement"},{"id":"5-17-1","level":3,"page":5,"word":"hypothesis","accepted":["hypothesis"],"clue":"An idea that can be tested through investigation"},{"id":"5-17-2","level":3,"page":5,"word":"reassurance","accepted":["reassurance"],"clue":"Comfort given to reduce worry"},{"id":"5-17-3","level":3,"page":5,"word":"apologetic","accepted":["apologetic"],"clue":"Showing regret for something"},{"id":"5-17-4","level":3,"page":5,"word":"credenza","accepted":["credenza"],"clue":"A sideboard or cabinet"},{"id":"6-1-1","level":3,"page":6,"word":"comprehensible","accepted":["comprehensible"],"clue":"Able to be understood"},{"id":"6-1-2","level":3,"page":6,"word":"protectorate","accepted":["protectorate"],"clue":"A territory governed or protected by a stronger state"},{"id":"6-1-3","level":3,"page":6,"word":"Delaware","accepted":["Delaware"],"clue":"An eastern U.S. state"},{"id":"6-1-4","level":3,"page":6,"word":"phenomenon","accepted":["phenomenon"],"clue":"An event or fact that can be observed"},{"id":"6-2-1","level":3,"page":6,"word":"trenchant","accepted":["trenchant"],"clue":"Expressing strong criticism sharply"},{"id":"6-2-2","level":3,"page":6,"word":"pulmonary","accepted":["pulmonary"],"clue":"Related to the lungs"},{"id":"6-2-3","level":3,"page":6,"word":"undulating","accepted":["undulating"],"clue":"Moving in smooth waves"},{"id":"6-2-4","level":3,"page":6,"word":"alleviate","accepted":["alleviate"],"clue":"To make pain or trouble less severe"},{"id":"6-3-1","level":3,"page":6,"word":"despondent","accepted":["despondent"],"clue":"Very unhappy and without hope"},{"id":"6-3-2","level":3,"page":6,"word":"approximation","accepted":["approximation"],"clue":"A rough estimate rather than exact figure"},{"id":"6-3-3","level":3,"page":6,"word":"phantasmal","accepted":["phantasmal"],"clue":"Ghostly or unreal"},{"id":"6-3-4","level":3,"page":6,"word":"legation","accepted":["legation"],"clue":"An official diplomatic representative's office"},{"id":"6-4-1","level":3,"page":6,"word":"echolocation","accepted":["echolocation"],"clue":"Finding objects by reflected sound"},{"id":"6-4-2","level":3,"page":6,"word":"glycerin","accepted":["glycerin","glycerine"],"clue":"A clear sweet liquid used in medicines"},{"id":"6-4-3","level":3,"page":6,"word":"brazier","accepted":["brazier","brasier"],"clue":"A person who works with hot metal"},{"id":"6-4-4","level":3,"page":6,"word":"diffidence","accepted":["diffidence"],"clue":"Being reserved or lacking confidence"},{"id":"6-5-1","level":3,"page":6,"word":"conflagration","accepted":["conflagration"],"clue":"A large destructive fire"},{"id":"6-5-2","level":3,"page":6,"word":"alabaster","accepted":["alabaster"],"clue":"A pale fine-grained stone used for sculpture"},{"id":"6-5-3","level":3,"page":6,"word":"arachnid","accepted":["arachnid"],"clue":"An animal group including spiders and scorpions"},{"id":"6-5-4","level":3,"page":6,"word":"butane","accepted":["butane"],"clue":"A gas used in lighters"},{"id":"6-6-1","level":3,"page":6,"word":"thermotaxis","accepted":["thermotaxis"],"clue":"Movement toward or away from heat"},{"id":"6-6-2","level":3,"page":6,"word":"arugula","accepted":["arugula"],"clue":"A peppery leafy salad plant"},{"id":"6-6-3","level":3,"page":6,"word":"pathologically","accepted":["pathologically"],"clue":"In a way connected with disease"},{"id":"6-6-4","level":3,"page":6,"word":"cataract","accepted":["cataract"],"clue":"Clouding of the eye's natural lens"},{"id":"6-7-1","level":3,"page":6,"word":"inaugurate","accepted":["inaugurate"],"clue":"To formally begin or introduce"},{"id":"6-7-2","level":3,"page":6,"word":"vibrometer","accepted":["vibrometer"],"clue":"An instrument measuring vibrations"},{"id":"6-7-3","level":3,"page":6,"word":"affinities","accepted":["affinities"],"clue":"Natural attractions or close connections"},{"id":"6-7-4","level":3,"page":6,"word":"quiche","accepted":["quiche"],"clue":"A savory baked dish in a pastry crust"},{"id":"6-8-1","level":3,"page":6,"word":"bioluminescence","accepted":["bioluminescence"],"clue":"The production of light by living things"},{"id":"6-8-2","level":3,"page":6,"word":"mayonnaise","accepted":["mayonnaise"],"clue":"A thick creamy sauce made from oil and egg"},{"id":"6-8-3","level":3,"page":6,"word":"embodiment","accepted":["embodiment"],"clue":"The visible form of an idea or quality"},{"id":"6-8-4","level":3,"page":6,"word":"euphemism","accepted":["euphemism"],"clue":"A mild expression replacing a harsh one"},{"id":"6-9-1","level":3,"page":6,"word":"chickadee","accepted":["chickadee"],"clue":"A small bird with a black cap"},{"id":"6-9-2","level":3,"page":6,"word":"sputum","accepted":["sputum"],"clue":"Mucus coughed up from airways"},{"id":"6-9-3","level":3,"page":6,"word":"porpoises","accepted":["porpoises"],"clue":"Small whales or dolphins"},{"id":"6-9-4","level":3,"page":6,"word":"acolyte","accepted":["acolyte"],"clue":"A person assisting in religious services"},{"id":"6-10-1","level":3,"page":6,"word":"asymmetric","accepted":["asymmetric"],"clue":"Not the same on both sides"},{"id":"6-10-2","level":3,"page":6,"word":"cerulean","accepted":["cerulean"],"clue":"A pale sky-blue color"},{"id":"6-10-3","level":3,"page":6,"word":"psychological","accepted":["psychological"],"clue":"Related to the mind and behavior"},{"id":"6-10-4","level":3,"page":6,"word":"innocuous","accepted":["innocuous"],"clue":"Harmless or unlikely to offend"},{"id":"6-11-1","level":3,"page":6,"word":"sharpei","accepted":["sharpei"],"clue":"A wrinkled dog breed with loose folds of skin"},{"id":"6-11-2","level":3,"page":6,"word":"cul-de-sac","accepted":["cul-de-sac"],"clue":"A dead-end street"},{"id":"6-11-3","level":3,"page":6,"word":"assemblage","accepted":["assemblage"],"clue":"A group of things brought together"},{"id":"6-11-4","level":3,"page":6,"word":"Tripoli","accepted":["Tripoli"],"clue":"The capital of Libya"},{"id":"6-12-1","level":3,"page":6,"word":"endothermy","accepted":["endothermy"],"clue":"The use of internally produced heat in animals"},{"id":"6-12-2","level":3,"page":6,"word":"electrolytes","accepted":["electrolytes"],"clue":"Substances that conduct electricity when dissolved"},{"id":"6-12-3","level":3,"page":6,"word":"leprosy","accepted":["leprosy"],"clue":"A long-term infectious disease affecting nerves and skin"},{"id":"6-12-4","level":3,"page":6,"word":"neurological","accepted":["neurological"],"clue":"Related to the nervous system"},{"id":"6-13-1","level":3,"page":6,"word":"éclair","accepted":["éclair"],"clue":"A small French pastry filled with cream"},{"id":"6-13-2","level":3,"page":6,"word":"ototoxic","accepted":["ototoxic"],"clue":"Harmful to the ear"},{"id":"6-13-3","level":3,"page":6,"word":"eureka","accepted":["eureka"],"clue":"A cry of joy upon discovering something"},{"id":"6-13-4","level":3,"page":6,"word":"mysticetes","accepted":["mysticetes"],"clue":"A family of filter-feeding marine mammals"},{"id":"6-14-1","level":3,"page":6,"word":"irascibility","accepted":["irascibility"],"clue":"A tendency to get angry easily"},{"id":"6-14-2","level":3,"page":6,"word":"Aphrodite","accepted":["Aphrodite"],"clue":"The Greek goddess of love and beauty"},{"id":"6-14-3","level":3,"page":6,"word":"annelids","accepted":["annelids"],"clue":"Segmented worms"},{"id":"6-14-4","level":3,"page":6,"word":"Eritrea","accepted":["Eritrea"],"clue":"A country on the Red Sea in Africa"},{"id":"6-15-1","level":3,"page":6,"word":"a cappella","accepted":["a cappella"],"clue":"Singing without instrumental accompaniment"},{"id":"6-15-2","level":3,"page":6,"word":"bogong moth","accepted":["bogong moth"],"clue":"A large Australian moth species"},{"id":"6-15-3","level":3,"page":6,"word":"kerosene","accepted":["kerosene","kerosine"],"clue":"A fuel used for lamps and jet engines"},{"id":"6-15-4","level":3,"page":6,"word":"forsythia","accepted":["forsythia"],"clue":"A flowering shrub with bright yellow blooms"},{"id":"6-16-1","level":3,"page":6,"word":"Amharic","accepted":["Amharic"],"clue":"A language spoken in Ethiopia"},{"id":"6-16-2","level":3,"page":6,"word":"yakuza","accepted":["yakuza"],"clue":"A member of an organized criminal group in Japan"},{"id":"6-16-3","level":3,"page":6,"word":"Pennsylvania","accepted":["Pennsylvania"],"clue":"A U.S. state famous for Philadelphia"},{"id":"6-16-4","level":3,"page":6,"word":"salicylic acid","accepted":["salicylic acid"],"clue":"A chemical compound used in skin treatments"},{"id":"6-17-1","level":3,"page":6,"word":"Gloucester","accepted":["Gloucester"],"clue":"A city in England with a famous cathedral"},{"id":"6-17-2","level":3,"page":6,"word":"sensilla","accepted":["sensilla"],"clue":"Sensitive structures on insects"},{"id":"6-17-3","level":3,"page":6,"word":"ampulla","accepted":["ampulla"],"clue":"A small enlarged chamber or vial"},{"id":"6-17-4","level":3,"page":6,"word":"stomatopods","accepted":["stomatopods"],"clue":"Marine crustaceans also called mantis shrimps"},{"id":"6-18-1","level":3,"page":6,"word":"prosciutto","accepted":["prosciutto"],"clue":"Thinly sliced Italian cured ham"},{"id":"6-18-2","level":3,"page":6,"word":"eponymous","accepted":["eponymous"],"clue":"Named after a person"},{"id":"6-18-3","level":3,"page":6,"word":"solenodon","accepted":["solenodon"],"clue":"A rare mammal native to Caribbean islands"},{"id":"6-18-4","level":3,"page":6,"word":"frankincense","accepted":["frankincense"],"clue":"A fragrant resin burned as incense"},{"id":"6-19-1","level":3,"page":6,"word":"chitinous","accepted":["chitinous"],"clue":"Containing a tough substance in insect shells"},{"id":"6-19-2","level":3,"page":6,"word":"Presbyterian","accepted":["Presbyterian"],"clue":"Related to a Protestant Christian denomination"},{"id":"6-19-3","level":3,"page":6,"word":"Sierra Leone","accepted":["Sierra Leone"],"clue":"A country in West Africa"},{"id":"6-19-4","level":3,"page":6,"word":"trichobothria","accepted":["trichobothria"],"clue":"Special sensory hairs on spiders"},{"id":"6-20-1","level":3,"page":6,"word":"Krio","accepted":["Krio"],"clue":"A language spoken in Sierra Leone"},{"id":"6-20-2","level":3,"page":6,"word":"lactobacillus","accepted":["lactobacillus"],"clue":"A type of bacteria found in fermented foods"},{"id":"6-20-3","level":3,"page":6,"word":"Bildungsroman","accepted":["Bildungsroman"],"clue":"A German coming-of-age novel"},{"id":"6-20-4","level":3,"page":6,"word":"Cappadocia","accepted":["Cappadocia"],"clue":"A historic region in central Turkey"},{"id":"6-21-1","level":3,"page":6,"word":"Addis Ababa","accepted":["Addis Ababa"],"clue":"The capital of Ethiopia"},{"id":"6-21-2","level":3,"page":6,"word":"spes phthisica","accepted":["spes phthisica"],"clue":"A Latin term for a wasting lung disease"},{"id":"6-21-3","level":3,"page":6,"word":"vibrissae","accepted":["vibrissae"],"clue":"Long stiff whiskers used as sensory hairs"}];
+const $=id=>document.getElementById(id);
+const KEY='nithya-spelling-bee-v1';
+const byId=new Map(WORDS.map(w=>[w.id,w]));
+const emptyState=()=>({version:1,unlocked:0,spentBreaks:0,stats:{points:0,streak:0,best:0,correct:0,firstTry:0,attempts:0},words:{},history:[],day:'',dayCorrect:0,sounds:true,voiceURI:'',voiceRate:0.85,voiceStyle:'coach',inputMode:'type'});
+let state=emptyState();
+try{let saved=JSON.parse(localStorage.getItem(KEY)||'null'); if(saved&&saved.version===1){state={...emptyState(),...saved,stats:{...emptyState().stats,...saved.stats}}}}catch(e){}
+let level=1, mode='all', current=null,tries=0,hintUsed=false,done=false,step=Math.max(0,...Object.values(state.words).map(r=>r.last||0)),lastId=null,session={shown:0,correct:0,wrong:0},speaking=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){notify('Storage unavailable. Export progress to save.')}}
+function today(){return new Date().toLocaleDateString('en-CA')}
+function newDay(){if(state.day!==today()){state.day=today();state.dayCorrect=0;save()}}
+function record(w){if(!state.words[w.id])state.words[w.id]={seen:0,correct:0,firstTry:0,misses:0,consecutive:0,confidence:0,due:0,last:0};return state.words[w.id]}
+function wordStatus(w){const r=state.words[w.id];if(!r||!r.seen)return 'new';if(r.consecutive>=2)return 'confident';if(r.misses>0&&(r.consecutive===0||r.misses>r.correct))return 'tricky';return 'practicing'}
+function norm(s){return s.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘]/g,"'").replace(/[-–—]/g,'-').replace(/\s+/g,' ').trim()}
+function belongs(w){return w.level===level}
+function chooseWord(){
+ newDay();
+ const pool=WORDS.filter(belongs);
+ const unseen=pool.filter(w=>wordStatus(w)==='new');
+ const previously=pool.filter(w=>wordStatus(w)!=='new' && w.id!==lastId);
+ const dueTricky=previously.filter(w=>{
+   const r=state.words[w.id];
+   return (r.misses||0)>0 && r.due<=step && wordStatus(w)!=='confident';
+ });
+ // Explicit New words mode never repeats any word already presented.
+ if(mode==='fresh')return unseen.length?unseen[Math.floor(Math.random()*unseen.length)]:null;
+ if(mode==='weak'){
+   const weak=previously.filter(w=>wordStatus(w)==='tricky'||wordStatus(w)==='practicing');
+   if(!weak.length)return null;
+   const due=weak.filter(w=>(state.words[w.id].due||0)<=step);
+   const pick=due.length?due:weak;
+   pick.sort((a,b)=>((state.words[b.id]?.misses||0)-(state.words[a.id]?.misses||0))||((state.words[a.id]?.last||0)-(state.words[b.id]?.last||0)));
+   return pick[0];
+ }
+ // LEARN & REVIEW: return a missed word only when due; otherwise keep
+ // discovering unseen words until the entire selected 150-word level is visited.
+ // Correctly spelled words are withheld until there are no unseen words left.
+ if(dueTricky.length){
+   dueTricky.sort((a,b)=>(state.words[a.id].due-state.words[b.id].due)||((state.words[b.id].misses||0)-(state.words[a.id].misses||0)));
+   return dueTricky[0];
+ }
+ if(unseen.length)return unseen[Math.floor(Math.random()*unseen.length)];
+ if(!previously.length)return pool.find(w=>w.id!==lastId)||pool[0]||null;
+ // After all words are introduced, practice incomplete words before confident ones.
+ const incomplete=previously.filter(w=>wordStatus(w)!=='confident');
+ const candidates=incomplete.length?incomplete:previously;
+ candidates.sort((a,b)=>((state.words[a.id]?.due||0)-(state.words[b.id]?.due||0))||((state.words[a.id]?.last||0)-(state.words[b.id]?.last||0)));
+ return candidates[0];
+}
+function updateUI(){newDay();let pool=WORDS.filter(belongs);let n={confident:0,practicing:0,tricky:0};pool.forEach(w=>{let st=wordStatus(w);if(n[st]!=null)n[st]++});let p=Math.round(n.confident/150*100);
+ $('levelCount').textContent=`${n.confident} of 150 mastered`;$('progressFill').style.width=p+'%';$('levelProgress').setAttribute('aria-valuenow',p);
+ $('context').textContent=['🌱 One Bee','🌻 Two Bee','🏆 Three Bee'][level-1]+(mode==='weak'?' • Review':'');$('context').classList.toggle('review',mode==='weak');
+ for(const k of ['confident','practicing','tricky']){$(k).textContent=n[k];$(k==='confident'?'confBar':k==='practicing'?'practiceBar':'trickyBar').style.width=(n[k]/150*100)+'%'}
+ $('points').textContent=state.stats.points.toLocaleString();$('streak').textContent=state.stats.streak;$('best').textContent=state.stats.best;
+ $('accuracy').textContent=state.stats.attempts?Math.round(state.stats.firstTry/state.stats.attempts*100)+'%':'—';
+ $('daily').textContent=Math.min(10,state.dayCorrect)+'/10';$('dailyBar').style.width=(Math.min(10,state.dayCorrect)*10)+'%';
+ let pts=state.stats.points;$('rank').textContent=pts>=3000?'👑 Queen Bee':pts>=1500?'💎 Master Bee':pts>=600?'🌟 Super Bee':pts>=200?'🌼 Busy Bee':'🐝 Scout Bee';
+ document.querySelectorAll('.level').forEach(btn=>{btn.classList.toggle('active',Number(btn.dataset.level)===level);btn.setAttribute('aria-pressed',String(Number(btn.dataset.level)===level))});
+ updateRace();$('recent').innerHTML=state.history.length?state.history.slice(-7).reverse().map(h=>{let w=byId.get(h.id);return `<li><span>${h.good?'✅':'💗'} ${escapeHtml(w?.word||'Unknown')}</span><span>${h.good?'+stars':'Review'}</span></li>`}).join(''):'<li>No words tried yet—begin your adventure!</li>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]))}
+function nextWord(){stopListening();clearSpokenAnswer();window.speechSynthesis?.cancel?.();current=chooseWord();tries=0;hintUsed=false;done=false;lastId=current?.id||lastId;step++;$('feedback').style.display='none';$('celebrate').style.display='none';$('answer').value='';$('answer').disabled=false;$('submit').style.display='';$('next').style.display='none';$('reveal').disabled=false;$('hint').disabled=false;$('skip').disabled=false;$('attemptInfo').textContent='No rush! You’ve got this 💜';
+ $('playing').style.display=current?'':'none';$('empty').style.display=current?'none':'';
+ if(!current){$('emptyText').textContent=mode==='weak'?'No tricky or in-progress words in this level. Great job!':'You have completed this selection. Choose another practice mode.';updateUI();return}
+ $('meaning').textContent=current.clue;
+ let r=record(current);r.seen++;r.last=step;session.shown++;save();updateUI();updateSpokenControls();updateTypingControls();focusSpellingInput()}
+// Character personalities use English speech plus distinct pace, pitch, and encouragement.
+// No third-party voice service or paid API is needed; actual timbre depends on the device.
+const CHARACTERS={
+ coach:{rate:1,pitch:1.08,voiceIndex:0,description:'Warm, encouraging, and ready to celebrate every win.',preview:'Hey, spelling superstar! You have totally got this!',cheers:['You nailed it! High-five, spelling superstar!','Absolutely bee-rilliant! That was amazing!','Yes! That word just met its match!']},
+ robot:{rate:.88,pitch:.77,voiceIndex:1,description:'Goofy robot with a lower pitch and a beep-boop attitude.',preview:'Beep boop. Spelling circuits activated. You are unstoppable!',cheers:['Beep boop! Correct spelling detected. Victory dance initiated!','Error zero zero zero: No mistakes found!','Robot report: Nithya is officially a spelling genius!']},
+ host:{rate:1.12,pitch:1.19,voiceIndex:2,description:'Fast-paced, dramatic host who celebrates like it’s a game show.',preview:'LADIES AND GENTLEMEN! Welcome to the ultimate spelling showdown!',cheers:['Ding ding ding! We have a WINNER!','The crowd goes wild! What a spelling superstar!','That is a ten out of ten spelling performance!']},
+ story:{rate:.89,pitch:.97,voiceIndex:0,description:'Gentle and calm with a slower, steady pace.',preview:'Once upon a time, there was a wonderful speller ready for her next word.',cheers:['Beautifully done. Another word is yours.','Well done, little word explorer. What a lovely achievement.','A quiet triumph, and a wonderful spelling!']},
+ royal:{rate:.97,pitch:1.26,voiceIndex:3,description:'Playful royal announcements from Her Majesty the Queen Bee.',preview:'Hear ye, hear ye! The Royal Spelling Challenge is about to begin!',cheers:['By royal decree: that spelling is magnificent!','A golden crown for your perfect spelling!','The royal hive applauds your dazzling brain!']},
+ detective:{rate:.92,pitch:.87,voiceIndex:1,description:'A mysterious, clever sleuth solving each spelling puzzle.',preview:'Aha, detective! Another word mystery is ready to be solved.',cheers:['Case closed! The mystery word has been solved!','Elementary, my dear speller. Excellent work!','Clue cracked! Your spelling skills are legendary!']}
+};
+function currentCharacter(){return CHARACTERS[state.voiceStyle]||CHARACTERS.coach}
+function chooseCheer(){let lines=currentCharacter().cheers;return lines[Math.floor(Math.random()*lines.length)]}
+function talk(text,rate=.87){if(!('speechSynthesis' in window)){notify('Speech is unavailable in this browser. Try Chrome, Safari, or Edge.');return}
+ stopListening();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text),character=currentCharacter();
+ const speed=Number(state.voiceRate)||.85;
+ u.rate=Math.max(.61,Math.min(1.31,speed*character.rate*(rate/.87)));
+ u.pitch=character.pitch;u.lang='en-US';
+ // Prefer installed U.S. English voices; styles are personalities, not accent options.
+ const voices=speechSynthesis.getVoices();
+ const american=voices.filter(v=>/^en[-_]US/i.test(v.lang||''));
+ const english=american.length?american:voices.filter(v=>/^en/i.test(v.lang||''));
+ const selected=english[character.voiceIndex%Math.max(english.length,1)];
+ if(selected){u.voice=selected;u.lang=selected.lang||'en-US'}
+ speechSynthesis.speak(u)}
+function revealWord(){if(!current)return;talk(current.word,.75)}
+function playSound(){if(!state.sounds)return;try{let Audio=window.AudioContext||window.webkitAudioContext;let ac=new Audio();[659.25,783.99,987.77].forEach((f,i)=>{let o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,ac.currentTime+i*.105);g.gain.exponentialRampToValueAtTime(.11,ac.currentTime+i*.105+.01);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+i*.105+.23);o.connect(g).connect(ac.destination);o.start(ac.currentTime+i*.105);o.stop(ac.currentTime+i*.105+.25)});setTimeout(()=>ac.close(),1100)}catch(e){}}
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let box=$('confetti');box.innerHTML='';for(let i=0;i<28;i++){let d=document.createElement('i');d.className='piece';d.style.left=Math.random()*100+'%';d.style.background=['#ed82b8','#ffcf50','#59c6b4','#9875ef','#67a5ee'][i%5];d.style.animationDelay=(Math.random()*.25)+'s';d.style.setProperty('--dx',(Math.random()*300-150)+'px');box.appendChild(d)}setTimeout(()=>box.innerHTML='',2200)}
+function notify(s){let b=$('toast');b.textContent=s;b.classList.add('show');setTimeout(()=>b.classList.remove('show'),2400)}
+function feedback(good,answer=''){let f=$('feedback');f.className='feedback'+(good?'':' bad');f.style.display='block';f.innerHTML=good?`<div class="big">🎉 BEE-utiful spelling!</div><p>You spelled <strong>${escapeHtml(current.word)}</strong> correctly! You earned stars. Keep buzzing! 🐝</p>`:`<div class="big">💗 Brave try! Keep growing.</div><p>The correct spelling is <strong>${escapeHtml(current.word)}</strong>. ${answer?'You typed <strong>'+escapeHtml(answer)+'</strong>. ':''}We’ll bring this word back for more practice.</p>`}
+function finish(good,revealed=false){if(!current||done)return;stopListening();done=true;const r=record(current);state.stats.attempts++;let first=good&&tries===0&&!hintUsed&&!revealed;
+ if(good){r.correct++;state.stats.correct++;if(first){r.firstTry++;state.stats.firstTry++;r.consecutive++;r.confidence=Math.min(5,r.confidence+1)}else{r.consecutive=0;r.confidence=Math.max(0,r.confidence-1)}
+ state.stats.streak++;state.stats.best=Math.max(state.stats.best,state.stats.streak);const bonus=Math.min(50,state.stats.streak*2);const stars=15+bonus+(first?10:0);state.stats.points+=stars;newDay();state.dayCorrect++;
+ r.due=step+(r.consecutive>=2?25:8);session.correct++;
+ if(state.stats.streak===3||state.stats.streak===5||state.stats.streak===10)notify(`🔥 ${state.stats.streak}-word streak! Amazing!`);
+ if(state.dayCorrect===10)notify('🏅 Daily mission complete!');
+ playSound();confetti();const cheer=chooseCheer();$('celebrate').style.display='block';$('celebrate').textContent=cheer+` +${stars} ⭐`;setTimeout(()=>{if(state.sounds)talk(cheer,.99)},340);
+ }else{r.misses++;r.consecutive=0;r.confidence=Math.max(0,r.confidence-2);r.due=step+4;state.stats.streak=0;session.wrong++}
+ state.history.push({id:current.id,time:Date.now(),good,first,revealed});state.history=state.history.slice(-250);
+ $('answer').disabled=true;updateSpokenControls();updateTypingControls();$('submit').style.display='none';$('next').style.display='';$('reveal').disabled=true;$('hint').disabled=true;$('skip').disabled=true;feedback(good,good?'':$('answer').value);save();updateUI();if(good)checkCheckpoint()}
+function showHint(){if(!current||done||hintUsed)return;hintUsed=true;state.stats.points=Math.max(0,state.stats.points-10);let first=current.word.split(' ')[0];$('attemptInfo').textContent=`Hint: starts with “${first[0]}” and has ${current.word.length} characters (including spaces).`;save();updateUI()}
+function check(e){e.preventDefault();if(!current||done)return;stopListening();let ans=state.inputMode==='speak'?spokenLetters.join('').trim():$('answer').value.trim();if(!ans){notify(state.inputMode==='speak'?'Spell the letters aloud (not just the whole word), or switch to the QWERTY keyboard.':'Tap the QWERTY letter buttons first.');return} $('answer').value=ans;let valid=current.accepted.some(a=>norm(a)===norm(ans));
+ if(valid){finish(true);return}
+ tries++;if(tries===1){$('attemptInfo').textContent='Not quite—try once more! You can listen again. 💜';if(state.inputMode==='speak'){clearSpokenAnswer()}else{$('attemptInfo').textContent='Try again! Use ⌫ Delete last, or Clear spelling to start over.'}notify('You can do it! One more try 🐝')}else finish(false)}
+function skip(){if(!current||done)return;stopListening();let r=record(current);r.misses++;r.consecutive=0;r.confidence=Math.max(0,r.confidence-2);r.due=step+4;state.stats.streak=0;state.history.push({id:current.id,time:Date.now(),good:false,skipped:true});save();notify('Saved for your next practice 💜');nextWord()}
+function downloadFile(name,text,type){let u=URL.createObjectURL(new Blob([text],{type}));let a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function report(){let arr=WORDS.filter(w=>state.words[w.id]?.seen);let counts={confident:[],practicing:[],tricky:[]};arr.forEach(w=>{let s=wordStatus(w);if(counts[s])counts[s].push(w)});
+ let txt=`<p><b>Words encountered:</b> ${arr.length}/450 • <b>Correct answers:</b> ${state.stats.correct}</p>`;
+ for(let key of ['tricky','practicing','confident']){txt+=`<h3>${key==='tricky'?'💗 Needs review':key==='practicing'?'💛 Practicing':'💚 Confident'} (${counts[key].length})</h3><p style="font-size:13px">${counts[key].length?counts[key].map(w=>escapeHtml(w.word)).join(' • '):'No words in this group yet.'}</p>`}
+ $('reportBody').innerHTML=txt;$('reportDialog').showModal()}
+function csv(){let head='Level,Page,Word,Status,Times Seen,Correct,First Try,Missed,Consecutive,Confidence\n';let body=WORDS.map(w=>{let r=state.words[w.id]||{};return [w.level,w.page,'"'+w.word.replace(/"/g,'""')+'"',wordStatus(w),r.seen||0,r.correct||0,r.firstTry||0,r.misses||0,r.consecutive||0,r.confidence||0].join(',')}).join('\n');downloadFile('nithya-spelling-progress.csv',head+body,'text/csv')}
+$('sayWord').onclick=revealWord;$('repeat').onclick=revealWord;$('sayMeaning').onclick=()=>{if(current)talk(current.clue,.9)};
+$('answerForm').addEventListener('submit',check);$('hint').onclick=showHint;$('reveal').onclick=()=>{if(current&&!done){tries=Math.max(tries,2);finish(false,true)}};
+$('next').onclick=nextWord;$('skip').onclick=skip;
+document.querySelectorAll('.level').forEach(b=>b.onclick=()=>{level=Number(b.dataset.level);nextWord()});$('mode').onchange=e=>{mode=e.target.value;nextWord()};$('review').onclick=()=>{$('mode').value='weak';mode='weak';nextWord();window.scrollTo({top:0,behavior:'smooth'})};$('resetMode').onclick=()=>{$('mode').value='all';mode='all';nextWord()};
+$('settings').onclick=()=>{$('sounds').checked=state.sounds;populateVoices();syncVoiceRate();$('settingsDialog').showModal()};$('closeSettings').onclick=()=>$('settingsDialog').close();$('sounds').onchange=e=>{state.sounds=e.target.checked;save()};
+$('resetProgress').onclick=()=>{if(confirm('Erase ALL spelling progress, points, and history on this browser? This cannot be undone unless you exported a backup.')){stopListening();state=emptyState();guidedSpeech=false;setSpellingMode('type');populateVoices();syncVoiceRate();save();$('settingsDialog').close();step=0;nextWord();notify('Fresh start! 🐝')}};
+$('saveRace').onclick=()=> $('export').click();
+$('export').onclick=()=>downloadFile('nithya-spelling-progress.json',JSON.stringify(state,null,2),'application/json');$('import').onclick=()=>$('fileInput').click();
+$('fileInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let s=JSON.parse(await f.text());if(s.version!==1||!s.words||!s.stats)throw Error('Wrong file format');if(!confirm('Replace this browser’s current progress with the backup file?'))return;stopListening();state={...emptyState(),...s};guidedSpeech=!!state.guidedSpeech;setSpellingMode(state.inputMode);populateVoices();syncVoiceRate();step=Math.max(0,...Object.values(state.words).map(r=>r.last||0));save();nextWord();notify('Progress restored 🐝')}catch(err){alert('Could not restore that backup. Please choose a valid spelling-bee progress JSON file.')}finally{e.target.value=''}};
+$('report').onclick=report;$('closeReport').onclick=()=>$('reportDialog').close();$('exportReport').onclick=csv;
+window.addEventListener('keydown',e=>{if(e.key==='Enter'&&done&&!$('reportDialog').open&&!$('settingsDialog').open&&!$('rewardDialog').open){e.preventDefault();nextWord()}});
+
+// Race progress is based on distinct mastered words, not repeat attempts. Milestone
+// badges and arcade breaks are earned for each 25 DISTINCT words ever spelled correctly.
+const CHEERS=["You nailed it! High-five, spelling superstar!","Boom! That word didn't stand a chance!","Bee-lieve it! You are on fire!","That spelling was chef's kiss!","Wowza! The dictionary is shaking!","Nithya 1, tricky word 0!","Honey, that was legendary!","You crushed it like a spelling ninja!","The spelling bees are cheering for you!","Mic drop! Perfect spelling!","Who gave you these superpowers?","That word just got BEE-friended!"];
+function uniqueWins(){return WORDS.filter(w=>(state.words[w.id]?.correct||0)>0).length}
+function masteredWins(){return WORDS.filter(w=>wordStatus(w)==='confident').length}
+function availableBreaks(){return Math.max(0,(state.unlocked||0)-(state.spentBreaks||0))}
+function updateRace(){let mastered=masteredWins(), unique=uniqueWins();$('raceScore').textContent=mastered+' / 450 mastered';$('checkpointText').textContent=unique>=450?'All 450 words spelled! Keep reviewing until all are mastered.':`Next badge: ${Math.min(450, (Math.floor(unique/25)+1)*25)} unique correct words • ${unique}/450 achieved`;
+ $('ticketText').textContent=`🎮 ${availableBreaks()} game breaks available`;
+ $('raceTrack').innerHTML=Array.from({length:18},(_,i)=>{let n=(i+1)*25;let completed=mastered>=n;let active=!completed&&mastered>=i*25;return `<div class="race-tile ${completed?'done':active?'current':'locked'}" title="${n} words mastered"><span>${completed?'🏅':i===17?'🏆':'🌼'}</span><small>${n}</small>${active?'<span class="bee-racer">🐝</span>':''}</div>`}).join('');
+ let badges=Math.floor(unique/25);$('badgeCase').innerHTML=badges?Array.from({length:badges},(_,i)=>`<span class="badge-medal" title="${(i+1)*25} unique correct words">🏅 ${(i+1)*25}</span>`).join(''):'<span class="tiny">First badge at 25 different correctly spelled words!</span>';
+ if(mastered===450){$('checkpointText').textContent='👑 Finish line reached! You mastered every word!'}
+}
+function checkCheckpoint(){let earned=Math.floor(uniqueWins()/25);if(earned>(state.unlocked||0)){state.unlocked=earned;save();updateRace();openArcade(true)}}
+let arcadeSession=null;
+function stopArcade(){if(arcadeSession){arcadeSession.stop?.();arcadeSession=null}window.speechSynthesis?.cancel?.()}
+function openArcade(newAward=false){stopArcade();let available=availableBreaks();$('rewardTitle').textContent=newAward?'🏅 Badge unlocked! Checkpoint reached!':'🎮 Nithya’s Mini-game Arcade';$('rewardDesc').textContent=newAward?`You've spelled ${uniqueWins()} different words correctly! You earned a new badge and a game break. Pick your reward!`:available?`You have ${available} game break(s). Pick a mini-game!`:'Earn a badge for every 25 different correct words to unlock a game break.';$('gameZone').innerHTML='<div class="game-instructions">'+(available?'Choose your mini-game!':'Practice more words to earn your next break!')+'</div>';['pickDino','pickCatch','pickMemory'].forEach(id=>$(id).disabled=!available);stopListening();$('rewardDialog').showModal()}
+function claimGame(){if(!availableBreaks()){notify('Spell 25 unique words to unlock a game break!');return false}state.spentBreaks=(state.spentBreaks||0)+1;save();updateRace();return true}
+function miniDone(message){stopArcade();$('gameZone').innerHTML=`<div class="success-title">🎉 ${message}</div><p>That was a fun break. Time to race toward the next checkpoint!</p><button class="btn primary" id="returnSpelling">Back to spelling 🐝</button>`;$('returnSpelling').onclick=closeArcade}
+function closeArcade(){stopArcade();$('rewardDialog').close();focusSpellingInput()}
+$('openArcade').onclick=()=>openArcade();$('closeArcade').onclick=closeArcade;$('rewardDialog').addEventListener('close',stopArcade);
+function chooseGame(g){if(!claimGame())return;['pickDino','pickCatch','pickMemory'].forEach(id=>$(id).disabled=true);if(g==='dino')dinoGame();if(g==='catch')catchGame();if(g==='memory')memoryGame()}
+$('pickDino').onclick=()=>chooseGame('dino');$('pickCatch').onclick=()=>chooseGame('catch');$('pickMemory').onclick=()=>chooseGame('memory');
+function dinoGame(){let zone=$('gameZone');zone.innerHTML='<div class="game-instructions">🦖 Dino Dash: tap Jump or press Space. Survive 18 seconds!</div><div class="runner" id="runner"><span class="runner-score" id="runScore">⏱ 18s</span><span class="runner-player" id="dino">🦖</span><span class="runner-obstacle" id="cactus">🌵</span></div><button class="btn gold" id="jump" style="margin-top:10px">⬆️ JUMP!</button>';
+ let start=performance.now(),last=start,vy=0,y=0,obs=520,alive=true,raf=0;function jump(){if(y===0)vy=430}let key=e=>{if(e.code==='Space'){e.preventDefault();jump()}};document.addEventListener('keydown',key);$('jump').onclick=jump;
+ function tick(now){if(!alive)return;let dt=Math.min(.04,(now-last)/1000);last=now;y=Math.max(0,y+vy*dt);vy-=1050*dt;if(y===0)vy=0;obs-=225*dt;if(obs< -40)obs=zone.clientWidth+100;$('dino').style.bottom=(28+y)+'px';$('cactus').style.left=obs+'px';let remain=Math.max(0,18-Math.floor((now-start)/1000));$('runScore').textContent='⏱ '+remain+'s';if(obs>24&&obs<75&&y<35){alive=false;miniDone('Super dino effort! The cactus wins this round.');return}if(remain<=0){alive=false;miniDone('Dino Dash champion!');return}raf=requestAnimationFrame(tick)}
+ arcadeSession={stop:()=>{alive=false;cancelAnimationFrame(raf);document.removeEventListener('keydown',key)}};raf=requestAnimationFrame(tick)}
+function catchGame(){let zone=$('gameZone'),score=0,time=15,doneGame=false;zone.innerHTML='<div class="game-instructions">🍯 Honey Catch: tap honey jars, not storm clouds! Get 8 jars in 15 seconds.</div><div class="row"><strong id="honeyScore">🍯 0/8</strong><strong id="honeyTime">⏱ 15s</strong></div><div class="catch-grid" id="catchGrid"></div>';
+ function round(){if(doneGame)return;let jar=Math.floor(Math.random()*12);$('catchGrid').innerHTML=Array.from({length:12},(_,i)=>`<button aria-label="${i===jar?'honey':'storm cloud'}">${i===jar?'🍯':'☁️'}</button>`).join('');[...$('catchGrid').children].forEach((b,i)=>b.onclick=()=>{if(i===jar){score++;$('honeyScore').textContent='🍯 '+score+'/8';if(score>=8){doneGame=true;miniDone('Honey-catching champion!');return}}round()})}
+ round();let timer=setInterval(()=>{time--;$('honeyTime').textContent='⏱ '+time+'s';if(time<=0){doneGame=true;miniDone(`Sweet work! You caught ${score} honey jars!`)}},1000);arcadeSession={stop:()=>{doneGame=true;clearInterval(timer)}}}
+function memoryGame(){let zone=$('gameZone'),symbols=['🐝','🍯','🌸','🦋','⭐','🌈'];let cards=[...symbols,...symbols].map((sym,i)=>({sym,sort:Math.random(),id:i})).sort((a,b)=>a.sort-b.sort);let open=[],matched=new Set(),moves=0,locked=false;zone.innerHTML='<div class="game-instructions">🧠 Memory Match: find all six pairs!</div><div class="row"><strong id="memScore">0 / 6 pairs</strong><span id="memMoves">0 moves</span></div><div class="memory-grid" id="memoryGrid"></div>';
+ function render(){let grid=$('memoryGrid');grid.innerHTML=cards.map((c,i)=>`<button data-i="${i}" class="${open.includes(i)||matched.has(i)?'flipped':''}" aria-label="memory card ${i+1}">${open.includes(i)||matched.has(i)?c.sym:'❔'}</button>`).join('');[...grid.children].forEach(b=>b.onclick=()=>{let i=Number(b.dataset.i);if(locked||matched.has(i)||open.includes(i))return;open.push(i);render();if(open.length===2){moves++;$('memMoves').textContent=moves+' moves';let [a,z]=open;if(cards[a].sym===cards[z].sym){matched.add(a);matched.add(z);open=[];$('memScore').textContent=matched.size/2+' / 6 pairs';if(matched.size===12){miniDone('Memory mastermind!');return}render()}else{locked=true;setTimeout(()=>{if(!arcadeSession)return;open=[];locked=false;render()},800)}}})}
+ arcadeSession={stop:()=>{locked=true}};render()}
+// Upgrade already existing backups without losing their spelling history.
+state.unlocked=Math.max(state.unlocked||0,Math.floor(uniqueWins()/25));state.spentBreaks=Math.min(state.spentBreaks||0,state.unlocked);save();updateRace();
+
+
+// VOICE & SPELL-ALOUD UPGRADE: optional voice choice + actual letter-by-letter speech input.
+// The existing version-1 progress backup remains compatible. Preferences are optional fields.
+let spokenLetters=[];
+let saidOpeningWord=false;
+let saidClosingWord=false;
+let speechRecognizer=null;
+let micListening=false;
+let guidedSpeech=!!state.guidedSpeech;
+let guidedStage=0; // 0 = say word, 1 = spell letters, 2 = repeat word
+let interimLetters=[];
+let liveFinalSegments=[];
+let liveInterimText='';
+let micRestarts=0;
+const Recognizer=window.SpeechRecognition||window.webkitSpeechRecognition;
+function speechMicAdvice(){
+ return location.protocol==='file:'?'Your browser may block microphone recognition when opening a downloaded HTML file. If Start listening fails, use Chrome on an HTTPS website, or use Type mode.':'Allow microphone access in your browser. Try Chrome if recognition is unavailable.';
+}
+function renderLiveSpeech(){
+ const transcript=$('liveSpeech'),signal=$('liveSignal');
+ if(!transcript)return;
+ const trailing=liveInterimText.trim();
+ transcript.textContent=trailing|| (micListening?'Listening… say a word or a letter.': 'Tap Start listening to see speech live.');
+ signal.textContent=micListening?'● Microphone on':'Microphone off';
+ signal.style.color=micListening?'#bb3960':'#64718c';
+ $('heardFinal').textContent=liveFinalSegments.length?'Already heard: '+liveFinalSegments.slice(-3).join('  |  '):'';
+}
+function renderSpeechStages(){
+ const stages=[['stageIntro',saidOpeningWord],['stageLetters',spokenLetters.length>0],['stageOutro',saidClosingWord]];
+ for(let idx=0;idx<3;idx++){
+  const [id,completed]=stages[idx],el=$(id);
+  el.classList.toggle('complete',guidedSpeech?(idx<guidedStage||!!completed):!!completed);
+  el.classList.toggle('active',guidedSpeech?idx===guidedStage:(idx===0?!saidOpeningWord&&spokenLetters.length===0:idx===1?spokenLetters.length>0&&!saidClosingWord:spokenLetters.length>0&&!saidClosingWord));
+ }
+ $('nextSpeechStage').hidden=!guidedSpeech;
+ $('nextSpeechStage').textContent=guidedStage===0?'Next → spell letters':guidedStage===1?'Next → say word again':'Start over ↻';
+ $('guidedTip').textContent=guidedSpeech?('Step '+(guidedStage+1)+' of 3: '+['say the word aloud','spell each letter aloud (this step earns points)','say the word again'][guidedStage]+'. Tap Start listening; when done, use Next.'): 'Continuous mode: say the word → each letter → the word again. Live text appears as you speak.';
+}
+
+function focusSpellingInput(){/* No native text focus: keep the phone’s predictive keyboard closed. */}
+function updateSpokenPreview(){
+ const committed=spokenLetters.map(c=>c===' '?'␣':c).join('  ·  ');
+ const temporary=interimLetters.map(c=>c===' '?'␣':c).join('  ·  ');
+ $('spokenPreview').textContent=committed+(temporary?(committed?'  ·  ':'')+'⏳ '+temporary:'')||'Your spelled letters will appear here as you speak';
+ renderSpeechStages();
+ updateSpokenControls();
+}
+function updateSpokenControls(){
+ const disabled=!current||done;
+ $('startMic').disabled=disabled||!Recognizer;
+ $('deleteLetter').disabled=disabled||!spokenLetters.length;
+ $('clearLetters').disabled=disabled||!(spokenLetters.length||interimLetters.length);
+ $('nextSpeechStage').disabled=disabled;
+ $('startMic').textContent=micListening?'⏹ Stop listening':'🎙️ Start listening';
+ $('startMic').classList.toggle('mic-live',micListening);
+ updateTypingControls();
+ renderLiveSpeech();
+}
+function clearSpokenAnswer(){
+ spokenLetters=[];saidOpeningWord=false;saidClosingWord=false;guidedStage=0;
+ interimLetters=[];liveFinalSegments=[];liveInterimText='';
+ if($('spokenPreview'))updateSpokenPreview();
+}
+function updateTypingControls(){
+ const disabled=!current||done||state.inputMode!=='type';
+ Array.from($('letterPad').querySelectorAll('button')).forEach(btn=>btn.disabled=disabled);
+ $('typeBackspace').disabled=disabled||!$('answer').value.length;
+ $('typeClear').disabled=disabled||!$('answer').value.length;
+}
+function appendTypedLetter(char){
+ if(state.inputMode!=='type'||!current||done)return;
+ const input=$('answer');
+ if(input.value.length>=75){notify('That’s the maximum spelling length.');return}
+ input.value+=char;
+ updateTypingControls();
+}
+function deleteTypedLetter(){if(!current||done)return;const input=$('answer');input.value=input.value.slice(0,-1);updateTypingControls()}
+function clearTypedAnswer(){const input=$('answer');input.value='';updateTypingControls()}
+
+function stopListening(){
+ micListening=false;
+ const r=speechRecognizer;speechRecognizer=null;
+ if(r){r.onend=null;r.onresult=null;r.onerror=null;try{r.stop()}catch(e){}}
+ interimLetters=[];liveInterimText='';
+ if($('startMic'))updateSpokenPreview();
+}
+function setSpellingMode(to,remember=true){
+ to=to==='speak'?'speak':'type';if(to!=='speak')stopListening();
+ state.inputMode=to;
+ $('typeMode').setAttribute('aria-pressed',String(to==='type'));
+ $('speakMode').setAttribute('aria-pressed',String(to==='speak'));
+ $('typingPanel').hidden=to!=='type';
+ $('spokenPanel').hidden=to!=='speak';
+ $('answer').readOnly=true;$('answer').setAttribute('inputmode','none');
+ $('submit').textContent=to==='speak'?'Check spoken spelling ✓':'Check spelling ✓';
+ if(to==='speak'){
+  $('micStatus').textContent=Recognizer?'Start listening. Your spoken words and letters will transcribe LIVE above.':'Speech recognition is unavailable here. '+speechMicAdvice();
+  // Speech mode has no alphabet pad; Type mode contains the on-screen tiles.
+  $('guidedSpeech').checked=guidedSpeech;renderSpeechStages();updateSpokenPreview();
+ }else {updateTypingControls();focusSpellingInput();}
+ if(remember)save();
+}
+// The browser might hear letter names as everyday words ("see" for C, "why" for Y).
+// Never convert a whole dictated word into individual letters: Nithya must actually spell.
+const letterNames={
+ 'a':'A','ay':'A','eh':'A',
+ 'b':'B','be':'B','bee':'B',
+ 'c':'C','see':'C','sea':'C','cee':'C',
+ 'd':'D','dee':'D',
+ 'e':'E','ee':'E',
+ 'f':'F','ef':'F','eff':'F',
+ 'g':'G','gee':'G',
+ 'h':'H','aitch':'H','haitch':'H',
+ 'i':'I','eye':'I','aye':'I',
+ 'j':'J','jay':'J',
+ 'k':'K','kay':'K',
+ 'l':'L','el':'L','ell':'L',
+ 'm':'M','em':'M',
+ 'n':'N','en':'N',
+ 'o':'O','oh':'O','owe':'O',
+ 'p':'P','pee':'P','pea':'P',
+ 'q':'Q','cue':'Q','queue':'Q',
+ 'r':'R','are':'R','ar':'R',
+ 's':'S','ess':'S','es':'S',
+ 't':'T','tee':'T','tea':'T',
+ 'u':'U','you':'U','yew':'U',
+ 'v':'V','vee':'V',
+ 'w':'W','doubleyou':'W','dubya':'W',
+ 'x':'X','ex':'X',
+ 'y':'Y','why':'Y','wye':'Y',
+ 'z':'Z','zee':'Z','zed':'Z'
+};
+function parseLetterSpeech(heard){
+ const tokens=heard.toLowerCase().replace(/[.,!?;:()[\]{}]/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);
+ const out=[],unknown=[];
+ for(let i=0;i<tokens.length;i++){
+  const t=tokens[i];
+  if(t==='double'&&['you','u','yew'].includes(tokens[i+1])){out.push('W');i++;continue}
+  if(t==='double-u'||t==='double-u'||t==='doubleyou'){out.push('W');continue}
+  if(['letter','letters','spell','spelling','capital','uppercase','lowercase','then','next'].includes(t))continue;
+  if(['space','blank','gap'].includes(t)){out.push(' ');continue}
+  if(['hyphen','dash'].includes(t)){out.push('-');continue}
+  if(['apostrophe','single-quote'].includes(t)){out.push("'");continue}
+  if(t==='and')continue;
+  if(letterNames[t])out.push(letterNames[t]);else unknown.push(t);
+ }
+ return {letters:out,unknown};
+}
+// Recognize a competition-format answer, e.g. "cottage, C O T T A G E, cottage".
+// The opening/closing full-word utterances are intentionally NOT turned into letters.
+// If the microphone transcribes letters as a whole word, it cannot earn credit for them.
+function speechTokens(raw){
+ let text=String(raw||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
+ // Some browsers transcribe an isolated string of letter names as "C-A-T".
+ text=text.replace(/\b([a-z])(?:[\s]*[-.][\s]*[a-z]){1,}\b/g,s=>s.replace(/[-.]/g,' '));
+ return text.replace(/-/g,' ').replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);
+}
+function isFullWordAt(tokens,index){
+ if(!current)return 0;
+ const words=(current.accepted||[current.word]).map(s=>speechTokens(s));
+ // Prefer longest option first: two-word entries like "a cappella".
+ words.sort((a,b)=>b.length-a.length);
+ for(const w of words){
+  if(w.length&&tokens.slice(index,index+w.length).join(' ')==w.join(' '))return w.length;
+ }
+ return 0;
+}
+function consumeCompetitionSpeech(raw){
+ const tokens=speechTokens(raw),letters=[];
+ let heardOpening=false,heardClosing=false,ignored=false;
+ const fillers=new Set(['the','word','is','my','first','now','again','I','am','going','to','say','saying','spell','spelling','letters','letter','please','then','and','okay','ok','done','finished','finally']);
+ for(let i=0;i<tokens.length;i++){
+  const match=isFullWordAt(tokens,i);
+  if(match){
+   if(spokenLetters.length+letters.length===0){saidOpeningWord=true;heardOpening=true}
+   else{saidClosingWord=true;heardClosing=true}
+   i+=match-1;continue;
+  }
+  if(saidClosingWord)continue;
+  const t=tokens[i];
+  if(t==='double'&&['you','u','yew'].includes(tokens[i+1])){letters.push('W');i++;continue}
+  if(['space','blank','gap'].includes(t)){letters.push(' ');continue}
+  if(['hyphen','dash'].includes(t)){letters.push('-');continue}
+  if(['apostrophe','single-quote'].includes(t)){letters.push("'");continue}
+  if(fillers.has(t))continue;
+  if(letterNames[t]){letters.push(letterNames[t]);continue}
+  // Unrecognized full-word speech before letters is an opening word; after letters it is closing speech.
+  // A whole word is never auto-converted into correctly spelled characters.
+  if(spokenLetters.length+letters.length===0){saidOpeningWord=true;heardOpening=true}
+  // Ignore unclear chunks instead of treating them as the ending word.
+  // Otherwise a misrecognized letter would prevent all later letters being heard.
+  ignored=true;
+ }
+ if(letters.length)appendSpokenLetters(letters);
+ else updateSpokenPreview();
+ return {letters,heardOpening,heardClosing,ignored};
+}
+function previewLetterSequence(raw){
+ if(guidedSpeech){
+  if(guidedStage!==1)return [];
+  if(isEntireAnswerWord(raw))return [];
+  return parseLetterSpeech(speechTokens(raw).join(' ')).letters;
+ }
+ if(saidClosingWord)return [];
+ const tokens=speechTokens(raw),letters=[],fillers=new Set(['the','word','is','my','first','now','again','am','going','to','say','saying','spell','spelling','letters','letter','please','then','and','okay','ok','done','finished','finally']);
+ for(let i=0;i<tokens.length;i++){
+  const match=isFullWordAt(tokens,i);if(match){i+=match-1;continue;}
+  const t=tokens[i];
+  if(t==='double'&&['you','u','yew'].includes(tokens[i+1])){letters.push('W');i++;continue}
+  if(fillers.has(t))continue;
+  if(['space','blank','gap'].includes(t)){letters.push(' ');continue;}
+  if(t==='hyphen'||t==='dash'){letters.push('-');continue;}
+  if(t==='apostrophe'){letters.push("'");continue;}
+  if(letterNames[t])letters.push(letterNames[t]);
+ }
+ return letters;
+}
+function isEntireAnswerWord(raw){
+ const tok=speechTokens(raw);
+ return !!(tok.length&&isFullWordAt(tok,0)===tok.length);
+}
+function consumeGuidedSpeech(raw){
+ if(guidedStage===0){saidOpeningWord=true;updateSpokenPreview();return {heardOpening:true,letters:[]};}
+ if(guidedStage===2){saidClosingWord=true;updateSpokenPreview();return {heardClosing:true,letters:[]};}
+ if(isEntireAnswerWord(raw))return {letters:[],wholeWord:true};
+ const parsed=parseLetterSpeech(speechTokens(raw).join(' '));
+ if(parsed.letters.length)appendSpokenLetters(parsed.letters);
+ return {...parsed,unknown:parsed.unknown||[]};
+}
+function guidedNextStage(){
+ if(!guidedSpeech||!current||done)return;
+ stopListening();
+ guidedStage=guidedStage===2?0:guidedStage+1;
+ if(guidedStage===0)clearSpokenAnswer();
+ liveInterimText='';interimLetters=[];
+ renderSpeechStages();updateSpokenPreview();
+ $('micStatus').textContent='Step '+(guidedStage+1)+': '+['Say the word aloud.','Spell each letter separately and slowly.','Say the word again.'][guidedStage];
+ // The stage button is a user gesture, so we can request the mic immediately.
+ startListening();
+}
+function appendSpokenLetters(chars){
+ if(!current||done)return;
+ if(spokenLetters.length+chars.length>75){$('micStatus').textContent='That is too many letters for one attempt. Remove some letters first.';return}
+ spokenLetters.push(...chars);updateSpokenPreview();
+}
+function startListening(){
+ if(micListening){stopListening();$('micStatus').textContent='Stopped. Review the recognized letters, or tap Listen to continue.';return;}
+ if(!Recognizer){$('micStatus').textContent='Live speech recognition is not available. '+speechMicAdvice();return;}
+ if(!current||done)return;
+ window.speechSynthesis?.cancel?.();
+ let rec;
+ try{rec=new Recognizer();}catch(e){$('micStatus').textContent='Cannot start speech recognition: '+(e.message||e);return;}
+ rec.lang='en-US';rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
+ micRestarts=0;
+ const handledFinal=new Set();
+ rec.onresult=ev=>{
+  if(speechRecognizer!==rec||!micListening||state.inputMode!=='speak')return;
+  let interimChunks=[];
+  for(let i=0;i<ev.results.length;i++){
+   const result=ev.results[i],raw=result[0]?.transcript?.trim()||'';
+   if(!raw)continue;
+   if(result.isFinal){
+    if(handledFinal.has(i))continue;
+    handledFinal.add(i);
+    liveFinalSegments.push(raw);
+    if(liveFinalSegments.length>12)liveFinalSegments.shift();
+    const parsed=guidedSpeech?consumeGuidedSpeech(raw):consumeCompetitionSpeech(raw);
+    if(parsed.wholeWord){
+     $('micStatus').textContent='The microphone heard a whole word rather than individual letters. Say each letter slowly (e.g., C … A … T), or use Type mode.';
+    }else if(parsed.letters?.length){
+     $('micStatus').textContent='✅ Captured '+parsed.letters.length+' letters. Watch the live spelling and correct any mistakes before checking.';
+    }else if(parsed.heardOpening){
+     $('micStatus').textContent=guidedSpeech?'Opening word heard. Tap Next → spell letters.':'Opening word heard. Keep spelling one letter at a time.';
+    }else if(parsed.heardClosing){
+     $('micStatus').textContent=guidedSpeech?'Last word heard. Check your spelled letters!':'Closing word heard. Check your letters, then submit.';
+    }else{
+     $('micStatus').textContent='The microphone did not identify individual letters. Try again with pauses, or choose Guided speaking.';
+    }
+   }else{interimChunks.push(raw);}
+  }
+  liveInterimText=interimChunks.join(' ').trim();
+  // Interim guesses can change every fraction of a second. Show them immediately
+  // but NEVER add them to the answer until speech recognition calls them final.
+  interimLetters=previewLetterSequence(liveInterimText);
+  updateSpokenPreview();
+ };
+ rec.onerror=e=>{
+  const reasons={'not-allowed':'Microphone permission was denied. Enable it in your browser settings.','service-not-allowed':'Speech recognition was blocked by your browser.','no-speech':'I didn’t hear anything. Speak clearly into your microphone.','network':'This browser’s voice recognition service needs an internet connection.','audio-capture':'No working microphone was detected.','aborted':'Microphone recording was interrupted.'};
+  const message=(reasons[e.error]||'Speech recognition issue: '+e.error)+ ' '+(e.error==='not-allowed'||e.error==='service-not-allowed'?speechMicAdvice():'');
+  stopListening();$('micStatus').textContent=message;
+ };
+ rec.onend=()=>{
+  if(speechRecognizer!==rec||!micListening)return;
+  interimLetters=[];liveInterimText='';updateSpokenPreview();
+  if(micRestarts<2){
+   micRestarts++;
+   $('micStatus').textContent='Microphone paused; trying to resume live transcription…';
+   setTimeout(()=>{
+    if(speechRecognizer!==rec||!micListening)return;
+    try{handledFinal.clear();rec.start()}catch(e){stopListening();$('micStatus').textContent='Recording stopped. Tap Start listening again to continue. '+speechMicAdvice();}
+   },220);
+  }else{
+   stopListening();$('micStatus').textContent='Recording paused. Tap Start listening to continue, or use Guided speaking to record shorter sections.';
+  }
+ };
+ speechRecognizer=rec;micListening=true;
+ updateSpokenPreview();
+ $('micStatus').textContent=guidedSpeech?'🎙️ LIVE — Step '+(guidedStage+1)+': '+['Say the word.','Spell letters slowly, pausing between them.','Repeat the word.'][guidedStage]: '🎙️ LIVE — Say the word → spell letters → say the word again. The text updates while you speak.';
+ try{rec.start()}catch(e){stopListening();$('micStatus').textContent='Microphone could not start: '+(e.message||e)+'. '+speechMicAdvice();}
+}
+function populateVoices(){
+ const sel=$('voiceSelect');
+ state.voiceStyle=CHARACTERS[state.voiceStyle]?state.voiceStyle:'coach';
+ sel.value=state.voiceStyle;
+ $('characterDescription').textContent=currentCharacter().description;
+}
+function syncVoiceRate(){let rate=Math.max(.65,Math.min(1.2,Number(state.voiceRate)||.85));$('voiceRate').value=rate;$('voiceRateValue').textContent=rate.toFixed(2)+'×'}
+$('typeMode').onclick=()=>setSpellingMode('type');
+$('speakMode').onclick=()=>setSpellingMode('speak');
+$('startMic').onclick=startListening;
+$('guidedSpeech').checked=guidedSpeech;
+$('guidedSpeech').onchange=e=>{
+ stopListening();guidedSpeech=!!e.target.checked;state.guidedSpeech=guidedSpeech;
+ clearSpokenAnswer();renderSpeechStages();updateSpokenPreview();save();
+ $('micStatus').textContent=guidedSpeech?'Guided mode: say the word first. Tap Start listening.':'Continuous mode: one recording for word → letters → word. Tap Start listening.';
+};
+$('nextSpeechStage').onclick=guidedNextStage;
+$('deleteLetter').onclick=()=>{if(spokenLetters.length){spokenLetters.pop();updateSpokenPreview()}};
+$('clearLetters').onclick=()=>{stopListening();clearSpokenAnswer();$('micStatus').textContent='Cleared. Tap Start listening to try again.';};
+$('switchToTiles').onclick=()=>{if(spokenLetters.length)$('answer').value=spokenLetters.join('');stopListening();setSpellingMode('type');updateTypingControls();notify('Use the on-screen letters to correct your spelling ✨')};
+$('typeBackspace').onclick=deleteTypedLetter;
+$('typeClear').onclick=clearTypedAnswer;
+const keyboardRows=[['QWERTYUIOP','top-row'],['ASDFGHJKL','home-row'],['ZXCVBNM','bottom-row']];
+for(const [chars,rowClass] of keyboardRows){
+ const row=document.createElement('div');row.className='keyboard-row '+rowClass;
+ for(const l of chars){const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-label','Add letter '+l);b.onclick=()=>appendTypedLetter(l);row.appendChild(b)}
+ $('letterPad').appendChild(row);
+}
+const utilityRow=document.createElement('div');utilityRow.className='keyboard-row utility-row';
+for(const [label,character] of [['Space',' '],['Hyphen','-'],['Apostrophe',"'"]]){
+ const b=document.createElement('button');b.type='button';b.className='special';b.textContent=label;b.onclick=()=>appendTypedLetter(character);utilityRow.appendChild(b)
+}
+$('letterPad').appendChild(utilityRow);
+$('quickVoice').onclick=()=>{$('settings').click()};
+$('voiceSelect').onchange=e=>{state.voiceStyle=e.target.value;populateVoices();save();talk(currentCharacter().preview,.91)};
+$('voiceRate').oninput=e=>{state.voiceRate=Number(e.target.value);syncVoiceRate();save()};
+$('testVoice').onclick=()=>talk(currentCharacter().preview,.91);
+
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopListening()});
+$('settingsDialog').addEventListener('close',()=>{window.speechSynthesis?.cancel?.()});
+setSpellingMode(state.inputMode||'type',false);populateVoices();syncVoiceRate();renderSpeechStages();renderLiveSpeech();
+
+newDay();nextWord();
+</script>
+</body></html>
